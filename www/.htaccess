@@ -1,0 +1,20 @@
+ErrorDocument 401 /assets/401.php
+
+RewriteEngine On
+RewriteCond %{REQUEST_FILENAME}.php -f
+RewriteRule (.+) $1.php
+
+<IfModule mod_php5.c>
+    php_value include_path "/home/rdf.me/www/inc:/usr/share/pear:/usr/share/php"
+    php_value auto_prepend_file "runtime.php"
+    php_value auto_append_file "auto_append.php"
+</IfModule>
+
+<IfModule mod_fcgid.c>
+    AddHandler fcgid-script .php
+    DirectoryIndex index.php
+    FCGIWrapper "/usr/bin/php-cgi -c /home/rdf.me/conf/" .php
+    <Files *.php>
+        Options +ExecCGI
+    </Files>
+</IfModule>

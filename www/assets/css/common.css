@@ -1,0 +1,24 @@
+input[type=submit], input[type=button] {
+    border: 1px solid black;
+    border-collapse: collapse;
+}
+div.area-dashed {
+    border: 1px dashed black;
+    margin: 1em;
+    padding: 1em 1em 0 1em;
+    float: left;
+}
+div.span-icon {
+    height: 16px;
+    width: 16px;
+    vertical-align: middle;
+}
+#status {
+    height: 32px;
+    width: 32px;
+    float: left;
+    text-align: center;
+}
+#status img {
+    vertical-align: middle;
+}
