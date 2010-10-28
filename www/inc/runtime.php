@@ -49,3 +49,55 @@ if (substr(REQUEST_URL, 0, 5) === '/json') {
 }
 
 date_default_timezone_set('America/New_York');
+
+// start negotiation: HTTP Accept
+$_accept = isset($_SERVER['HTTP_ACCEPT']) ? $_SERVER['HTTP_ACCEPT'] : '';
+$_accept_lst = array();
+foreach (explode(',', $_accept) as $elt) {
+    $elt = explode(';', $elt);
+    if (count($elt) == 1) {
+        $t = trim($elt[0]);
+        $q = 'q=1.0';
+    } elseif (count($elt) == 2) {
+        $t = trim($elt[0]);
+        $q = trim($elt[1]);
+    } else {
+        continue;
+    }
+    $_accept_lst[$t] = (float)substr($q, 2);
+}
+asort($_accept_lst, SORT_NUMERIC);
+$_accept_lst = array_reverse($_accept_lst);
+
+// start negotiation: HTTP Content-Type
+$_content_type = isset($_SERVER['HTTP_CONTENT_TYPE']) ? $_SERVER['HTTP_CONTENT_TYPE'] : '';
+
+$_map_input = array(
+    '/rdf+n3' => 'turtle',
+    '/n3' => 'turtle',
+    '/turtle' => 'turtle',
+    '/rdf+nt' => 'ntriples',
+    '/nt' => 'ntriples',
+    '/rdf+xml' => 'rdfxml',
+    '/rdf' => 'rdfxml',
+    '/html' => 'rdfa',
+    '/xhtml' => 'rdfa',
+    '/rss+xml' => 'rss-tag-soup',
+    '/rss' => 'rss-tag-soup',
+    '' => 'guess'
+);
+
+$_map_output = array(
+    '/rdf+n3' => 'turtle',
+    '/n3' => 'turtle',
+    '/turtle' => 'turtle',
+    '/rdf+nt' => 'ntriples',
+    '/nt' => 'ntriples',
+    '/rdf+xml' => 'rdfxml-abbrev',
+    '/rdf' => 'rdfxml-abbrev',
+    '/json' => 'json',
+    '/atom+xml' => 'atom',
+    '/rss+xml' => 'rss-1.0',
+    '/rss' => 'rss-1.0',
+    '/dot' => 'dot'
+);
