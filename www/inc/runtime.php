@@ -22,9 +22,9 @@ define('REQUEST_URL', $URI);
 define('REQUEST_URI', $BASE.$URI);
 
 if (isset($_SERVER['CONTENT_TYPE']) && ($_SERVER['CONTENT_TYPE'] == 'application/json' || $_SERVER['CONTENT_TYPE'] == 'text/json')) {
-    if (!isPost()) {
+    if ($_SERVER['REQUEST_METHOD'] == 'GET') {
         header('HTTP/1.1 400 Bad Request');
-        echo '*/json requires POST';
+        echo '*/json requires HTTP method != GET';
         exit;
     }
     $_POST = json_decode(file_get_contents('php://input'), TRUE);
@@ -37,7 +37,8 @@ require_once('rdf.lib.php');
 require_once('app.lib.php');
 
 import_request_variables('gp', 'i_');
-extract($_POST, EXTR_PREFIX_ALL, 'p');
+if (is_array($_POST))
+    extract($_POST, EXTR_PREFIX_ALL, 'p');
 
 if (substr(REQUEST_URL, 0, 5) === '/json') {
     if (isset($g_callback)) {
@@ -70,9 +71,9 @@ asort($_accept_lst, SORT_NUMERIC);
 $_accept_lst = array_reverse($_accept_lst);
 
 // start negotiation: HTTP Content-Type
-$_content_type = isset($_SERVER['HTTP_CONTENT_TYPE']) ? $_SERVER['HTTP_CONTENT_TYPE'] : '';
-
-$_map_input = array(
+$_content_type = isset($_SERVER['CONTENT_TYPE']) ? $_SERVER['CONTENT_TYPE'] : '';
+$_input = '';
+foreach (array(
     '/rdf+n3' => 'turtle',
     '/n3' => 'turtle',
     '/turtle' => 'turtle',
@@ -84,20 +85,37 @@ $_map_input = array(
     '/xhtml' => 'rdfa',
     '/rss+xml' => 'rss-tag-soup',
     '/rss' => 'rss-tag-soup',
-    '' => 'guess'
-);
+) as $needle=>$input) {
+    if (strstr($_content_type, $needle) !== FALSE) {
+        $_input = $input;
+        break;
+    }
+}
 
-$_map_output = array(
-    '/rdf+n3' => 'turtle',
-    '/n3' => 'turtle',
-    '/turtle' => 'turtle',
-    '/rdf+nt' => 'ntriples',
-    '/nt' => 'ntriples',
-    '/rdf+xml' => 'rdfxml-abbrev',
-    '/rdf' => 'rdfxml-abbrev',
-    '/json' => 'json',
-    '/atom+xml' => 'atom',
-    '/rss+xml' => 'rss-1.0',
-    '/rss' => 'rss-1.0',
-    '/dot' => 'dot'
-);
+$_output = '';
+foreach (array_keys($_accept_lst) as $haystack) {
+    foreach (array(
+        '/rdf+n3' => 'turtle',
+        '/n3' => 'turtle',
+        '/turtle' => 'turtle',
+        '/rdf+nt' => 'ntriples',
+        '/nt' => 'ntriples',
+        '/rdf+xml' => 'rdfxml-abbrev',
+        '/rdf' => 'rdfxml-abbrev',
+        '/json' => 'json',
+        '/atom+xml' => 'atom',
+        '/rss+xml' => 'rss-1.0',
+        '/rss' => 'rss-1.0',
+        '/dot' => 'dot'
+    ) as $needle=>$output) {
+        if (strstr($haystack, $needle) !==FALSE) {
+            $_output = $output;
+            break;
+        }
+    }
+    if (!empty($_output)) break;
+}
+if (empty($_output))
+    $_output = 'turtle';
+
+// TODO: return 415 Unsupported Media Type
