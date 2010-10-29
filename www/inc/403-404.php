@@ -4,6 +4,7 @@
  *
  * $Id$
  */
+?>
 <p>The requested RDF cloud is inaccessible or does not exist.</p>
 <div>You might try using your WebID to:
 <ul>
