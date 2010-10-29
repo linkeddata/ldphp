@@ -1,4 +1,9 @@
 <?php
+/* create.php
+ * site creation controller
+ *
+ * $Id$
+ */
 $i_name = strtolower($i_name);
 $i_acl = strtolower($i_acl);
 

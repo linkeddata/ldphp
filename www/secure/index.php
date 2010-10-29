@@ -1,4 +1,10 @@
-<?php include_once('header.php'); ?>
+<?php
+/* index.php
+ * user index page
+ *
+ * $Id$
+ */
+include_once('header.php'); ?>
 
 <p style="float: right"><em><strong>Note:</strong>
 Some features of this service are incomplete.<br />
@@ -116,4 +122,6 @@ echo "<p>updated: $t <a href='/s?reset=knows'><img src='/assets/images/redo.gif'
 ?>
 </div>
 
-<?php include_once('footer.php'); ?>
+<?php
+TAG(__FILE__, __LINE__, '$Id$');
+include_once('footer.php');

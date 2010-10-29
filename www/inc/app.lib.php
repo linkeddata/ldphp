@@ -1,4 +1,9 @@
 <?php
+/* app.lib.php
+ * application API
+ *
+ * $Id$
+ */
 
 namespace sites {
     function is_valid($name) {

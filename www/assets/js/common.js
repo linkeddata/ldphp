@@ -1,3 +1,5 @@
+/* $Id$ */
+
 _status_update = function() {
     if (Ajax.activeRequestCount > 0) {
         $('status_loading').show();

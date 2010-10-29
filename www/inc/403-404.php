@@ -1,3 +1,9 @@
+<?php
+/* 403-404.php
+ * application HTTP 403/404 page
+ *
+ * $Id$
+ */
 <p>The requested RDF cloud is inaccessible or does not exist.</p>
 <div>You might try using your WebID to:
 <ul>
@@ -9,3 +15,5 @@ if (!isHTTPS()) {
 <?php } ?>
     <li><a href="//<?=BASE_DOMAIN?>">create this cloud</a> if it does not exist</li>
 </ul></div>
+<?php
+TAG(__FILE__, __LINE__, '$Id$');

@@ -1,4 +1,9 @@
 <?php
+/* s.php
+ * PHP session server controller, debugger
+ *
+ * $Id$
+ */
 if (isset($i_reset)) {
     sess($i_reset, null);
 }

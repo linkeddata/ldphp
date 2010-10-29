@@ -1,4 +1,10 @@
 <?php
+/* index.php
+ * service index page
+ *
+ * $Id$
+ */
+
 include_once('header.php');
 ?>
 <p>Specify RDF graph by HTTP Document URI; 404s are prepopulated with an empty RDF container.</p>
@@ -27,5 +33,6 @@ include_once('header.php');
 echo '<h3>RDF cloud metadata:</h3><pre>';
 print_r($d);
 echo '</pre>';
+
+TAG(__FILE__, __LINE__, '$Id$');
 include_once('footer.php');
-?>

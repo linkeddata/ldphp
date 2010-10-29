@@ -1,4 +1,9 @@
 <?php
+/* check.php
+ * site availability check
+ *
+ * $Id$
+ */
 $i_name = strtolower($i_name);
 
 $r = array(

@@ -1,4 +1,9 @@
 <?php
+/* header.php
+ * page header
+ *
+ * $Id$
+ */
 if (!isset($TITLE)) {
     //$TITLE = '<a href="http://data.rdf.me/">personal RDF cloud</a>';
     $TITLE = 'personal RDF cloud';
@@ -21,3 +26,5 @@ if (!isset($TITLE)) {
     </div>
     <strong><?=$_SERVER['SERVER_NAME']?></strong> | <?=$TITLE?>
 </h2>
+<?php
+TAG(__FILE__, __LINE__, '$Id$');

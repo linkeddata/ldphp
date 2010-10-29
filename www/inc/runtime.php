@@ -1,6 +1,11 @@
 <?php
+/* runtime.php
+ * application main runtime
+ *
+ * $Id$
+ */
 
-// base library
+// base dependencies
 require_once('util.lib.php');
 
 // base constants
@@ -21,18 +26,11 @@ define('REQUEST_BASE', $BASE);
 define('REQUEST_URL', $URI);
 define('REQUEST_URI', $BASE.$URI);
 
-if (isset($_SERVER['CONTENT_TYPE']) && ($_SERVER['CONTENT_TYPE'] == 'application/json' || $_SERVER['CONTENT_TYPE'] == 'text/json')) {
-    if ($_SERVER['REQUEST_METHOD'] == 'GET') {
-        header('HTTP/1.1 400 Bad Request');
-        echo '*/json requires HTTP method != GET';
-        exit;
-    }
-    $_POST = json_decode(file_get_contents('php://input'), TRUE);
-}
-
+// session startup
 session_set_cookie_params(157680000, '/', '.'.BASE_DOMAIN);
 session_start();
 
+// application dependencies
 require_once('rdf.lib.php');
 require_once('app.lib.php');
 
@@ -119,3 +117,5 @@ if (empty($_output))
     $_output = 'turtle';
 
 // TODO: return 415 Unsupported Media Type
+
+TAG(__FILE__, __LINE__, '$Id$');

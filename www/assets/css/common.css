@@ -1,3 +1,9 @@
+/* $Id$ */
+
+#id { float: left; }
+#stat { float: right; }
+address { color: #ddd; }
+
 input[type=submit], input[type=button] {
     border: 1px solid black;
     border-collapse: collapse;

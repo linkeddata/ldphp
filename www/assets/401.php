@@ -1,5 +1,12 @@
-<?php include_once('header.php'); ?>
-<div style="padding: 1em; border: 1px solid black; float: left; width: 400px">
+<?php
+/* 401.php
+ * application HTTP 401 page
+ *
+ * $Id$
+ */
+
+include_once('header.php'); ?>
+<div style="padding: 1em; border: 1px solid black; float: left; width: 400px; margin: 0 0 2em">
 <?php if (isset($_SERVER['REDIRECT_STATUS'])) { ?>
 <p><strong>You failed to login with a valid WebID:</strong></p>
 <?php } else { ?>
@@ -20,4 +27,6 @@
 <?php } ?>
 </div>
 <div style="clear:both"></div>
-<?php include_once('footer.php'); ?>
+<?php
+TAG(__FILE__, __LINE__, '$Id$');
+include_once('footer.php');

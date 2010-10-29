@@ -1,4 +1,9 @@
 <?php
+/* PUT.php
+ * service HTTP PUT controller
+ *
+ * $Id$
+ */
 
 $_filename = $_SERVER['REQUEST_FILENAME'];
 if (!strstr($_filename, '/')) {

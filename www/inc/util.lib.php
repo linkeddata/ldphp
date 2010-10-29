@@ -1,4 +1,9 @@
 <?php
+/* util.lib.php
+ * PHP utilities
+ *
+ * $Id$
+ */
 
 function isPost() { return ($_SERVER['REQUEST_METHOD'] == 'POST'); }
 function isPostData() {
@@ -63,3 +68,18 @@ function timings($query=null) {
   }
 }
 
+$TAGS = array(array(
+    'file' => __FILE__,
+    'line' => __LINE__,
+    'id' => null,
+    'time'=>microtime(true)
+));
+function TAG($file, $line, $id) {
+    global $TAGS;
+    $TAGS[] = array(
+        'file' => $file,
+        'line' => $line,
+        'id' => $id,
+        'time' => microtime(true)
+    );
+}

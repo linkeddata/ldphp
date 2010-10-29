@@ -1,4 +1,9 @@
 <?php
+/* rdf.lib.php
+ * RDF API
+ *
+ * $Id$
+ */
 
 namespace RDF {
     class Graph {
