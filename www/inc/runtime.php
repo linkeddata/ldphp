@@ -91,6 +91,7 @@ foreach (array(
 }
 
 $_output = '';
+$_output_type = null;
 foreach (array_keys($_accept_lst) as $haystack) {
     foreach (array(
         '/rdf+n3' => 'turtle',
@@ -108,14 +109,11 @@ foreach (array_keys($_accept_lst) as $haystack) {
     ) as $needle=>$output) {
         if (strstr($haystack, $needle) !==FALSE) {
             $_output = $output;
+            $_output_type = $haystack;
             break;
         }
     }
     if (!empty($_output)) break;
 }
-if (empty($_output))
-    $_output = 'turtle';
-
-// TODO: return 415 Unsupported Media Type
 
 TAG(__FILE__, __LINE__, '$Id$');
