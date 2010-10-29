@@ -4,8 +4,10 @@
  *
  * $Id$
  */
+
+defined('HEADER') || include_once('header.php');
 ?>
-<p>The requested RDF cloud is inaccessible or does not exist.</p>
+<p>The requested RDF cloud URI is inaccessible or does not exist.</p>
 <div>You might try using your WebID to:
 <ul>
 <?php
@@ -18,3 +20,4 @@ if (!isHTTPS()) {
 </ul></div>
 <?php
 TAG(__FILE__, __LINE__, '$Id$');
+defined('FOOTER') || include_once('footer.php');

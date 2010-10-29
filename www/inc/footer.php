@@ -5,6 +5,7 @@
  * $Id$
  */
 
+define('FOOTER', 1);
 TAG(__FILE__, __LINE__, '$Id$');
 $time = $TAGS[count($TAGS)-1]['time']-$TAGS[0]['time'];
 $caller = $TAGS[count($TAGS)-2];

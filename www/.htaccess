@@ -1,4 +1,6 @@
 ErrorDocument 401 /assets/401.php
+ErrorDocument 403 /assets/403.php
+ErrorDocument 404 /assets/404.php
 
 RewriteEngine On
 RewriteCond %{REQUEST_FILENAME}.php -f

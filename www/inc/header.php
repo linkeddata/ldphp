@@ -4,6 +4,8 @@
  *
  * $Id$
  */
+
+define('HEADER', 1);
 if (!isset($TITLE)) {
     //$TITLE = '<a href="http://data.rdf.me/">personal RDF cloud</a>';
     $TITLE = 'personal RDF cloud';
