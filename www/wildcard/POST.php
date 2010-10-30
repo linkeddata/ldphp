@@ -1,6 +1,6 @@
 <?php
-/* PUT.php
- * service HTTP PUT controller
+/* POST.php
+ * service HTTP POST controller
  *
  * $Id$
  */
@@ -30,6 +30,9 @@ if (!count($_domain_data) || !\sites\is_created_by($_domain, $_user)) {
 $_data = file_get_contents('php://input');
 
 $g = new \RDF\Graph('memory', '', '', $_base);
+if (file_exists($_filename)) {
+    $g->append('turtle', file_get_contents($_filename));
+}
 if (!empty($_input) && $g->append($_input, $_data)) {
     file_put_contents($_filename, (string)$g);
 } elseif ($g->append('turtle', $_data)) {

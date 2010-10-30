@@ -62,4 +62,6 @@ if (empty($_output)) {
 header("Content-Type: $_output_type");
 $g = new \RDF\Graph('memory', '', '', $_base);
 $g->append('turtle', file_get_contents($_filename));
+header('X-Triples: '.$g->size());
 echo $g->to_string($_output);
+exit;
