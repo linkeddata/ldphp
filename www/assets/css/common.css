@@ -2,7 +2,8 @@
 
 #id { float: left; }
 #stat { float: right; }
-address { color: #ddd; }
+address { color: gray; }
+hr { background-color: silver; }
 
 input[type=submit], input[type=button] {
     border: 1px solid black;

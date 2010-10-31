@@ -6,10 +6,6 @@
  */
 include_once('header.php'); ?>
 
-<p style="float: right"><em><strong>Note:</strong>
-Some features of this service are incomplete.<br />
-Thanks for your patience as we complete development!</em></p>
-
 <p>Hello, &lt;<?=$_SERVER['REMOTE_USER']?>&gt;. Welcome to your personal RDF cloud manager!</em></p>
 
 <div class="area-dashed">

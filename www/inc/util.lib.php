@@ -50,8 +50,7 @@ function timings($query=null) {
   if (!isset($timingc) || empty($timingc)) {
     $timingc = 1;
   } elseif (!is_null($query)) {
-    $current = $timingc;
-    $timingc = ++$current;
+    $timingc++;
   }
   $key = $timingc;
 

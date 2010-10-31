@@ -31,7 +31,7 @@ include_once('header.php');
 </ul>
 <?php
 echo '<h3>RDF cloud metadata:</h3><pre>';
-print_r($d);
+print_r($_domain_data);
 echo '</pre>';
 
 TAG(__FILE__, __LINE__, '$Id$');

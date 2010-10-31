@@ -52,6 +52,7 @@ namespace RDF {
             return librdf_model_load($this->_model, $uri, 'guess', null, null);
         }
         function SELECT($query, $base_uri=null) {
+            timings($query);
             if (is_null($base_uri)) $base_uri = $this->_base_uri;
             $q = librdf_new_query($this->_world, 'sparql', null, $query, $base_uri);
             $r = librdf_model_query_execute($this->_model, $q);
@@ -59,6 +60,7 @@ namespace RDF {
             $r = json_decode(librdf_query_results_to_string($r, $json_uri, $this->_base_uri), 1);
             librdf_free_query($q);
             librdf_free_uri($json_uri);
+            timings();
             return $r;
         }
         function SELECT_p_o($uri, $base_uri=null) {
@@ -76,6 +78,7 @@ namespace RDF {
         }
         function CONSTRUCT($query, $base_uri=null) {
             if (is_null($base_uri)) $base_uri = $this->_base_uri;
+            timings($query);
             $q = librdf_new_query($this->_world, 'sparql', null, $query, $base_uri);
             $r = librdf_model_query_execute($this->_model, $q);
             $r_stream = librdf_query_results_as_stream($r);
@@ -91,6 +94,7 @@ namespace RDF {
             librdf_free_model($r_model);
             librdf_free_storage($r_store);
             librdf_free_query($q);
+            timings();
             return $r;
         }
     }
