@@ -52,8 +52,7 @@ namespace RDF {
             return librdf_model_load($this->_model, $uri, 'guess', null, null);
         }
         function SELECT($query, $base_uri=null) {
-            if (is_null($base_uri))
-                $base_uri = $this->_base_uri;
+            if (is_null($base_uri)) $base_uri = $this->_base_uri;
             $q = librdf_new_query($this->_world, 'sparql', null, $query, $base_uri);
             $r = librdf_model_query_execute($this->_model, $q);
             $json_uri = librdf_new_uri($this->_world, 'http://www.w3.org/2001/sw/DataAccess/json-sparql/');
@@ -75,8 +74,26 @@ namespace RDF {
             }
             return $r;
         }
+        function CONSTRUCT($query, $base_uri=null) {
+            if (is_null($base_uri)) $base_uri = $this->_base_uri;
+            $q = librdf_new_query($this->_world, 'sparql', null, $query, $base_uri);
+            $r = librdf_model_query_execute($this->_model, $q);
+            $r_stream = librdf_query_results_as_stream($r);
+            $r_store = librdf_new_storage($this->_world, 'memory', '', null);
+            $r_model = librdf_new_model($this->_world, $r_store, null);
+            librdf_model_add_statements($r_model, $r_stream);
+            librdf_free_stream($r_stream);
+            $serializer = librdf_new_serializer($this->_world, 'json', null, null);
+            $r = librdf_serializer_serialize_model_to_string($serializer, null, $r_model);
+            librdf_free_serializer($serializer);
+            $r = json_decode($r, 1);
+            if (is_null($r)) $r = array();
+            librdf_free_model($r_model);
+            librdf_free_storage($r_store);
+            librdf_free_query($q);
+            return $r;
+        }
     }
-    $sites = new Graph('sqlite', '/home/rdf.me/sites.sqlite', '', 'http://rdf.me/ns/schema');
 }
 
 /*

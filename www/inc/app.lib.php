@@ -6,6 +6,7 @@
  */
 
 namespace sites {
+    $sites = new \RDF\Graph('sqlite', '/home/rdf.me/sites.sqlite', '', 'http://rdf.me/ns/schema');
     function is_valid($name) {
         return gettype($name) == 'string' and strlen($name) > 3;
     }
