@@ -6,6 +6,11 @@
  */
 
 include_once('wildcard.inc.php');
+if ($_SERVER['REQUEST_METHOD'] != 'GET') {
+    $TITLE = '501 Not Implemented';
+    header("HTTP/1.1 $TITLE");
+    exit;
+}
 
 // permissions
 // TODO: WACL
@@ -21,7 +26,7 @@ if (substr($_filename, -1) == '/') {
     exit;
 }
 
-if (empty($_output) && !file_exists($_filename)) {
+if (!file_exists($_filename)) {
     $parts = explode('.', $_filename);
     $n = count($parts);
     if ($n > 0) {
@@ -39,7 +44,7 @@ if (empty($_output) && !file_exists($_filename)) {
             $_output_type = 'application/rdf+xml';
         } elseif ($ext == 'nt') {
             $_output = 'ntriples';
-            $_output_type = 'application/rdf+nt';
+            $_output_type = 'text/plain';
         }
     }
 }
@@ -61,7 +66,9 @@ if (empty($_output)) {
 
 header("Content-Type: $_output_type");
 $g = new \RDF\Graph('memory', '', '', $_base);
-$g->append('turtle', file_get_contents($_filename));
+if (!empty($_filename)) {
+    $g->append('turtle', file_get_contents($_filename));
+}
 header('X-Triples: '.$g->size());
 echo $g->to_string($_output);
 exit;
