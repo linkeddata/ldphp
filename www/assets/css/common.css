@@ -1,6 +1,7 @@
 /* $Id$ */
 
 #id { float: left; }
+#id a { color: gray; text-decoration: none; }
 #stat { float: right; }
 address { color: gray; }
 hr { background-color: silver; }
