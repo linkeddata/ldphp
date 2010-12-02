@@ -4,4 +4,4 @@
  *
  * $Id$
  */
-header('Location: https://data.rdf.me/');
+header('Location: https://'.BASE_DOMAIN.'/');

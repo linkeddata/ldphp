@@ -9,7 +9,7 @@
 require_once('util.lib.php');
 
 // base constants
-define('BASE_DOMAIN', 'rdf.me');
+define('BASE_DOMAIN', 'data.fm');
 define('BASE_URI', 'http://'.BASE_DOMAIN);
 define('BASE_HTTP', BASE_URI.'/');
 define('X_AGENT', isset($_SERVER['X_AGENT']) ? $_SERVER['X_AGENT'] : 'Mozilla');
@@ -49,29 +49,25 @@ if (substr(REQUEST_URL, 0, 5) === '/json') {
 
 date_default_timezone_set('America/New_York');
 
-// start negotiation: HTTP Accept
+// negotiation: parse HTTP Accept
 $_accept = isset($_SERVER['HTTP_ACCEPT']) ? $_SERVER['HTTP_ACCEPT'] : '';
-$_accept_lst = array();
+$_accept_list = array();
+$_accept_data = array();
 foreach (explode(',', $_accept) as $elt) {
     $elt = explode(';', $elt);
     if (count($elt) == 1) {
-        $t = trim($elt[0]);
-        $q = 'q=1.0';
+        $_accept_list[] = trim($elt[0]);
     } elseif (count($elt) == 2) {
-        $t = trim($elt[0]);
-        $q = trim($elt[1]);
-    } else {
-        continue;
+        $_accept_data[trim($elt[0])] = (float)substr($elt[1], 2);
     }
-    $_accept_lst[$t] = (float)substr($q, 2);
 }
-asort($_accept_lst, SORT_NUMERIC);
-$_accept_lst = array_reverse($_accept_lst);
+asort($_accept_data, SORT_NUMERIC);
+$_accept_data = array_reverse($_accept_data);
+//header('X-Accept-List: '.str_replace("\n"," ",print_r($_accept_list,1)));
+//header('X-Accept-Data: '.str_replace("\n"," ",print_r($_accept_data,1)));
 
-// start negotiation: HTTP Content-Type
-$_content_type = isset($_SERVER['CONTENT_TYPE']) ? $_SERVER['CONTENT_TYPE'] : '';
-$_input = '';
-foreach (array(
+// negotiation: setup type maps
+$_content_type_map = array(
     '/rdf+n3' => 'turtle',
     '/n3' => 'turtle',
     '/turtle' => 'turtle',
@@ -83,7 +79,26 @@ foreach (array(
     '/xhtml' => 'rdfa',
     '/rss+xml' => 'rss-tag-soup',
     '/rss' => 'rss-tag-soup',
-) as $needle=>$input) {
+);
+$_accept_type_map = array(
+    '/rdf+n3' => 'turtle',
+    '/n3' => 'turtle',
+    '/turtle' => 'turtle',
+    '/rdf+nt' => 'ntriples',
+    '/nt' => 'ntriples',
+    '/rdf+xml' => 'rdfxml-abbrev',
+    '/rdf' => 'rdfxml-abbrev',
+    '/json' => 'json',
+    '/atom+xml' => 'atom',
+    '/rss+xml' => 'rss-1.0',
+    '/rss' => 'rss-1.0',
+    '/dot' => 'dot'
+);
+
+// negotiation: process HTTP Content-Type
+$_content_type = isset($_SERVER['CONTENT_TYPE']) ? $_SERVER['CONTENT_TYPE'] : '';
+$_input = '';
+foreach ($_content_type_map as $needle=>$input) {
     if (strstr($_content_type, $needle) !== FALSE) {
         $_input = $input;
         break;
@@ -92,21 +107,19 @@ foreach (array(
 
 $_output = '';
 $_output_type = null;
-foreach (array_keys($_accept_lst) as $haystack) {
-    foreach (array(
-        '/rdf+n3' => 'turtle',
-        '/n3' => 'turtle',
-        '/turtle' => 'turtle',
-        '/rdf+nt' => 'ntriples',
-        '/nt' => 'ntriples',
-        '/rdf+xml' => 'rdfxml-abbrev',
-        '/rdf' => 'rdfxml-abbrev',
-        '/json' => 'json',
-        '/atom+xml' => 'atom',
-        '/rss+xml' => 'rss-1.0',
-        '/rss' => 'rss-1.0',
-        '/dot' => 'dot'
-    ) as $needle=>$output) {
+foreach ($_accept_list as $haystack) {
+    foreach ($_accept_type_map as $needle=>$output) {
+        if (strstr($haystack, $needle) !==FALSE) {
+            $_output = $output;
+            $_output_type = $haystack;
+            break;
+        }
+    }
+    if (!empty($_output)) break;
+}
+if (empty($output))
+foreach (array_keys($_accept_data) as $haystack) {
+    foreach ($_accept_type_map as $needle=>$output) {
         if (strstr($haystack, $needle) !==FALSE) {
             $_output = $output;
             $_output_type = $haystack;
