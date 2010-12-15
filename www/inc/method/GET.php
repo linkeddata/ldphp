@@ -69,12 +69,21 @@ $g = new \RDF\Graph('memory', '', '', $_base);
 if (!empty($_filename)) {
     $g->append('turtle', file_get_contents($_filename));
 }
+
 header('X-Triples: '.$g->size());
-if (isset($i_query)) {
-    header("Content-Type: application/json");
-    echo $g->query($i_query);
+
+if (isset($i_callback)) {
+    header('Content-type: text/javascript');
+    echo "$i_callback(";
+    register_shutdown_function(function() { echo ');'; });
+} elseif (isset($i_query)) {
+    header('Content-type: application/json');
 } else {
     header("Content-Type: $_output_type");
+}
+
+if (isset($i_query)) {
+    echo $g->query($i_query);
+} else {
     echo $g->to_string($_output);
 }
-exit;
