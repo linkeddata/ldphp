@@ -51,17 +51,20 @@ namespace RDF {
         function load($uri) {
             return librdf_model_load($this->_model, $uri, 'guess', null, null);
         }
-        function SELECT($query, $base_uri=null) {
+        function query($query, $base_uri=null) {
             timings($query);
             if (is_null($base_uri)) $base_uri = $this->_base_uri;
             $q = librdf_new_query($this->_world, 'sparql', null, $query, $base_uri);
             $r = librdf_model_query_execute($this->_model, $q);
             $json_uri = librdf_new_uri($this->_world, 'http://www.w3.org/2001/sw/DataAccess/json-sparql/');
-            $r = json_decode(librdf_query_results_to_string($r, $json_uri, $this->_base_uri), 1);
+            $r = librdf_query_results_to_string($r, $json_uri, $this->_base_uri);
             librdf_free_query($q);
             librdf_free_uri($json_uri);
             timings();
             return $r;
+        }
+        function SELECT($query, $base_uri=null) {
+            return json_decode($this->query($query), 1);
         }
         function SELECT_p_o($uri, $base_uri=null) {
             $q = "SELECT * WHERE { <$uri> ?p ?o }";

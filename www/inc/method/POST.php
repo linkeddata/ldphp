@@ -6,6 +6,10 @@
  */
 
 include_once('wildcard.inc.php');
+if (isset($i_query)) {
+    include_once('method/GET.php');
+    exit;
+}
 
 // permissions
 // TODO: WACL

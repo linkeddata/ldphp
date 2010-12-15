@@ -6,7 +6,7 @@
  */
 
 include_once('wildcard.inc.php');
-if ($_SERVER['REQUEST_METHOD'] != 'GET') {
+if ($_SERVER['REQUEST_METHOD'] != 'GET' && !isset($i_query)) {
     $TITLE = '501 Not Implemented';
     header("HTTP/1.1 $TITLE");
     exit;
@@ -64,11 +64,16 @@ if (empty($_output)) {
     exit;
 }
 
-header("Content-Type: $_output_type");
 $g = new \RDF\Graph('memory', '', '', $_base);
 if (!empty($_filename)) {
     $g->append('turtle', file_get_contents($_filename));
 }
 header('X-Triples: '.$g->size());
-echo $g->to_string($_output);
+if (isset($i_query)) {
+    header("Content-Type: application/json");
+    echo $g->query($i_query);
+} else {
+    header("Content-Type: $_output_type");
+    echo $g->to_string($_output);
+}
 exit;

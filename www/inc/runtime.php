@@ -35,9 +35,6 @@ require_once('rdf.lib.php');
 require_once('app.lib.php');
 
 import_request_variables('gp', 'i_');
-if (is_array($_POST))
-    extract($_POST, EXTR_PREFIX_ALL, 'p');
-
 if (substr(REQUEST_URL, 0, 5) === '/json') {
     if (isset($g_callback)) {
         header('Content-type: text/javascript');
