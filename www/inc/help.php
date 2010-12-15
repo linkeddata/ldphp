@@ -7,7 +7,7 @@
 
 defined('HEADER') || include_once('header.php');
 ?>
-<p>This RDF cloud service supports <a href="http://www.w3.org/TR/sparql11-query/">SPARQL 1.1 Updates</a>. When issuing queries, SPARQL default-graph is specified by the HTTP document/request URI.</p>
+<p>This <a href="http://www.w3.org/DesignIssues/ReadWriteLinkedData.html">read-write</a> <a href="http://www.w3.org/DesignIssues/LinkedData.html">Linked Data</a> service accepts <a href="http://www.w3.org/TR/sparql11-query/">SPARQL 1.1 Updates</a>. When issuing queries, the SPARQL default-graph is specified by the HTTP document or request URI.</p>
 <p>In the identifers used below:</p>
 <dl><dt>*/type</dt><dd>refers to a media type 'type' specified in an HTTP header</dd>
 <dt>?k=v</dt><dd>refers to a query string parameter 'k' with value 'v': passed in URL via GET or application/x-www-form-urlencoded via POST</dd></dl>
