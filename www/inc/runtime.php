@@ -35,13 +35,12 @@ require_once('rdf.lib.php');
 require_once('app.lib.php');
 
 import_request_variables('gp', 'i_');
-if (substr(REQUEST_URL, 0, 5) === '/json') {
-    if (isset($g_callback)) {
-        header('Content-type: text/javascript');
-        echo "$g_callback(";
-    } else {
-        header('Content-type: application/json');
-    }
+if (isset($i_callback)) {
+    header('Content-type: text/javascript');
+    echo "$i_callback(";
+    register_shutdown_function(function() { echo ')'; });
+} else {
+    header('Content-type: application/json');
 }
 
 date_default_timezone_set('America/New_York');

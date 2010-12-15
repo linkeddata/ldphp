@@ -6,6 +6,7 @@
  */
 
 include_once('wildcard.inc.php');
+
 if ($_SERVER['REQUEST_METHOD'] != 'GET' && !isset($i_query)) {
     $TITLE = '501 Not Implemented';
     header("HTTP/1.1 $TITLE");

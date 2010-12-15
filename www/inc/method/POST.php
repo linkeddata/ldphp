@@ -6,6 +6,7 @@
  */
 
 include_once('wildcard.inc.php');
+
 if (isset($i_query)) {
     include_once('method/GET.php');
     exit;
@@ -43,4 +44,3 @@ if (!empty($_input) && $g->append($_input, $_data)) {
     file_put_contents($_filename, (string)$g);
 }
 header('X-Triples: '.$g->size());
-exit;
