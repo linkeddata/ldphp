@@ -5,7 +5,7 @@
  * $Id$
  */
 
-include_once('header.php');
+defined('HEADER') || include_once('header.php');
 ?>
 <hr />
 <h2>Index for <?=$_SERVER['REQUEST_URI']?></h2>
@@ -27,4 +27,4 @@ foreach($listing as $item) {
 </ul>
 <?php
 TAG(__FILE__, __LINE__, '$Id$');
-include_once('footer.php');
+defined('FOOTER') || include_once('footer.php');
