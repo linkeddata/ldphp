@@ -52,8 +52,6 @@ foreach (explode(',', $_accept) as $elt) {
 }
 asort($_accept_data, SORT_NUMERIC);
 $_accept_data = array_reverse($_accept_data);
-//header('X-Accept-List: '.str_replace("\n"," ",print_r($_accept_list,1)));
-//header('X-Accept-Data: '.str_replace("\n"," ",print_r($_accept_data,1)));
 
 // negotiation: setup type maps
 $_content_type_map = array(
