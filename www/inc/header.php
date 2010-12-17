@@ -22,7 +22,7 @@ if (!isset($TITLE)) {
 
 <h2>
     <div id="status" style="padding-right: 5px">
-        <img src="//<?=BASE_DOMAIN?>/assets/images/rdf_flyer.24.gif" id="status_complete" />
+        <a href="//<?=BASE_DOMAIN?>"><img src="//<?=BASE_DOMAIN?>/assets/images/rdf_flyer.24.gif" id="status_complete" /></a>
         <img src="//<?=BASE_DOMAIN?>/assets/images/load_bigroller.gif" style="display: none" id="status_loading" />
     </div>
     <strong><?=$_SERVER['SERVER_NAME']?></strong> | <?=$TITLE?>

@@ -7,9 +7,16 @@
 
 defined('HEADER') || include_once('header.php');
 ?>
-<hr />
-<h2>Index for <?=$_SERVER['REQUEST_URI']?></h2>
 <table>
+    <thead>
+    <tr>
+        <th>Index for <?=$_SERVER['REQUEST_URI']?></th>
+        <th>Formats</th>
+        <th>Last Modified</th>
+        <th>Creator</th>
+        <th>Access</th>
+    </tr>
+</thead>
 <?php
 $listing = scandir($_filename);
 if (count(explode('/', $_base)) <= 4) {
@@ -18,17 +25,27 @@ if (count(explode('/', $_base)) <= 4) {
     $listing = array_slice($listing, 1);
 }
 foreach($listing as $item) {
-    if (is_dir("$_filename/$item")) {
+    $is_dir = is_dir("$_filename/$item");
+    if ($is_dir) {
         $item = "$item/";
-        printf('<tr><td><a href="%s">%s</a></td><td>Directory</td></tr>', $item, $item);
+        printf('<tr><td><a href="%s">%s</a></td><td>Directory</td>', $item, $item);
     } else {
-        printf('<tr><td><a href="%s">%s</a></td><td>N3/Turtle', $item, $item);
-        //foreach (array('.json'=>'JSON','.nt'=>'NTriples','.n3'=>'N3/Turtle','.rdf'=>'RDF/XML','?query='.urlencode('SELECT * WHERE {?s ?p ?o}')=>'SPARQL') as $ext=>$label) {
-        foreach (array('.json'=>'JSON','.rdf'=>'RDF/XML','?query=SELECT+%2A+WHERE+%7B%3Fs+%3Fp+%3Fo%7D'=>'SPARQL') as $ext=>$label) {
+        printf('<tr><td><a href="%s">%s</a></td><td>Turtle (default)', $item, $item);
+        foreach (array(
+            '.json?callback=load'=>'JS',
+            '.json'=>'JSON',
+            '.rdf'=>'RDF/XML',
+            '?query=SELECT+%2A+WHERE+%7B%3Fs+%3Fp+%3Fo%7D'=>'SPARQL',
+            '?query=SELECT+%2A+WHERE+%7B%3Fs+%3Fp+%3Fo%7D&callback=load'=>'SPARQL/JS'
+        ) as $ext=>$label) {
             printf(', <a href="%s%s">%s</a>', $item, $ext, $label);
         }
-        echo '</td></tr>';
+        echo '</td>';
     }
+    echo '<td>'.strftime('%c %Z', filemtime("$_filename/$item")).'</td>';
+    echo '<td>'.$_domain_data['http://data.fm/ns/schema#creator'][0]['value'].'</td>';
+    echo '<td>'.substr(strstr($_domain_data['http://data.fm/ns/schema#acl'][0]['value'],'#'), 1).'</td>';
+    echo '</td></tr>';
 }
 ?>
 </table>
