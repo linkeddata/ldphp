@@ -10,4 +10,5 @@ $r = array(
     'domain' => "$i_name.".BASE_DOMAIN,
     'available' => sites\is_available($i_name)
 );
+header('Content-Type: application/json');
 echo json_encode($r);
