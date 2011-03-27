@@ -16,11 +16,9 @@ function sess($id,$val=NULL) {
     return (isSess($id)?$_SESSION[$id]:NULL);
   } elseif (is_null($val)) {
       unset($_SESSION[$id]);
-      unset($_SESSION["{$id}_TS"]);
   } else {
     $prev = sess($id);
     $_SESSION[$id] = $val;
-    $_SESSION["{$id}_TS"] = REQUEST_TIME;
     return $prev;
   }
 }

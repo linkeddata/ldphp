@@ -59,6 +59,7 @@ namespace knows {
             $r[$k] = \sites\created_by($k);
         }
         sess('knows', $r);
+        sess('knows_TS', REQUEST_TIME);
         return $r;
     }
 }
