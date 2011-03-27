@@ -1,5 +1,6 @@
 /* $Id$ */
 
+body { line-height: 1.25; }
 #id { float: left; }
 #id a { color: gray; text-decoration: none; }
 #stat { float: right; }
@@ -21,8 +22,8 @@ div.span-icon {
     width: 16px;
     vertical-align: middle;
 }
+#title { }
 #status {
-    height: 32px;
     width: 32px;
     float: left;
     text-align: center;

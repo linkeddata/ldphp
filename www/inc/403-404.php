@@ -7,7 +7,7 @@
 
 defined('HEADER') || include_once('header.php');
 ?>
-<p>The requested RDF cloud URI is inaccessible or does not exist.</p>
+<p>The requested URI is inaccessible or does not exist.</p>
 <div>You might try using your WebID to:
 <ul>
 <?php

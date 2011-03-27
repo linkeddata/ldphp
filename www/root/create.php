@@ -16,4 +16,4 @@ if (sites\is_available($i_name)) {
     $sites->append('turtle', $turtle);
 }
 
-header('Location: /');
+header('Location: /manage');
