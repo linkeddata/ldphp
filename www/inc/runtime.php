@@ -116,4 +116,9 @@ foreach (array_keys($_accept_data) as $haystack) {
     if (!empty($_output)) break;
 }
 
+foreach (array($_SERVER['REMOTE_USER'], sess('f:link'), null) as $_user) {
+    if (!is_null($_user) && strlen($_user))
+        break;
+}
+
 TAG(__FILE__, __LINE__, '$Id$');

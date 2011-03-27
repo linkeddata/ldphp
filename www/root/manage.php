@@ -6,7 +6,7 @@
  */
 include_once('header.php'); ?>
 
-<p>Hello, &lt;<?=$_SERVER['REMOTE_USER']?>&gt;. Welcome to your personal RDF cloud manager!</em></p>
+<p>Hello, &lt;<?=$_user?>&gt;. Welcome to your personal RDF cloud manager!</em></p>
 
 <div class="area-dashed">
 <h3>new store</h3>
@@ -78,7 +78,7 @@ $('create_name').focus();
 <div class="area-dashed">
 <h3>your stores</h3>
 <?php
-$d = sites\created_by($_SERVER['REMOTE_USER']);
+$d = sites\created_by($_user);
 if (!count($d)) {
     ?><p>None found.</p><?php
 } else {
@@ -92,7 +92,7 @@ if (!count($d)) {
 <div class="area-dashed">
 <h3>your foaf:knows' stores</h3>
 <?php
-$d = knows\get();
+$d = knows\get($_user);
 if (!count($d)) {
     ?><p>No foaf:knows were found in your WebID profile.<br /><sub>we're not following sameAs/seeAlso yet</sub></p><?php
 } else {
