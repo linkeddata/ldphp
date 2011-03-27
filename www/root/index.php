@@ -15,7 +15,7 @@ defined('HEADER') || include_once('header.php');
 </ul>
 <form action="login" method="post">
 <div style="float: right"><fb:login-button perms="email"></fb:login-button></div>
-<input type="submit" value="Login with WebID" />
+<input type="submit" value="WebID Login" />
 </form>
 </div>
 <div id="fb-root"></div>

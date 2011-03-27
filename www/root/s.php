@@ -15,8 +15,10 @@ if (!isset($i_debug)) {
 header('Content-type: text/plain');
 print_r($_SESSION);
 function request_k(&$item, $key) {
-    if (substr($key, 0, 7) == 'SCRIPT_') return;
+    if (substr($key, 0, 5) == 'HTTP_') return;
+    if (substr($key, 0, 7) == 'REMOTE_') return;
     if (substr($key, 0, 8) == 'REQUEST_') return;
+    if (substr($key, 0, 7) == 'SCRIPT_') return;
     $item = '';
 }
 array_walk($_SERVER, request_k);

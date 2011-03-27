@@ -4,6 +4,12 @@
  *
  * $Id$
  */
+
+if (!$_user) {
+    require_once('401.php');
+    exit;
+}
+
 include_once('header.php'); ?>
 
 <p>Hello, &lt;<?=$_user?>&gt;. Welcome to your personal RDF cloud manager!</em></p>
