@@ -22,7 +22,6 @@ div.span-icon {
     width: 16px;
     vertical-align: middle;
 }
-#title { }
 #status {
     width: 32px;
     float: left;
@@ -31,3 +30,5 @@ div.span-icon {
 #status img {
     vertical-align: middle;
 }
+#title { }
+#welcome { float: left; clear: left; }

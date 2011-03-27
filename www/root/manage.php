@@ -12,9 +12,9 @@ if (!$_user) {
 
 include_once('header.php'); ?>
 
-<p>Hello, &lt;<?=$_user?>&gt;. Welcome to your personal RDF cloud manager!</em></p>
+<div id="welcome"><p>Hello, &lt;<?=$_user?>&gt;. Welcome to your personal RDF cloud manager!</em></p></div>
 
-<div class="area-dashed">
+<div class="area-dashed" style="clear: left;">
 <h3>new store</h3>
 
 <form action="create" method="get" id="create">
@@ -44,42 +44,6 @@ include_once('header.php'); ?>
     <p style="text-align: right"><input id="create_submit" type="submit" value="create" disabled /></p>
 </form>
 </div>
-
-<script type="text/javascript">
-var create_name = '';
-function check() {
-    create_name = $F('create_name');
-    var parameters = $('create').serialize(true);
-    $('create').disable();
-    $('check_true').hide();
-    $('check_false').hide();
-    new Ajax.Request('json/sites/check', {
-        parameters: parameters,
-        onComplete: function(r) {
-            $('check_'+r.responseJSON.available).show();
-            $('create_name').enable();
-            $('create_check').enable();
-            if (r.responseJSON.available) {
-                $('create').enable();
-            }
-            $('create_name').focus();
-        }
-    });
-}
-$('create_name').observe('keyup', function(e) {
-    if (create_name != $F('create_name')) {
-        $('check_true').hide();
-        $('check_false').hide();
-    }
-});
-$('create_name').observe('change', check);
-$('create_check').observe('click', check);
-$('create').reset();
-$('create').disable();
-$('create_name').enable();
-$('create_check').enable();
-$('create_name').focus();
-</script>
 
 <div class="area-dashed">
 <h3>your stores</h3>
@@ -123,6 +87,8 @@ $t = strftime('%c %Z', sess('knows_TS'));
 echo "<p>updated: $t <a href='/s?reset=knows'><img src='/assets/images/redo.gif' /></a></p>";
 ?>
 </div>
+
+<script type="text/javascript" src="/assets/js/manage.js"></script>
 
 <?php
 TAG(__FILE__, __LINE__, '$Id$');
