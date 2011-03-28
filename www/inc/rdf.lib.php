@@ -51,6 +51,29 @@ namespace RDF {
         function load($uri) {
             return librdf_model_load($this->_model, $uri, 'guess', null, null);
         }
+        function _statement($statement) {
+            return array(
+                librdf_node_to_string(librdf_statement_get_subject($statement)),
+                librdf_node_to_string(librdf_statement_get_predicate($statement)),
+                librdf_node_to_string(librdf_statement_get_object($statement))
+            );
+        }
+        function any($s=null, $p=null, $o=null) {
+            $r = array();
+            if (!is_null($s)) $s = librdf_new_node_from_uri_string($this->_world, $s);
+            if (!is_null($p)) $p = librdf_new_node_from_uri_string($this->_world, $p);
+            $pattern = librdf_new_statement_from_nodes($this->_world, $s, $p, $o);
+            $stream = librdf_model_find_statements($this->_model, $pattern);
+            while (!librdf_stream_end($stream)) {
+                $elt = $this->_statement(librdf_stream_get_object($stream));
+                $r[] = $elt;
+                librdf_stream_next($stream);
+            }
+            librdf_free_stream($stream);
+            librdf_free_statement($pattern);
+            $s && librdf_free_node($s);
+            return $r;
+        }
         function query($query, $base_uri=null) {
             timings($query);
             if (is_null($base_uri)) $base_uri = $this->_base_uri;
