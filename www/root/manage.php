@@ -69,11 +69,11 @@ if (!count($d)) {
 </div>
 
 <div class="area-dashed">
-<h3>your foaf:knows' clouds</h3>
+<h3>your knowns' clouds</h3>
 <?php
 $d = profile\knows($_user);
 if (!count($d)) {
-    ?><p>No foaf:knows were found in your WebID profile.<br /><sub>we're not following sameAs/seeAlso yet</sub></p><?php
+    ?><p>No knowns (friends) were found in your profile.<br /><sub>we're not following sameAs/seeAlso yet</sub></p><?php
 } else {
     ?><p>You know <?=count($d)?> others.</p><?php
     $n_visible = 0;

@@ -8,7 +8,7 @@
 defined('HEADER') || include_once('header.php');
 ?>
 <div class="clear left error">The requested URI is inaccessible or does not exist.</div>
-<div class="clear left">You might try using your WebID to:
+<div class="clear left">
 <ul>
 <?php
 if (!isHTTPS()) {
