@@ -116,9 +116,15 @@ foreach (array_keys($_accept_data) as $haystack) {
     if (!empty($_output)) break;
 }
 
-foreach (array($_SERVER['REMOTE_USER'], sess('f:id'), null) as $_user) {
+$_user = '';
+foreach (array($_SERVER['REMOTE_USER'], sess('f:id')) as $_user) {
     if (!is_null($_user) && strlen($_user))
         break;
 }
+$_user_name = sess('f:name');
+if (!$_user_name && $_user) $_user_name = basename($_user);
+$_user_link = sess('f:link');
+if (!$_user_link) $_user_link = $_user;
+$_user_picture = sess('f:picture');
 
 TAG(__FILE__, __LINE__, '$Id$');

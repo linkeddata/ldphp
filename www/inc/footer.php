@@ -24,10 +24,10 @@ if (isset($timings)) {
 $src = explode('/', $_SERVER['SCRIPT_FILENAME']);
 $src = array_slice($src, array_search('www', $src));
 $src = implode('/', $src);
-$src = "http://dig.xvm.mit.edu/redmine/projects/rdf-me/repository/entry/trunk/$src";
+$src = "http://dig.xvm.mit.edu/redmine/projects/data-fm/repository/entry/trunk/$src";
 ?>
-<span id="id"><a href="<?=$src?>"><?=$caller['id']?></a></span>
-<span id="stat">generated in <?=substr($time, 0, 6)?>s
+<span id="codeID" style="display: none;"><a href="<?=$src?>"><?=$caller['id']?></a></span>
+<span id="codeTime" onclick="$('codeID').toggle();">generated in <?=substr($time, 0, 6)?>s
 <?=$sparql_n<1?'':sprintf('with %d SPARQL quer%s in %ss', $sparql_n, $sparql_n>1?'ies':'y', substr($sparql_t, 0, 6))?></span>
 </address>
 </body>

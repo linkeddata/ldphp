@@ -10,9 +10,8 @@ if (!$_user) {
     exit;
 }
 
-include_once('header.php'); ?>
-
-<div id="welcome"><p>Hello, &lt;<?=$_user?>&gt;. Welcome to your personal RDF cloud manager!</em></p></div>
+include_once('header.php');
+?>
 
 <div class="area-dashed" style="clear: left;">
 <h3>new store</h3>
@@ -53,6 +52,7 @@ if (!count($d)) {
     ?><p>None found.</p><?php
 } else {
     foreach ($d as $site) {
+        //$q = $sites->any($site);
         echo "<p><a href=\"$site\">$site</a></p>";
     }
 }
@@ -62,7 +62,7 @@ if (!count($d)) {
 <div class="area-dashed">
 <h3>your foaf:knows' stores</h3>
 <?php
-$d = knows\get($_user);
+$d = profile\knows($_user);
 if (!count($d)) {
     ?><p>No foaf:knows were found in your WebID profile.<br /><sub>we're not following sameAs/seeAlso yet</sub></p><?php
 } else {

@@ -1,9 +1,11 @@
 /* $Id$ */
 
 body { line-height: 1.25; }
-#id { float: left; }
-#id a { color: gray; text-decoration: none; }
-#stat { float: right; }
+a { text-decoration: none; }
+a:hover { text-decoration: underline; }
+#codeID { float: left; }
+#codeID a { color: gray; }
+#codeTime { float: right; }
 address { color: gray; }
 hr { background-color: silver; }
 
@@ -21,6 +23,12 @@ div.span-icon {
     height: 16px;
     width: 16px;
     vertical-align: middle;
+}
+#identity { float: right; }
+#login {
+    float: right; clear: right;
+    border: 1px solid black;
+    padding: 1em;
 }
 #status {
     width: 32px;

@@ -47,12 +47,12 @@ namespace sites {
         return $r;
     }
 }
-namespace knows {
-    function get($uri, $force=false) {
+namespace profile {
+    function knows($uri, $force=false) {
         $r = sess('knows');
         if (!$force && !is_null($r))
             return $r;
-        $user = new \RDF\Graph('uri', 'http://presbrey.mit.edu/foaf#presbrey');
+        $user = new \RDF\Graph('uri', $uri);
         $d = $user->SELECT("SELECT ?knows WHERE { <{$uri}> <http://xmlns.com/foaf/0.1/knows> ?knows }");
         $d = $d['results']['bindings'];
         $r = array();

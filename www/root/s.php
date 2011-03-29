@@ -8,7 +8,12 @@ if (isset($i_reset)) {
     sess($i_reset, null);
 }
 if (!isset($i_debug)) {
-    header('Location: /');
+    $r = isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '';
+    if (stristr($r, 'data.fm/')) {
+        header('Location: '.$r);
+    } else {
+        header('Location: /');
+    }
     exit;
 }
 
