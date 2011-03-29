@@ -51,11 +51,22 @@ namespace RDF {
         function load($uri) {
             return librdf_model_load($this->_model, $uri, 'guess', null, null);
         }
+        function _node($node) {
+            $r = array('value' => librdf_node_to_string($node));
+            if (librdf_node_is_resource($node)) {
+                $r['type'] = 'uri';
+                $r['value'] = substr($r['value'], 1, -1);
+            } elseif (librdf_node_is_literal($node)) {
+                $r['type'] == 'literal';
+            } elseif (librdf_node_is_blank($node)) {
+            }
+            return $r;
+        }
         function _statement($statement) {
             return array(
-                librdf_node_to_string(librdf_statement_get_subject($statement)),
-                librdf_node_to_string(librdf_statement_get_predicate($statement)),
-                librdf_node_to_string(librdf_statement_get_object($statement))
+                $this->_node(librdf_statement_get_subject($statement)),
+                $this->_node(librdf_statement_get_predicate($statement)),
+                $this->_node(librdf_statement_get_object($statement))
             );
         }
         function any($s=null, $p=null, $o=null) {
@@ -65,13 +76,30 @@ namespace RDF {
             $pattern = librdf_new_statement_from_nodes($this->_world, $s, $p, $o);
             $stream = librdf_model_find_statements($this->_model, $pattern);
             while (!librdf_stream_end($stream)) {
-                $elt = $this->_statement(librdf_stream_get_object($stream));
-                $r[] = $elt;
+                $r[] = $this->_statement(librdf_stream_get_object($stream));
                 librdf_stream_next($stream);
             }
             librdf_free_stream($stream);
             librdf_free_statement($pattern);
             $s && librdf_free_node($s);
+            $p && librdf_free_node($p);
+            return $r;
+        }
+        function remove_any($s=null, $p=null, $o=null) {
+            $r = 0;
+            if (!is_null($s)) $s = librdf_new_node_from_uri_string($this->_world, $s);
+            if (!is_null($p)) $p = librdf_new_node_from_uri_string($this->_world, $p);
+            $pattern = librdf_new_statement_from_nodes($this->_world, $s, $p, $o);
+            $stream = librdf_model_find_statements($this->_model, $pattern);
+            while (!librdf_stream_end($stream)) {
+                $elt = librdf_stream_get_object($stream);
+                $r += librdf_model_remove_statement($this->_model, $elt) ? 0 : 1;
+                librdf_stream_next($stream);
+            }
+            librdf_free_stream($stream);
+            librdf_free_statement($pattern);
+            $s && librdf_free_node($s);
+            $p && librdf_free_node($p);
             return $r;
         }
         function query($query, $base_uri=null) {
