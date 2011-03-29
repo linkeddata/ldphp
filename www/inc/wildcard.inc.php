@@ -6,7 +6,7 @@
  */
 
 $_domain = $_SERVER['SERVER_NAME'];
-$_domain_data = $sites->SELECT_p_o("http://$_domain/");
+$_domain_data = $sites->SELECT_p_o("dns:$_domain");
 $_filename = $_SERVER['REQUEST_FILENAME'];
 $_base = $_SERVER['SCRIPT_URI'];
 

@@ -17,29 +17,20 @@ include_once('header.php');
 <h3>new store</h3>
 
 <form action="create" method="get" id="create">
-    <p>1. choose a name:<br />
-    <sub>case-insensitive, &gt;3 characters</sub>
-    </p>
-
+    <p>1. choose a name: <sub class="right">at least 3 chars</sub></p>
     <div class="span-icon" style="float: left">
     <img src="/assets/images/check.gif" style="display: none" id="check_true" />
     <img src="/assets/images/cancel.gif" style="display: none" id="check_false" />
     </div>
-
-    <input name="name" type="text" id="create_name" class="span-3" style="text-align: right; float:left; margin: 0" />
+    <input name="name" type="text" id="create_name" class="span-3 left" style="text-align: right; margin: 0" />
     <p><label for="create_name">.<?=BASE_DOMAIN?></label></p>
-
     <p style="text-align: right"><input id="create_check" type="button" value="check" /></p>
-
-    <p>2. select who can see this:<br />
-    <sub>you can customize this more later</sub></p>
-
+    <p>2. default permissions:</p>
     <p>
         <input type="radio" name="acl" value="public" class="create_acl" id="acl_public" checked /><label for="acl_public">public</label>
         <input type="radio" name="acl" value="knows" class="create_acl" id="acl_knows" /><label for="acl_knows">foaf:knows</label>
         <input type="radio" name="acl" value="private" class="create_acl" id="acl_private" /><label for="acl_private">private</label>
     </p>
-
     <p style="text-align: right"><input id="create_submit" type="submit" value="create" disabled /></p>
 </form>
 </div>
@@ -52,8 +43,19 @@ if (!count($d)) {
     ?><p>None found.</p><?php
 } else {
     foreach ($d as $site) {
-        //$q = $sites->any($site);
-        echo "<p><a href=\"$site\">$site</a></p>";
+        $site = substr($site, 4);
+        $link = strtok(REQUEST_BASE, ':').'://'.$site;
+        echo "<a href=\"$link\">$site</a><a href=\"\"></a>";
+        echo '<img class="right" src="/assets/images/cancel.gif" onclick="cloud.remove(\'', $site,'\')">';
+        echo "<br />";
+        foreach($sites->any("dns:$site") as $elt) {
+            $p = basename($elt[1]['value']);
+            if ($p == 'schema#acl') {
+                $o = basename($elt[2]['value']);
+                echo '<dd>', $o, '</dd>';
+            }
+        }
+        echo '<br />';
     }
 }
 ?>

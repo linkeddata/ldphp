@@ -5,7 +5,7 @@ function check() {
     $('create').disable();
     $('check_true').hide();
     $('check_false').hide();
-    new Ajax.Request('json/sites/check', {
+    new Ajax.Request('/json/'+create_name, {
         parameters: parameters,
         onComplete: function(r) {
             $('check_'+r.responseJSON.available).show();

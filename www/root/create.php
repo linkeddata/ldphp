@@ -7,8 +7,8 @@
 $i_name = strtolower($i_name);
 $i_acl = strtolower($i_acl);
 
-$domain_uri = "http://$i_name.".BASE_DOMAIN.'/';
-$turtle = "<$domain_uri> <#creator> <$_user>; <#acl> <acl#$i_acl> .";
+$domain_uri = "dns:$i_name.".BASE_DOMAIN;
+$turtle = "<$domain_uri> <#owner> <$_user>; <#acl> <acl#$i_acl> .";
 
 //TODO: locking
 if (sites\is_available($i_name)) {

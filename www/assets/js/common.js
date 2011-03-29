@@ -24,6 +24,10 @@ newJS = function(url, callback){
 
 cloud = {};
 cloud.init = function(data) { var k; for (k in data) { this[k] = data[k]; } }
+cloud.refresh = function() { window.location.reload(); }
+cloud.remove = function(elt) {
+    new Ajax.Request(this.request_base+'/json/'+elt, { method: 'delete' });
+}
 cloud.updateStatus = function() {
     if (Ajax.activeRequestCount > 0) {
         $('statusLoading').show();

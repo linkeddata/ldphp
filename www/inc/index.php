@@ -43,7 +43,7 @@ foreach($listing as $item) {
         echo '</td>';
     }
     echo '<td>'.strftime('%c %Z', filemtime("$_filename/$item")).'</td>';
-    echo '<td>'.$_domain_data['http://data.fm/ns/schema#creator'][0]['value'].'</td>';
+    echo '<td>'.$_domain_data['http://data.fm/ns/schema#owner'][0]['value'].'</td>';
     echo '<td>'.substr(strstr($_domain_data['http://data.fm/ns/schema#acl'][0]['value'],'#'), 1).'</td>';
     echo '</td></tr>';
 }
