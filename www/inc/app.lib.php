@@ -24,7 +24,7 @@ namespace sites {
     }
     function is_public($domain) {
         global $sites;
-        $q = "SELECT ?o WHERE { <dns:$domain> <#acl> <acl#public> }";
+        $q = "SELECT ?o WHERE { <dns:$domain> <#aclRead> <acl#public> }";
         $q = $sites->SELECT($q);
         $q = $q['results']['bindings'];
         return count($q) > 0;

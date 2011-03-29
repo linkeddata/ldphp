@@ -14,7 +14,7 @@ defined('HEADER') || include_once('header.php');
         <th>Formats</th>
         <th>Last Modified</th>
         <th>Creator</th>
-        <th>Access</th>
+        <th>ACL (R/W)</th>
     </tr>
 </thead>
 <?php
@@ -44,7 +44,9 @@ foreach($listing as $item) {
     }
     echo '<td>'.strftime('%c %Z', filemtime("$_filename/$item")).'</td>';
     echo '<td>'.$_domain_data['http://data.fm/ns/schema#owner'][0]['value'].'</td>';
-    echo '<td>'.substr(strstr($_domain_data['http://data.fm/ns/schema#acl'][0]['value'],'#'), 1).'</td>';
+    echo '<td>'.substr(strstr($_domain_data['http://data.fm/ns/schema#aclRead'][0]['value'],'#'), 1);
+    echo '/'.substr(strstr($_domain_data['http://data.fm/ns/schema#aclWrite'][0]['value'],'#'), 1);
+    echo '</td>';
     echo '</td></tr>';
 }
 ?>

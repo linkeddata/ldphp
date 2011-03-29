@@ -7,32 +7,41 @@
 
 defined('HEADER') || include_once('header.php');
 ?>
-<p>This <a href="http://www.w3.org/DesignIssues/ReadWriteLinkedData.html">read-write</a> <a href="http://www.w3.org/DesignIssues/LinkedData.html">Linked Data</a> service accepts <a href="http://www.w3.org/TR/sparql11-query/">SPARQL 1.1 Updates</a>. When issuing queries, the SPARQL default-graph is specified by the HTTP document/request URI.</p>
-<p>In the identifers used below:</p>
-<dl><dt>*/type</dt><dd>refers to a media type 'type' specified in an HTTP header</dd>
-<dt>?k=v</dt><dd>refers to a query string parameter 'k' with value 'v': passed in URL via GET or application/x-www-form-urlencoded via POST</dd></dl>
-<p>Some query string options and response (HTTP Accept) media types are complementary.</p>
-<h3>HTTP methods supported:</h3>
+<div id="welcome"><strong><?=BASE_DOMAIN?></strong> is a <a target="_blank" href="http://www.w3.org/DesignIssues/ReadWriteLinkedData.html">Read/Write</a> <a target="_blank" href="http://www.w3.org/DesignIssues/LinkedData.html">Linked Data</a> service that provides free (and open-source) RDF-based hosting for personal use.<br />
+The service supports leading <a target="_blank" href="http://en.wikipedia.org/wiki/Semantic_Web">Semantic Web</a> technology standards, eg. <a target="_blank" href="http://www.w3.org/TR/sparql11-query/">SPARQL 1.1 Updates</a> and RDF content negotiation.</div>
+
+<div id="http-methods" class="left" style="clear: left; margin: 0.5em; padding: 0.5em; width: 350px;">
+<h4>HTTP methods supported:</h4>
 <ul>
 <li>GET: RDF, SPARQL (?query=), JSON (*/json), JSON-P (?callback=), RSS (*/rss+xml), Atom (*/atom+xml)</li>
 <li>POST: RDF, SPARQL 1.1 Update (*/sparql-query)</li>
 <li>PUT: RDF</li>
 <li>DELETE</li>
 </ul>
-<p>Specify desired request media types with a method-supported HTTP Content-Type and response types with a method-supported HTTP Accept header.</p>
-<h3>RDF media types supported:</h3>
+</div>
+<div id="media-types" class="left" style="margin: 0.5em; padding: 0.5em; width: 350px;">
+<h4>RDF media types supported:</h4>
 <ul>
 <li>N3: */rdf+n3, */n3, */turtle</li>
 <li>NTriples: */rdf+nt, */nt</li>
 <li>RDF/XML: */rdf+xml</li>
 <li>RDFa: */html, */xhtml</li>
 </ul>
-<?php
-/*
-echo '<h3>RDF cloud metadata:</h3><pre>';
-print_r($_domain_data);
-echo '</pre>';
-*/
+</div>
 
+<p class="clear">Specify the media type of your request data with a <code>Content-Type</code> HTTP header.<br />
+Specify your response type preference with an <code>Accept</code> HTTP header.</p>
+<p>All endpoints interpret the HTTP request URI as the base URI for RDF operations and the default-graph URI for SPARQL operations.</p>
+
+<div class="left info">
+<p>In the identifers used above:</p>
+<dl><dt>*/type</dt><dd>refers to a media type 'type' specified in an HTTP header</dd>
+<dt>?k=v</dt><dd>refers to a query string parameter 'k' with value 'v': passed in URL via GET or application/x-www-form-urlencoded via POST</dd></dl>
+<p>Some query string options and response (HTTP Accept) media types are complementary.</p>
+</div>
+
+<p class="clear left">This service has been designed with reliability in mind however, <?=BASE_DOMAIN?> should not be used to host critical applications that cannot tolerate downtime.</p>
+<p class="clear left">All uses of this service must comply with the <a target="_blank" href="http://ist.mit.edu/services/athena/olh/rules#mitnet">MITnet rules of use</a>.</p>
+<?php
 TAG(__FILE__, __LINE__, '$Id$');
 defined('FOOTER') || include_once('footer.php');

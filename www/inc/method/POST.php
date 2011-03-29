@@ -22,7 +22,7 @@ if (empty($_user)) {
     echo "$TITLE\n";
     exit;
 }
-if (!count($_domain_data) || !\sites\is_created_by($_domain, $_user)) {
+if (!count($_domain_data) || !\sites\is_owner($_domain, $_user)) {
     $TITLE = '403 Forbidden';
     header("HTTP/1.1 $TITLE");
     // TODO: if HTTP Accept */x?html

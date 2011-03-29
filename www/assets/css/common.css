@@ -25,11 +25,7 @@ div.span-icon {
     vertical-align: middle;
 }
 #identity { float: right; }
-#login {
-    float: right; clear: right;
-    border: 1px solid black;
-    padding: 1em;
-}
+#login { float: right; clear: right; }
 #status {
     width: 32px;
     float: left;
@@ -38,5 +34,5 @@ div.span-icon {
 #status img {
     vertical-align: middle;
 }
-#title { }
+#title { float: left; }
 #welcome { float: left; clear: left; }

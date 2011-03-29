@@ -14,10 +14,10 @@ include_once('header.php');
 ?>
 
 <div class="area-dashed" style="clear: left;">
-<h3>new store</h3>
-
+<h3>new cloud</h3>
+<?php $acls = array('public', 'known', 'private'); ?>
 <form action="create" method="get" id="create">
-    <p>1. choose a name: <sub class="right">at least 3 chars</sub></p>
+    <p>1. pick a name: <sub class="right">at least 4 chars</sub></p>
     <div class="span-icon" style="float: left">
     <img src="/assets/images/check.gif" style="display: none" id="check_true" />
     <img src="/assets/images/cancel.gif" style="display: none" id="check_false" />
@@ -25,18 +25,24 @@ include_once('header.php');
     <input name="name" type="text" id="create_name" class="span-3 left" style="text-align: right; margin: 0" />
     <p><label for="create_name">.<?=BASE_DOMAIN?></label></p>
     <p style="text-align: right"><input id="create_check" type="button" value="check" /></p>
-    <p>2. default permissions:</p>
+    <p>2. default read permissions:</p>
     <p>
-        <input type="radio" name="acl" value="public" class="create_acl" id="acl_public" checked /><label for="acl_public">public</label>
-        <input type="radio" name="acl" value="knows" class="create_acl" id="acl_knows" /><label for="acl_knows">foaf:knows</label>
-        <input type="radio" name="acl" value="private" class="create_acl" id="acl_private" /><label for="acl_private">private</label>
+    <?php $i = 0; foreach($acls as $acl) {?>
+        <input type="radio" name="aclRead" value="<?=$acl?>" class="create_acl" id="aclRead_<?=$acl?>" <?=$i==0?'checked ':''?>/><label for="aclRead_<?=$acl?>"><?=$acl?></label>
+    <?php $i++; } ?>
+    </p>
+    <p>3. default write permissions:</p>
+    <p>
+    <?php $i = 0; foreach($acls as $acl) { ?>
+        <input type="radio" name="aclWrite" value="<?=$acl?>" class="create_acl" id="aclWrite_<?=$acl?>" <?=$i==0?'checked ':''?>/><label for="aclWrite_<?=$acl?>"><?=$acl?></label>
+    <?php $i++; } ?>
     </p>
     <p style="text-align: right"><input id="create_submit" type="submit" value="create" disabled /></p>
 </form>
 </div>
 
-<div class="area-dashed">
-<h3>your stores</h3>
+<div class="area-dashed" style="min-width: 150px;">
+<h3>your clouds</h3>
 <?php
 $d = sites\created_by($_user);
 if (!count($d)) {
@@ -50,9 +56,10 @@ if (!count($d)) {
         echo "<br />";
         foreach($sites->any("dns:$site") as $elt) {
             $p = basename($elt[1]['value']);
-            if ($p == 'schema#acl') {
+            if (substr($p, 0, 10) == 'schema#acl') {
+                $p = substr($p, 7);
                 $o = basename($elt[2]['value']);
-                echo '<dd>', $o, '</dd>';
+                echo '<dd>', $p, ': ', $o, '</dd>';
             }
         }
         echo '<br />';
@@ -62,7 +69,7 @@ if (!count($d)) {
 </div>
 
 <div class="area-dashed">
-<h3>your foaf:knows' stores</h3>
+<h3>your foaf:knows' clouds</h3>
 <?php
 $d = profile\knows($_user);
 if (!count($d)) {
@@ -76,13 +83,15 @@ if (!count($d)) {
             echo "<div><a href='$known'>$known</a>";
             echo '<ul>';
             foreach ($stores as $store) {
-                echo "<li><a href='$store'>$store</a></li>";
+                $store = substr($store, 4);
+                $link = strtok(REQUEST_BASE, ':').'://'.$store;
+                echo "<li><a href=\"", $link, "\">$store</a></li>";
             }
             echo '</ul></div>';
         }
     }
     if ($n_visible < 1) {
-        echo "<p>None of their stores are visible to you.</p>";
+        echo "<p>None of their clouds are visible to you.</p>";
     }
 }
 $t = strftime('%c %Z', sess('knows_TS'));

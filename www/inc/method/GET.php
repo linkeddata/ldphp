@@ -15,7 +15,7 @@ if ($_SERVER['REQUEST_METHOD'] != 'GET' && !isset($i_query)) {
 
 // permissions
 // TODO: WACL
-if (!count($_domain_data) || (!\sites\is_public($_domain) && (empty($_user) || !\sites\is_created_by($_domain, $_user)))) {
+if (!count($_domain_data) || (!\sites\is_public($_domain) && (empty($_user) || !\sites\is_owner($_domain, $_user)))) {
     $TITLE = '403 Forbidden';
     header("HTTP/1.1 $TITLE");
     include_once('403-404.php');
