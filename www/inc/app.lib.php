@@ -8,7 +8,7 @@
 namespace sites {
     $sites = new \RDF\Graph('sqlite', '/home/data.fm/sites.sqlite', '', 'http://data.fm/ns/schema');
     function is_valid($name) {
-        $r = gettype($name) == 'string' and strlen($name) > 3;
+        $r = gettype($name) == 'string' && strlen($name) > 3;
         $r = $r && !in_array($name, array("1234","12345","123456","12345678","654321","admin","administrador","administrateur","administrator","asdf","asdfgh","audio","backlinks","beta","betas","blog","blogs","calendar","calendars","close","computer","computers","conn","contact","contacts","create","data","database","databases","default","delete","diary","edit","events","facebook","favorite","favorites","forum","forums","free","friend","friends","gallery","gates","google","guest","guests","guestbook","history","info","information","intro","invite","inviter","link","linked","linux","live","load","login","love","mail","manage","management","manager","mysql","open","oracle","owner","pass","passwd","password","passwords","photo","photos","post","posts","private","profile","profiles","public","qwer","read","remove","root","schedule","schema","secret","secrets","secure","server","servers","software","source","sources","standard","student","subscribe","sudo","support","sysop","teacher","temp","test","tests","update","updates","user","users","video","videos","view","views","webid","webids","weblog","webmaster","wiki","wikis","write","wwwadmin"));
         return $r;
     }
