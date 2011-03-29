@@ -5,6 +5,8 @@
  * $Id$
  */
 
+require_once('runtime.inc.php');
+
 $_domain = $_SERVER['SERVER_NAME'];
 $_domain_data = $sites->SELECT_p_o("dns:$_domain");
 $_filename = $_SERVER['REQUEST_FILENAME'];

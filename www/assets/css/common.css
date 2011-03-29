@@ -1,8 +1,7 @@
 /* $Id$ */
 
 body { line-height: 1.25; }
-a { text-decoration: none; }
-a:hover { text-decoration: underline; }
+a { text-decoration: underline; }
 #codeID { float: left; }
 #codeID a { color: gray; }
 #codeTime { float: right; }
@@ -25,6 +24,7 @@ div.span-icon {
     vertical-align: middle;
 }
 #identity { float: right; }
+#identity a { text-decoration: none; }
 #login { float: right; clear: right; }
 #status {
     width: 32px;
