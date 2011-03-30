@@ -20,9 +20,14 @@ if (!count($_domain_data) || (!\sites\is_public($_domain) && (empty($_user) || !
     exit;
 }
 
-if (substr($_filename, -1) == '/') {
-    include_once('index.php');
-    exit;
+if (is_dir($_filename)) {
+    if (substr($_filename, -1) == '/') {
+        include_once('index.php');
+        exit;
+    } else {
+        header("Location: $_request_url/");
+        exit;
+    }
 }
 
 if (!file_exists($_filename)) {

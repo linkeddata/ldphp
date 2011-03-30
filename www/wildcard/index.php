@@ -8,15 +8,16 @@
 defined('HEADER') || include_once('header.php');
 ?>
 <table>
-    <thead>
+<thead>
     <tr>
-        <th>Index for <?=$_SERVER['REQUEST_URI']?></th>
+        <th>Index for <?=$_request_url?></th>
         <th>Formats</th>
         <th>Last Modified</th>
         <th>Creator</th>
         <th>ACL (R/W)</th>
     </tr>
 </thead>
+<tbody>
 <?php
 $listing = scandir($_filename);
 if (count(explode('/', $_base)) <= 4) {
@@ -50,6 +51,16 @@ foreach($listing as $item) {
     echo '</td></tr>';
 }
 ?>
+</tbody>
+<tfoot>
+    <tr>
+        <td>
+            <input id="create-name" name="create[name]" type="text" value="" placeholder="Create new..." />
+            <input id="create-type-file" name="create[type]" type="button" value="File" onclick="cloud.append($F($(this.parentNode).down()));" />
+            <input id="create-type-directory" name="create[type]" type="button" value="Dir" onclick="cloud.mkdir($F($(this.parentNode).down()));" />
+        </td>
+    </tr>
+</tfoot>
 </table>
 <?php
 TAG(__FILE__, __LINE__, '$Id$');
