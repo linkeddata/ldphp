@@ -36,3 +36,5 @@ div.span-icon {
 }
 #title { float: left; }
 #welcome { float: left; clear: left; }
+
+#index td img { float: right; }

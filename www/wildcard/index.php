@@ -7,7 +7,7 @@
 
 defined('HEADER') || include_once('header.php');
 ?>
-<table>
+<table id="index">
 <thead>
     <tr>
         <th>Index for <?=$_request_url?></th>
@@ -31,7 +31,9 @@ foreach($listing as $item) {
         $item = "$item/";
         printf('<tr><td><a href="%s">%s</a></td><td>Directory</td>', $item, $item);
     } else {
-        printf('<tr><td><a href="%s">%s</a></td><td>Turtle (default)', $item, $item);
+        printf('<tr><td><a href="%s">%s</a>', $item, $item);
+        echo '<a href="javascript:cloud.rm(\''.$item.'\');"><img src="//'.BASE_DOMAIN.'/assets/images/cancel.gif" /></a></td>';
+        echo '<td>Turtle (default)';
         foreach (array(
             '.json?callback=load'=>'JS',
             '.json'=>'JSON',
