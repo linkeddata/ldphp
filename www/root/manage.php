@@ -17,27 +17,29 @@ include_once('header.php');
 <h3>new cloud</h3>
 <?php $acls = array('public', 'known', 'private'); ?>
 <form action="create" method="get" id="create">
-    <p>1. pick a name: <sub class="right">at least 4 chars</sub></p>
-    <div class="span-icon" style="float: left">
-    <img src="/assets/images/check.gif" style="display: none" id="check_true" />
-    <img src="/assets/images/cancel.gif" style="display: none" id="check_false" />
+    <div class="clear left append-bottom">1. pick a name: (at least 4 chars)</div>
+    <div>
+        <img class="left" src="/assets/images/check.gif" style="display: none" id="check_true" />
+        <img class="left" src="/assets/images/cancel.gif" style="display: none" id="check_false" />
+        <label class="right" for="create_name">.<?=BASE_DOMAIN?></label>
+        <input class="right span-3" name="name" type="text" id="create_name" style="text-align: right; margin: 0" />
     </div>
-    <input name="name" type="text" id="create_name" class="span-3 left" style="text-align: right; margin: 0" />
-    <p><label for="create_name">.<?=BASE_DOMAIN?></label></p>
-    <p style="text-align: right"><input id="create_check" type="button" value="check" /></p>
-    <p>2. default read permissions:</p>
-    <p>
+    <div class="clear right prepend-top">
+        <input id="create_check" type="button" value="check" />
+    </div>
+    <div class="clear left prepend-top">2. default read permissions:<br />
     <?php $i = 0; foreach($acls as $acl) {?>
         <input type="radio" name="aclRead" value="<?=$acl?>" class="create_acl" id="aclRead_<?=$acl?>" <?=$i==0?'checked ':''?>/><label for="aclRead_<?=$acl?>"><?=$acl?></label>
     <?php $i++; } ?>
-    </p>
-    <p>3. default write permissions:</p>
-    <p>
+    </div>
+    <div class="clear left prepend-top">3. default write permissions:<br />
     <?php $i = 0; foreach($acls as $acl) { ?>
         <input type="radio" name="aclWrite" value="<?=$acl?>" class="create_acl" id="aclWrite_<?=$acl?>" <?=$i==0?'checked ':''?>/><label for="aclWrite_<?=$acl?>"><?=$acl?></label>
     <?php $i++; } ?>
-    </p>
-    <p style="text-align: right"><input id="create_submit" type="submit" value="create" disabled /></p>
+    </div>
+    <div class="clear right prepend-top">
+        <input id="create_submit" type="submit" value="create" disabled />
+    </div>
 </form>
 </div>
 

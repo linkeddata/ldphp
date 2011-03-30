@@ -32,8 +32,9 @@ foreach($listing as $item) {
         printf('<tr><td><a href="%s">%s</a></td><td>Directory</td>', $item, $item);
     } else {
         printf('<tr><td><a href="%s">%s</a>', $item, $item);
-        echo '<a href="javascript:cloud.rm(\''.$item.'\');"><img src="//'.BASE_DOMAIN.'/assets/images/cancel.gif" /></a></td>';
-        echo '<td>Turtle (default)';
+        echo '<a href="javascript:cloud.rm(\''.$item.'\');"><img src="//'.BASE_DOMAIN.'/assets/images/cancel.gif" /></a>';
+        //echo '<a href="javascript:cloud.edit(\''.$item.'\');"><img src="//'.BASE_DOMAIN.'/assets/images/pencil.gif" /></a>';
+        echo '</td><td>Turtle (default)';
         foreach (array(
             '.json?callback=load'=>'JS',
             '.json'=>'JSON',

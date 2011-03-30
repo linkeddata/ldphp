@@ -2,18 +2,19 @@
 
 body { line-height: 1.25; }
 a { text-decoration: underline; }
+hr { background-color: silver; }
+
+input { border-radius: 3px; -moz-border-radius: 3px; -webkit-border-radius:3px; }
+div { border-radius: 10px; -moz-border-radius: 10px; -webkit-border-radius:10px; }
+
+address { color: gray; }
 #codeID { float: left; }
 #codeID a { color: gray; }
 #codeTime { float: right; }
-address { color: gray; }
-hr { background-color: silver; }
 
-input[type=submit], input[type=button] {
-    border: 1px solid black;
-    border-collapse: collapse;
-}
+input[type=submit], input[type=button] { border: 1px solid black; border-collapse: collapse; }
 div.area-dashed {
-    border: 1px dashed black;
+    border: 1px outset #999;
     margin: 1em;
     padding: 1em 1em 0 1em;
     float: left;
@@ -26,15 +27,10 @@ div.span-icon {
 #identity { float: right; }
 #identity a { text-decoration: none; }
 #login { float: right; clear: right; }
-#status {
-    width: 32px;
-    float: left;
-    text-align: center;
-}
-#status img {
-    vertical-align: middle;
-}
+#status { float: left; text-align: center; width: 32px; }
+#status img { vertical-align: middle; }
 #title { float: left; }
 #welcome { float: left; clear: left; }
 
-#index td img { float: right; }
+#index td a img { float: right; }
+
