@@ -1,7 +1,7 @@
 /* $Id$ */
 
 body { line-height: 1.25; }
-a { text-decoration: underline; }
+a { text-decoration: underline; vertical-align: top; }
 hr { background-color: silver; }
 
 input { border-radius: 3px; -moz-border-radius: 3px; -webkit-border-radius:3px; }
@@ -13,12 +13,6 @@ address { color: gray; }
 #codeTime { float: right; }
 
 input[type=submit], input[type=button] { border: 1px solid black; border-collapse: collapse; }
-div.area-dashed {
-    border: 1px outset #999;
-    margin: 1em;
-    padding: 1em 1em 0 1em;
-    float: left;
-}
 div.span-icon {
     height: 16px;
     width: 16px;
@@ -34,3 +28,6 @@ div.span-icon {
 
 #index td a img { float: right; }
 
+.box { border-style: outset; }
+.cleft { clear: left; }
+.cright { clear: right; }

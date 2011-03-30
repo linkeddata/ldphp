@@ -22,14 +22,15 @@ if (!isset($TITLE)) {
     </script>
 </head>
 <body style="padding: 2em">
-    <div id="identity"><h2><?php
-    if ($_user_picture) {
-        echo '<img src="', $_user_picture, '" height="25" /> ';
+    <div id="identity"><?php
+    if ($_user_link) {
+        if (stristr($_user, 's://graph.facebook.com/'))
+            echo '<div class="right"><img src="//', BASE_DOMAIN, '/assets/images/facebiblio.png" /><a href="//', BASE_DOMAIN, '/logout">logout</a></div>';
+        echo '<a target="_blank" href="', $_user_link, '">';
+        echo '<h2 class="right">', $_user_name, '</h2>';
+        echo '</a>';
     }
-    if ($_user_name) {
-        echo '<a target="_blank" href="', $_user_link, '">', $_user_name, '</a>';
-    }
-    ?></h2></div>
+    ?></div>
     <div id="status"><a href="//<?=BASE_DOMAIN?>">
         <img src="//<?=BASE_DOMAIN?>/assets/images/load_bigroller.gif" style="display: none" id="statusLoading" />
         <img src="//<?=BASE_DOMAIN?>/assets/images/rdf_flyer.24.gif" id="statusComplete" />

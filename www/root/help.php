@@ -7,8 +7,8 @@
 
 defined('HEADER') || include_once('header.php');
 ?>
-<div id="welcome"><strong><?=BASE_DOMAIN?></strong> is a <a target="_blank" href="http://www.w3.org/DesignIssues/ReadWriteLinkedData.html">Read/Write</a> <a target="_blank" href="http://www.w3.org/DesignIssues/LinkedData.html">Linked Data</a> service that provides free (and open-source) RDF-based hosting for personal use.<br />
-The service supports leading <a target="_blank" href="http://en.wikipedia.org/wiki/Semantic_Web">Semantic Web</a> technology standards, eg. <a target="_blank" href="http://www.w3.org/TR/sparql11-query/">SPARQL 1.1 Updates</a> and RDF content negotiation.</div>
+<div id="welcome"><strong>Welcome!</strong> This <a target="_blank" href="http://www.w3.org/DesignIssues/ReadWriteLinkedData.html">Read/Write</a> <a target="_blank" href="http://www.w3.org/DesignIssues/LinkedData.html">Linked Data</a> service is free (and open-source) for your educational and personal use.<br />
+<strong><?=BASE_DOMAIN?></strong> supports several <a target="_blank" href="http://en.wikipedia.org/wiki/Semantic_Web">Semantic Web</a> best practices such as <a target="_blank" href="http://www.w3.org/TR/sparql11-query/">SPARQL 1.1 Updates</a>, RDF content negotiation, <a target="_blank" href="http://enable-cors.org/">CORS</a>, and <a target="_blank" href="http://www.w3.org/wiki/WebID">WebID</a>.</div>
 
 <div id="http-methods" class="left" style="clear: left; margin: 0.5em; padding: 0.5em; width: 350px;">
 <h4>HTTP methods supported:</h4>
@@ -40,8 +40,9 @@ Specify your response type preference with an <code>Accept</code> HTTP header.</
 <p>Some query string options and response (HTTP Accept) media types are complementary.</p>
 </div>
 
-<p class="clear left">This service has been designed with reliability in mind however, <?=BASE_DOMAIN?> should not be used to host critical applications that cannot tolerate downtime.</p>
+<p class="clear left">Though designed with reliability in mind, <?=BASE_DOMAIN?> should not be used to host critical applications that cannot tolerate downtime.</p>
+<?php if (substr($_SERVER['SERVER_ADDR'], 0, 3) == '18.') { ?>
 <p class="clear left">All uses of this service must comply with the <a target="_blank" href="http://ist.mit.edu/services/athena/olh/rules#mitnet">MITnet rules of use</a>.</p>
-<?php
+<?php }
 TAG(__FILE__, __LINE__, '$Id$');
 defined('FOOTER') || include_once('footer.php');

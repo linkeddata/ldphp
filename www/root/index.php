@@ -8,7 +8,7 @@
 defined('HEADER') || include_once('header.php');
 ?>
 <div id="login" class="notice" align="center">
-    This service requires a<br /><a target="_blank" href="http://esw.w3.org/WebID">WebID</a> or Facebook Login:<br /><br />
+    This service requires a<br /><a target="_blank" href="http://www.w3.org/wiki/WebID">WebID</a> or Facebook Login:<br /><br />
     <a href="https://<?=BASE_DOMAIN?>/login"><img style="float: left" src="/assets/images/loginWebID.png" /></a>
     <div style="float: right;"><fb:login-button perms="email"></fb:login-button></div>
 </div>

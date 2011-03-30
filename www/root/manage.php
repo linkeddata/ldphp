@@ -13,7 +13,7 @@ if (!$_user) {
 include_once('header.php');
 ?>
 
-<div class="area-dashed" style="clear: left;">
+<div class="left cleft box colborder">
 <h3>new cloud</h3>
 <?php $acls = array('public', 'known', 'private'); ?>
 <form action="create" method="get" id="create">
@@ -37,13 +37,13 @@ include_once('header.php');
         <input type="radio" name="aclWrite" value="<?=$acl?>" class="create_acl" id="aclWrite_<?=$acl?>" <?=$i==0?'checked ':''?>/><label for="aclWrite_<?=$acl?>"><?=$acl?></label>
     <?php $i++; } ?>
     </div>
-    <div class="clear right prepend-top">
+    <div class="clear right prepend-top append-bottom">
         <input id="create_submit" type="submit" value="create" disabled />
     </div>
 </form>
 </div>
 
-<div class="area-dashed" style="min-width: 150px;">
+<div class="left box colborder" style="min-width: 150px;">
 <h3>your clouds</h3>
 <?php
 $d = sites\created_by($_user);
@@ -70,7 +70,7 @@ if (!count($d)) {
 ?>
 </div>
 
-<div class="area-dashed">
+<div class="left box colborder">
 <h3>your knowns' clouds</h3>
 <?php
 $d = profile\knows($_user);

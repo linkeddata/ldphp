@@ -17,9 +17,11 @@ if (isset($i_display) && $i_display == 'popup') {
                 sess('f:'.$k, $v);
             }
             sess('f:uid', $q['id']);
-            sess('f:id', 'https://graph.facebook.com/'.$q['id']);
+            $q['id'] = 'https://graph.facebook.com/'.$q['id'];
+            sess('f:id', $q['id']);
             sess('f:access_expires', $session['expires']);
             sess('f:access_token', $session['access_token']);
+            $sites->append('turtle', "<{$q['id']}> <http://xmlns.com/foaf/0.1/mbox> <mailto:{$q['email']}>.");
         }
     }
     header('Location: '.REQUEST_BASE.'/login');
