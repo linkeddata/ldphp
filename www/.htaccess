@@ -7,7 +7,7 @@ RewriteCond %{REQUEST_FILENAME}.php -f
 RewriteRule (.+) $1.php
 
 <IfModule mod_php5.c>
-    php_value include_path "/home/data.fm/www/inc:/usr/share/pear:/usr/share/php"
+    php_value include_path ".:/home/data.fm/www/inc:/usr/share/pear:/usr/share/php"
     php_value auto_prepend_file "runtime.php"
 </IfModule>
 

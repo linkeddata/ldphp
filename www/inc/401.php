@@ -7,12 +7,19 @@
 
 defined('HEADER') || include_once('header.php');
 ?>
-<div class="clear left error" style="width: 400px;">You must login to access this URL.</div>
+<div class="clear left error">
+You must login to access this URL
+</div>
 
-<div class="clear left notice" style="width: 400px;">
-If you have just installed a new WebID SSL certificate, you need to close all open browser windows and restart your browser before it will work.
+<div class="clear left notice">
+If you have just installed a new WebID SSL certificate,<br />
+please restart your browser to trigger its certificate UI
+</div>
+
+<div class="clear left info">
+We strongly recommend using recent <a target="_blank" href="http://getfirefox.org/">Firefox</a> (&gt;=3.5) with the <a target="_blank" href="http://tabulator.org/">Tabulator extension</a>
 <br /><br />
-We strongly recommend using the latest <a target="_blank" href="http://getfirefox.org/">Firefox</a> release with the <a target="_blank" href="http://tabulator.org/">Tabulator extension</a>. Safari is fine. Only the latest, developer builds of Chrome/Chromium are known to work.
+Shipping Safari/IE and developer Chrome builds are also known to work
 </div>
 
 <div style="clear:both"></div>
