@@ -33,8 +33,8 @@ foreach($listing as $item) {
     if ($is_dir)
         $item = "$item/";
     echo '<tr><td><a href="', $item, '">', $item, '</a>';
+    echo '<a href="javascript:cloud.rm(\''.$item.'\');"><img src="//'.BASE_DOMAIN.'/assets/images/cancel.gif" /></a>';
     if (!$is_dir) {
-        echo '<a href="javascript:cloud.rm(\''.$item.'\');"><img src="//'.BASE_DOMAIN.'/assets/images/cancel.gif" /></a>';
         //echo '<a href="javascript:cloud.edit(\''.$item.'\');"><img src="//'.BASE_DOMAIN.'/assets/images/pencil.gif" /></a>';
     }
     echo '</td><td>';

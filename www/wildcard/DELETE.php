@@ -25,7 +25,11 @@ if (!count($_domain_data) || !\sites\is_owner($_domain, $_user)) {
 }
 
 if (file_exists($_filename)) {
-    unlink($_filename);
+    if (is_dir($_filename)) {
+        rmdir($_filename);
+    } else {
+        unlink($_filename);
+    }
 } else {
     $TITLE = '404 Not Found';
     header("HTTP/1.1 $TITLE");
