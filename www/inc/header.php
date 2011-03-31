@@ -18,7 +18,7 @@ if (!isset($TITLE)) {
     <script src="//<?=BASE_DOMAIN?>/assets/js/prototype.js" type="text/javascript"></script>
     <script src="//<?=BASE_DOMAIN?>/assets/js/common.js" type="text/javascript"></script>
     <script type="text/javascript">
-    cloud.init({request_base:'<?=REQUEST_BASE?>',user:'<?=$_user?>'});
+    cloud.init({request_base:'<?=REQUEST_BASE?>',request_url:'<?=$_SERVER['SCRIPT_URL']?>',user:'<?=$_user?>'});
     </script>
 </head>
 <body style="padding: 2em">

@@ -70,27 +70,27 @@ newJS = function(url, callback){
 cloud = {};
 cloud.append = function(path, data) {
     data = data || ''
-    new HTTP(this.request_base+'/'+path, { method: 'post', body: data, onSuccess: function() {
+    new HTTP(this.request_url+path, { method: 'post', body: data, onSuccess: function() {
         window.location.reload();
     }});
 }
 cloud.get = function(path) {
-    new HTTP(this.request_base+'/'+path, { method: 'put', body: data, onSuccess: function() {
+    new HTTP(this.request_url+path, { method: 'put', body: data, onSuccess: function() {
         console.log(arguments);
     }});
 }
 cloud.mkdir = function(path) {
-    new HTTP(this.request_base+'/'+path, { method: 'mkcol', onSuccess: function() {
+    new HTTP(this.request_url+path, { method: 'mkcol', onSuccess: function() {
         window.location.reload();
     }});
 }
 cloud.put = function(path, data) {
-    new HTTP(this.request_base+'/'+path, { method: 'put', body: data, onSuccess: function() {
+    new HTTP(this.request_url+path, { method: 'put', body: data, onSuccess: function() {
         window.location.reload();
     }});
 }
 cloud.rm = function(path) {
-    new HTTP(this.request_base+'/'+path, { method: 'delete', onSuccess: function() {
+    new HTTP(this.request_url+path, { method: 'delete', onSuccess: function() {
         window.location.reload();
     }});
 }

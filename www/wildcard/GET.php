@@ -25,31 +25,26 @@ if (is_dir($_filename)) {
         include_once('index.php');
         exit;
     } else {
-        header("Location: $_request_url/");
+        header("Location: $_base/");
         exit;
     }
 }
 
-if (!file_exists($_filename)) {
-    $parts = explode('.', $_filename);
-    $n = count($parts);
-    if ($n > 0) {
-        $ext = $parts[$n-1];
-        $_filename = substr($_filename, 0, -strlen($ext)-1);
-        $_base = substr($_base, 0, -strlen($ext)-1);
-        if ($ext == 'turtle' || $ext == 'n3') {
-            $_output = 'turtle';
-            $_output_type = 'text/turtle';
-        } elseif ($ext == 'json') {
-            $_output = 'json';
-            $_output_type = 'application/json';
-        } elseif ($ext == 'rdf') {
-            $_output = 'rdfxml-abbrev';
-            $_output_type = 'application/rdf+xml';
-        } elseif ($ext == 'nt') {
-            $_output = 'ntriples';
-            $_output_type = 'text/plain';
-        }
+if (!file_exists($_filename) && in_array($_filename_ext, array('turtle','n3','json','rdf','nt'))) {
+    $_filename = substr($_filename, 0, -strlen($_filename_ext)-1);
+    $_base = substr($_base, 0, -strlen($_filename_ext)-1);
+    if ($_filename_ext == 'turtle' || $ext == 'n3') {
+        $_output = 'turtle';
+        $_output_type = 'text/turtle';
+    } elseif ($_filename_ext == 'json') {
+        $_output = 'json';
+        $_output_type = 'application/json';
+    } elseif ($_filename_ext == 'rdf') {
+        $_output = 'rdfxml-abbrev';
+        $_output_type = 'application/rdf+xml';
+    } elseif ($_filename_ext == 'nt') {
+        $_output = 'ntriples';
+        $_output_type = 'text/plain';
     }
 }
 
@@ -68,6 +63,16 @@ if (empty($_output)) {
     exit;
 }
 
+if ($_output == 'raw') {
+    if ($_filename) {
+        header("Content-Type: $_output_type");
+        readfile($_filename);
+    } else {
+        require_once('403-404.php');
+    }
+    exit;
+}
+
 $g = new \RDF\Graph('memory', '', '', $_base);
 if (!empty($_filename)) {
     $g->append('turtle', file_get_contents($_filename));
@@ -76,11 +81,11 @@ if (!empty($_filename)) {
 header('X-Triples: '.$g->size());
 
 if (isset($i_callback)) {
-    header('Content-type: text/javascript');
+    header('Content-Type: text/javascript');
     echo "$i_callback(";
     register_shutdown_function(function() { echo ');'; });
 } elseif (isset($i_query)) {
-    header('Content-type: application/json');
+    header('Content-Type: application/json');
 } else {
     header("Content-Type: $_output_type");
 }
