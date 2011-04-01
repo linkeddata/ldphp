@@ -116,9 +116,24 @@ cloud.updateStatus = function() {
         $('statusLoading').hide();
     }
 }
+cloud.alert = function(message) {
+    if (message) {
+        $('alertbody').update(message);
+        $('alert').show();
+    } else {
+        $('alert').hide();
+    }
+}
+
 Ajax.Responders.register({
     onCreate: cloud.updateStatus,
-    onComplete: cloud.updateStatus
+    onComplete: function(q, r, data) {
+        cloud.updateStatus();
+        try {
+            cloud.alert(data.status.toString()+' '+data.message);
+            window.setTimeout("cloud.alert()", 3000);
+        } catch (e) {}
+    },
 });
 
 cloud.facebookInit = function() {

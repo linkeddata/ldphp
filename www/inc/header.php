@@ -22,6 +22,9 @@ if (!isset($TITLE)) {
     </script>
 </head>
 <body style="padding: 2em">
+    <div id="alert" style="position: absolute; top: 0; left: 0; width: 100%; padding-top: 5px; text-align: center; display: none;">
+        <div id="alertbody" class="alert" style="display: inline;"></div>
+    </div>
     <div id="identity"><?php
     if ($_user_link) {
         if (stristr($_user, 's://graph.facebook.com/'))
