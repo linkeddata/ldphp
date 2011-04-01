@@ -46,18 +46,17 @@ foreach($listing as $item) {
         echo 'text/', $item_ext=='js'?'javascript':$item_ext;
     } else {
         echo 'text/turtle';
-        /*
-        echo 'Turtle (default)';
+        $i = 0;
         foreach (array(
-            '.json?callback=load'=>'JS',
+            //'.json?callback=load'=>'JS',
             '.json'=>'JSON',
             '.rdf'=>'RDF/XML',
             '?query=SELECT+%2A+WHERE+%7B%3Fs+%3Fp+%3Fo%7D'=>'SPARQL',
-            '?query=SELECT+%2A+WHERE+%7B%3Fs+%3Fp+%3Fo%7D&callback=load'=>'SPARQL/JS'
+            //'?query=SELECT+%2A+WHERE+%7B%3Fs+%3Fp+%3Fo%7D&callback=load'=>'SPARQL/JS'
         ) as $ext=>$label) {
-            printf(', <a href="%s%s">%s</a>', $item, $ext, $label);
+            echo $i++ ? ', ' : ': ';
+            printf('<a href="%s%s">%s</a>', $item, $ext, $label);
         }
-        */
     }
     echo '</td><td>'.strftime('%c %Z', filemtime("$_filename/$item")).'</td>';
     echo '<td>'.$_domain_data['http://data.fm/ns/schema#owner'][0]['value'].'</td>';

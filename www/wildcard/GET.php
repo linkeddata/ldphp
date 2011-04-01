@@ -5,20 +5,13 @@
  * $Id$
  */
 
-if ($_SERVER['REQUEST_METHOD'] != 'GET' && !isset($i_query)) {
-    $TITLE = '501 Not Implemented';
-    header("HTTP/1.1 $TITLE");
-    exit;
-}
+if ($_SERVER['REQUEST_METHOD'] != 'GET' && !isset($i_query))
+    httpStatusExit(501, 'Not Implemented');
 
 // permissions
 // TODO: WACL
-if (!count($_domain_data) || (!\sites\is_public($_domain) && (empty($_user) || !\sites\is_owner($_domain, $_user)))) {
-    $TITLE = '403 Forbidden';
-    header("HTTP/1.1 $TITLE");
-    include_once('403-404.php');
-    exit;
-}
+if (!count($_domain_data) || (!\sites\is_public($_domain) && (empty($_user) || !\sites\is_owner($_domain, $_user))))
+    httpStatusExit(501, 'Forbidden', '403-404.php');
 
 if (is_dir($_filename)) {
     if (substr($_filename, -1) == '/') {
@@ -48,28 +41,20 @@ if (!file_exists($_filename) && in_array($_filename_ext, array('turtle','n3','js
     }
 }
 
-if (!file_exists($_filename)) {
-    $TITLE = '404 Not Found';
-    header("HTTP/1.1 $TITLE");
-    $_filename = null;
-}
-
 if (empty($_output)) {
     $_output = 'turtle';
     $_output_type = 'text/turtle';
-} elseif (0 && empty($_output)) {
-    $TITLE = '415 Unsupported Media Type';
-    header("HTTP/1.1 $TITLE");
-    exit;
 }
 
-if ($_output == 'raw') {
-    if ($_filename) {
+if (!file_exists($_filename)) {
+    if ($_output && $_output != 'raw')
+        httpStatusExit(404, 'Not Found', 'empty.php');
+    else
+        httpStatusExit(404, 'Not Found', '403-404.php');
+} elseif ($_output == 'raw') {
+    if ($_output_type)
         header("Content-Type: $_output_type");
-        readfile($_filename);
-    } else {
-        require_once('403-404.php');
-    }
+    readfile($_filename);
     exit;
 }
 

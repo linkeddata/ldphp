@@ -7,7 +7,7 @@
 
 defined('HEADER') || include_once('header.php');
 ?>
-<div id="welcome"><strong>Welcome!</strong> This <a target="_blank" href="http://www.w3.org/DesignIssues/ReadWriteLinkedData.html">Read/Write</a> <a target="_blank" href="http://www.w3.org/DesignIssues/LinkedData.html">Linked Data</a> service is free (and open-source) for your educational and personal use.<br />
+<div id="welcome"><strong>Welcome!</strong> This <a target="_blank" href="http://www.w3.org/DesignIssues/ReadWriteLinkedData.html">Read/Write</a> <a target="_blank" href="http://www.w3.org/DesignIssues/LinkedData.html">Linked Data</a> service is free (and open-source) for educational and personal use.<br />
 <strong><?=BASE_DOMAIN?></strong> supports several <a target="_blank" href="http://en.wikipedia.org/wiki/Semantic_Web">Semantic Web</a> best practices such as <a target="_blank" href="http://www.w3.org/TR/sparql11-query/">SPARQL 1.1 Updates</a>, RDF content negotiation, <a target="_blank" href="http://enable-cors.org/">CORS</a>, and <a target="_blank" href="http://www.w3.org/wiki/WebID">WebID</a>.</div>
 
 <div id="http-methods" class="left" style="clear: left; margin: 0.5em; padding: 0.5em; width: 350px;">

@@ -1,6 +1,6 @@
 <?php
-/* wildcard.inc.php
- * site common includes
+/* runtime.php
+ * cloud common includes
  *
  * $Id$
  */

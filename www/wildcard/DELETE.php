@@ -7,31 +7,17 @@
 
 // permissions
 // TODO: WACL
-if (empty($_user)) {
-    $TITLE = '401 Unauthorized';
-    header("HTTP/1.1 $TITLE");
-    // TODO: if HTTP Accept */x?html
-    //include_once('401.php');
-    echo "$TITLE\n";
-    exit;
-}
-if (!count($_domain_data) || !\sites\is_owner($_domain, $_user)) {
-    $TITLE = '403 Forbidden';
-    header("HTTP/1.1 $TITLE");
-    // TODO: if HTTP Accept */x?html
-    //include_once('403-404.php');
-    echo "$TITLE\n";
-    exit;
-}
+if (empty($_user))
+    httpStatusExit(401, 'Unauthorized');
 
-if (file_exists($_filename)) {
-    if (is_dir($_filename)) {
-        rmdir($_filename);
-    } else {
-        unlink($_filename);
-    }
+if (!count($_domain_data) || !\sites\is_owner($_domain, $_user))
+    httpStatusExit(403, 'Forbidden');
+
+if (!file_exists($_filename))
+    httpStatusExit(404, 'Not Found');
+
+if (is_dir($_filename)) {
+    rmdir($_filename);
 } else {
-    $TITLE = '404 Not Found';
-    header("HTTP/1.1 $TITLE");
+    unlink($_filename);
 }
-exit;

@@ -65,6 +65,16 @@ function timings($query=null) {
   }
 }
 
+function httpStatusExit($status, $message, $require=null) {
+    $status = (string)$status;
+    header("HTTP/1.1 $status $message");
+    if ($require)
+        require_once($require);
+    else
+        echo "<h1>$status $message</h1>";
+    exit;
+}
+
 $TAGS = array(array(
     'file' => __FILE__,
     'line' => __LINE__,

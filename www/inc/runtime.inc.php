@@ -9,6 +9,9 @@
 require_once('util.lib.php');
 
 // base constants
+if (!isset($_ENV['CLOUD_NAME'])) $_ENV['CLOUD_NAME'] = 'data.fm';
+if (!isset($_ENV['CLOUD_HOME'])) $_ENV['CLOUD_HOME'] = '/srv/cloud';
+if (!isset($_ENV['CLOUD_DATA'])) $_ENV['CLOUD_DATA'] = '/srv/clouds';
 define('BASE_DOMAIN', $_ENV['CLOUD_NAME']);
 define('BASE_URI', 'http://'.BASE_DOMAIN);
 define('BASE_HTTP', BASE_URI.'/');
