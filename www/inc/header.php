@@ -7,7 +7,7 @@
 
 define('HEADER', 1);
 if (!isset($TITLE)) {
-    $TITLE = 'personal RDF cloud';
+    $TITLE = 'RDF cloud';
 }
 ?><!DOCTYPE html>
 <html>
