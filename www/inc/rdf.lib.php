@@ -121,6 +121,7 @@ namespace RDF {
             $q = "SELECT * WHERE { <$uri> ?p ?o }";
             $r = array();
             $d = $this->SELECT($q, $base_uri);
+            if (isset($d['results']) && isset($d['results']['bindings']))
             foreach($d['results']['bindings'] as $elt) {
                 $p = $elt['p']['value'];
                 if (!isset($r[$p])) {

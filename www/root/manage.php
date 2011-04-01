@@ -19,8 +19,8 @@ include_once('header.php');
 <form action="create" method="get" id="create">
     <div class="clear left append-bottom">1. pick a name: (at least 4 chars)</div>
     <div>
-        <img class="left" src="/assets/images/check.gif" style="display: none" id="check_true" />
-        <img class="left" src="/assets/images/cancel.gif" style="display: none" id="check_false" />
+        <img class="left" src="/common/images/check.gif" style="display: none" id="check_true" />
+        <img class="left" src="/common/images/cancel.gif" style="display: none" id="check_false" />
         <label class="right" for="create_name">.<?=BASE_DOMAIN?></label>
         <input class="right span-3" name="name" type="text" id="create_name" style="text-align: right; margin: 0" />
     </div>
@@ -54,7 +54,7 @@ if (!count($d)) {
         $site = substr($site, 4);
         $link = strtok(REQUEST_BASE, ':').'://'.$site;
         echo "<a href=\"$link\">$site</a><a href=\"\"></a>";
-        echo '<img class="right" src="/assets/images/cancel.gif" onclick="cloud.remove(\'', $site,'\')">';
+        echo '<img class="right" src="/common/images/cancel.gif" onclick="cloud.remove(\'', $site,'\')">';
         echo "<br />";
         foreach($sites->any("dns:$site") as $elt) {
             $p = basename($elt[1]['value']);
@@ -97,11 +97,11 @@ if (!count($d)) {
     }
 }
 $t = strftime('%c %Z', sess('knows_TS'));
-echo "<p>updated: $t <a href='/s?reset=knows'><img src='/assets/images/redo.gif' /></a></p>";
+echo "<p>updated: $t <a href='/s?reset=knows'><img src='/common/images/redo.gif' /></a></p>";
 ?>
 </div>
 
-<script type="text/javascript" src="/assets/js/manage.js"></script>
+<script type="text/javascript" src="/common/js/manage.js"></script>
 
 <?php
 TAG(__FILE__, __LINE__, '$Id$');

@@ -19,7 +19,9 @@ defined('HEADER') || include_once('header.php');
 </thead>
 <tbody>
 <?php
-$listing = scandir($_filename);
+$listing = array();
+if (is_dir($_filename))
+    $listing = scandir($_filename);
 if (count(explode('/', $_base)) <= 4) {
     $listing = array_slice($listing, 2);
 } else {
@@ -33,9 +35,9 @@ foreach($listing as $item) {
     if ($is_dir)
         $item = "$item/";
     echo '<tr><td><a href="', $item, '">', $item, '</a>';
-    echo '<a href="javascript:cloud.rm(\''.$item.'\');"><img src="//'.BASE_DOMAIN.'/assets/images/cancel.gif" /></a>';
+    echo '<a href="javascript:cloud.rm(\''.$item.'\');"><img src="//'.BASE_DOMAIN.'/common/images/cancel.gif" /></a>';
     if (!$is_dir) {
-        //echo '<a href="javascript:cloud.edit(\''.$item.'\');"><img src="//'.BASE_DOMAIN.'/assets/images/pencil.gif" /></a>';
+        //echo '<a href="javascript:cloud.edit(\''.$item.'\');"><img src="//'.BASE_DOMAIN.'/common/images/pencil.gif" /></a>';
     }
     echo '</td><td>';
     if ($is_dir) {

@@ -1,7 +1,3 @@
-ErrorDocument 401 /assets/401.php
-ErrorDocument 403 /assets/403.php
-ErrorDocument 404 /assets/404.php
-
 RewriteEngine On
 RewriteCond %{REQUEST_FILENAME}.php -f
 RewriteRule (.+) $1.php
@@ -15,7 +11,7 @@ RewriteRule (.+) $1.php
     AddHandler fcgid-script .php
     AddHandler fcgid-script .py
     DirectoryIndex index.php
-    FCGIWrapper "/usr/bin/php-cgi -c /home/data.fm/conf/" .php
+    FCGIWrapper "/usr/bin/php-cgi -c /srv/cloud/conf/" .php
     <Files *.php>
         Options +ExecCGI
     </Files>

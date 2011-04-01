@@ -9,7 +9,7 @@
 require_once('util.lib.php');
 
 // base constants
-define('BASE_DOMAIN', 'data.fm');
+define('BASE_DOMAIN', $_ENV['CLOUD_NAME']);
 define('BASE_URI', 'http://'.BASE_DOMAIN);
 define('BASE_HTTP', BASE_URI.'/');
 define('X_AGENT', isset($_SERVER['X_AGENT']) ? $_SERVER['X_AGENT'] : 'Mozilla');
