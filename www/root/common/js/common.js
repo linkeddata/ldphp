@@ -75,8 +75,12 @@ cloud.append = function(path, data) {
     }});
 }
 cloud.get = function(path) {
-    new HTTP(this.request_url+path, { method: 'put', body: data, onSuccess: function() {
-        console.log(arguments);
+    new HTTP(this.request_url+path, { method: 'get', onSuccess: function(r) {
+        $('editorpath').value = path;
+        $('editorpath').enable();
+        $('editorarea').value = r.responseText;
+        $('editorarea').enable();
+        $('editor').show();
     }});
 }
 cloud.mkdir = function(path) {
@@ -86,13 +90,25 @@ cloud.mkdir = function(path) {
 }
 cloud.put = function(path, data) {
     new HTTP(this.request_url+path, { method: 'put', body: data, onSuccess: function() {
-        window.location.reload();
+        //window.location.reload();
     }});
 }
 cloud.rm = function(path) {
     new HTTP(this.request_url+path, { method: 'delete', onSuccess: function() {
         window.location.reload();
     }});
+}
+cloud.edit = function(path) {
+    $('editorpath').value = '';
+    $('editorpath').disable();
+    $('editorarea').value = '';
+    $('editorarea').disable();
+    cloud.get(path);
+}
+cloud.save = function(elt) {
+    var path = $('editorpath').value;
+    var data = $('editorarea').value;
+    cloud.put(path, data);
 }
 
 cloud.init = function(data) {
@@ -116,12 +132,17 @@ cloud.updateStatus = function() {
         $('statusLoading').hide();
     }
 }
-cloud.alert = function(message) {
+cloud.alert = function(message, cls) {
     if (message) {
         $('alertbody').update(message);
+        if (cls)
+            $('alertbody').addClassName(cls);
         $('alert').show();
     } else {
         $('alert').hide();
+        $('alertbody').classNames().each(function(elt) {
+            $('alertbody').removeClassName(elt);
+        });
     }
 }
 
@@ -129,10 +150,26 @@ Ajax.Responders.register({
     onCreate: cloud.updateStatus,
     onComplete: function(q, r, data) {
         cloud.updateStatus();
+        var msg = '';
+        var cls = q.success() ? 'info' : 'error';
         try {
-            cloud.alert(data.status.toString()+' '+data.message);
-            window.setTimeout("cloud.alert()", 3000);
-        } catch (e) {}
+            msg += data.status.toString()+' '+data.message;
+        } catch (e) {
+            msg += r.status.toString()+' '+r.statusText;
+        }
+        var method = q.method.toUpperCase();
+        var triples = r.getHeader('X-Triples');
+        if (triples != null) {
+            msg = triples.toString()+' triple(s): '+msg;
+        } else {
+            if (method == 'GET') {
+                msg = r.responseText.length.toString()+' byte(s): '+msg;
+            } else {
+                msg = q.body.length.toString()+' byte(s): '+msg;
+            }
+        }
+        cloud.alert(method+' '+msg, cls);
+        window.setTimeout("cloud.alert()", 3000);
     },
 });
 

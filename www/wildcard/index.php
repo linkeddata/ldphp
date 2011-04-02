@@ -7,11 +7,16 @@
 
 defined('HEADER') || include_once('header.php');
 ?>
-<table id="index">
+<div id="editor" class="notice" style="position: absolute; top: 5%; left: 20%; display: none;">
+    <img class="clear right" src="//<?=BASE_DOMAIN?>/common/images/cancel.gif" onclick="$(this).up().hide()" />
+    <input class="cleft left" style="margin: 0;" type="text" id="editorpath" placeholder="loading..." />
+    <textarea class="clear left" id="editorarea" style="width: 50em; bottom: 2em" disabled="disabled"></textarea>
+    <input class="clear right" type="button" value="Save" onclick="cloud.save();" />
+</div>
+<table id="index" class="cleft left" style="width: auto; min-width: 50%;">
 <thead>
     <tr>
-        <th>Index for <?=$_request_url?></th>
-        <th></th>
+        <th colspan=4>Index for <?=$_request_url?></th>
         <th>Last Modified</th>
         <th>Creator</th>
         <th>ACL (R/W)</th>
@@ -34,11 +39,12 @@ foreach($listing as $item) {
     $item_ext = $item_ext ? substr($item, 1+$item_ext) : '';
     if ($is_dir)
         $item = "$item/";
-    echo '<tr><td><a href="', $item, '">', $item, '</a>';
-    echo '<a href="javascript:cloud.rm(\''.$item.'\');"><img src="//'.BASE_DOMAIN.'/common/images/cancel.gif" /></a>';
+    echo '<tr><td>';
     if (!$is_dir) {
-        //echo '<a href="javascript:cloud.edit(\''.$item.'\');"><img src="//'.BASE_DOMAIN.'/common/images/pencil.gif" /></a>';
+        echo '<a href="javascript:cloud.edit(\''.$item.'\');"><img src="//'.BASE_DOMAIN.'/common/images/pencil.gif" /></a> ';
     }
+    echo '</td><td>';
+    echo '<a href="', $item, '">', $item, '</a>';
     echo '</td><td>';
     if ($is_dir) {
         echo 'Directory';
@@ -58,6 +64,8 @@ foreach($listing as $item) {
             printf('<a href="%s%s">%s</a>', $item, $ext, $label);
         }
     }
+    echo '</td><td>';
+    echo '<a href="javascript:cloud.rm(\''.$item.'\');"><img src="//'.BASE_DOMAIN.'/common/images/cancel.gif" /></a>';
     echo '</td><td>'.strftime('%c %Z', filemtime("$_filename/$item")).'</td>';
     echo '<td>'.$_domain_data['http://data.fm/ns/schema#owner'][0]['value'].'</td>';
     echo '<td>'.substr(strstr($_domain_data['http://data.fm/ns/schema#aclRead'][0]['value'],'#'), 1);
@@ -69,7 +77,7 @@ foreach($listing as $item) {
 </tbody>
 <tfoot>
     <tr>
-        <td>
+        <td colspan=7>
             <input id="create-name" name="create[name]" type="text" value="" placeholder="Create new..." />
             <input id="create-type-file" name="create[type]" type="button" value="File" onclick="cloud.append($F($(this.parentNode).down()));" />
             <input id="create-type-directory" name="create[type]" type="button" value="Dir" onclick="cloud.mkdir($F($(this.parentNode).down()));" />
@@ -77,6 +85,13 @@ foreach($listing as $item) {
     </tr>
 </tfoot>
 </table>
+<script type="text/javascript">
+$(document).observe('keypress', function(e) {
+    if (e.keyCode == 27) { // ESC
+        $('editor').hide();
+    }
+});
+</script>
 <?php
 TAG(__FILE__, __LINE__, '$Id$');
 defined('FOOTER') || include_once('footer.php');

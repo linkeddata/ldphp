@@ -21,3 +21,6 @@ if (is_dir($_filename)) {
 } else {
     unlink($_filename);
 }
+
+if (file_exists($_filename))
+    httpStatusExit(409, 'Conflict');
