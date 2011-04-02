@@ -7,19 +7,20 @@
 
 require_once('runtime.inc.php');
 
+$_base = $_SERVER['SCRIPT_URI'];
 $_domain = $_SERVER['SERVER_NAME'];
 $_domain_data = $sites->SELECT_p_o("dns:$_domain");
 
-$_filename = $_SERVER['REQUEST_FILENAME'];
+#CRITICAL
+$_filebase = $_ENV['CLOUD_DATA'].'/'.$_SERVER['SERVER_NAME'];
+$_filename = $_SERVER['SCRIPT_URL'];
 $_filename_ext = strrpos($_filename, '.');
 $_filename_ext = $_filename_ext ? substr($_filename, 1+$_filename_ext) : '';
+if (!strlen($_filename) || $_filename[0] != '/')
+    $_filename = "/$_filename";
+if ($_filebase != substr($_filename, 0, strlen($_filebase)))
+    $_filename = "$_filebase$_filename";
 
-$_base = $_SERVER['SCRIPT_URI'];
-
-$_filebase = '/home/'.BASE_DOMAIN."/data/{$_SERVER['SERVER_NAME']}";
-if ($_filebase != substr($_filename, 0, strlen($_filebase))) {
-    $_filename = "$_filebase/$_filename";
-}
 $_request_url = substr($_filename, strlen($_filebase));
 
 header("X-User: $_user");

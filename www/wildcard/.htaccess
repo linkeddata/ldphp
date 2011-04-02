@@ -15,7 +15,7 @@ Header set "Pragma" "no-cache"
 
 RewriteEngine On
 #RewriteMap lowercase int:tolower
-RewriteRule ^/(.*)$ /srv/data/${lowercase:%{SERVER_NAME}}/$1
+#RewriteRule ^/(.*)$ /srv/clouds/${lowercase:%{SERVER_NAME}}/$1
 
 RewriteCond %{REQUEST_METHOD} =POST
 RewriteCond %{HTTP:Content-Type} =application/sparql-query
@@ -27,7 +27,7 @@ RewriteCond %{REQUEST_METHOD} =MKCOL [OR]
 RewriteCond %{REQUEST_METHOD} =POST [OR]
 RewriteCond %{REQUEST_METHOD} =PUT [OR]
 RewriteCond %{REQUEST_METHOD} =DELETE
-RewriteRule .* %{REQUEST_METHOD}.php [L,E=REQUEST_FILENAME:%{REQUEST_FILENAME}]
+RewriteRule ^(.*)$ %{REQUEST_METHOD}.php [L,E=REQUEST_FILENAME:%{REQUEST_FILENAME}]
 
 # drop all other Apache responses
 #RewriteRule .* - [L,R=501]
