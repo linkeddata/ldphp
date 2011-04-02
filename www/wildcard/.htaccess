@@ -13,6 +13,7 @@ Header set "Pragma" "no-cache"
 
 # rewrite
 
+RewriteEngine On
 #RewriteMap lowercase int:tolower
 RewriteRule ^/(.*)$ /srv/data/${lowercase:%{SERVER_NAME}}/$1
 

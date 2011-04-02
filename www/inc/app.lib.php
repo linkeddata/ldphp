@@ -17,31 +17,39 @@ namespace sites {
             return false;
         global $sites;
         $domain = "$name.".BASE_DOMAIN;
+        $r = false;
         $q = "SELECT ?o WHERE { <dns:$domain> <#owner> ?o }";
         $q = $sites->SELECT($q);
-        $q = $q['results']['bindings'];
-        return count($q) < 1;
+        if (isset($q['results']['bindings']))
+            $r = count($q['results']['bindings']) < 1;
+        return $r;
     }
     function is_public($domain) {
         global $sites;
+        $r = false;
         $q = "SELECT ?o WHERE { <dns:$domain> <#aclRead> <acl#public> }";
         $q = $sites->SELECT($q);
-        $q = $q['results']['bindings'];
-        return count($q) > 0;
+        if (isset($q['results']['bindings']))
+            $r = count($q['results']['bindings']) > 0;
+        return $r;
     }
     function is_owner($domain, $uri) {
         global $sites;
+        $r = false;
         $q = "SELECT ?o WHERE { <dns:$domain> <#owner> <$uri> }";
         $q = $sites->SELECT($q);
-        $q = $q['results']['bindings'];
-        return count($q) > 0;
+        if (isset($q['results']['bindings']))
+            $r = count($q['results']['bindings']) > 0;
+        return $r;
     }
     function created_by($uri) {
         global $sites;
-        $q = $sites->SELECT("SELECT ?site WHERE { ?site <#owner> <$uri> }");
         $r = array();
-        foreach ($q['results']['bindings'] as $row) {
-            $r[] = $row['site']['value'];
+        $q = $sites->SELECT("SELECT ?site WHERE { ?site <#owner> <$uri> }");
+        if (isset($q['results']['bindings'])) {
+            foreach ($q['results']['bindings'] as $row) {
+                $r[] = $row['site']['value'];
+            }
         }
         return $r;
     }
