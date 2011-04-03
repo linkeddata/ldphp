@@ -7,11 +7,13 @@
 
 // permissions
 // TODO: WACL
-if (empty($_user))
+$acl_public = \sites\is_public_write($_domain);
+if ($acl_public) {
+} elseif (empty($_user)) {
     httpStatusExit(401, 'Unauthorized');
-
-if (!count($_domain_data) || !\sites\is_owner($_domain, $_user))
+} elseif (!\sites\is_owner($_domain, $_user)) {
     httpStatusExit(403, 'Forbidden');
+}
 
 // action
 @mkdir($_filename);

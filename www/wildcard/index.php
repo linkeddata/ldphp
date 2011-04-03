@@ -18,7 +18,7 @@ defined('HEADER') || include_once('header.php');
     <tr>
         <th colspan=4>Index for <?=$_request_url?></th>
         <th>Last Modified</th>
-        <th>Creator</th>
+        <th>Owner</th>
         <th>ACL (R/W)</th>
     </tr>
 </thead>
@@ -70,7 +70,7 @@ foreach($listing as $item) {
         }
     }
     echo '</td><td>';
-    echo '<a href="javascript:cloud.rm(\''.$item.'\');"><img src="//'.BASE_DOMAIN.'/common/images/cancel.gif" /></a>';
+    echo '<a href="javascript:cloud.rm(\''.$item_elt.'\');"><img src="//'.BASE_DOMAIN.'/common/images/cancel.gif" /></a>';
     echo '</td><td>'.strftime('%c %Z', filemtime("$_filename/$item")).'</td>';
     echo '<td>'.$_domain_data['http://data.fm/ns/schema#owner'][0]['value'].'</td>';
     echo '<td>'.substr(strstr($_domain_data['http://data.fm/ns/schema#aclRead'][0]['value'],'#'), 1);

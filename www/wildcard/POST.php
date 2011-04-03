@@ -11,13 +11,16 @@ if (isset($i_query)) {
 }
 
 // permissions
-if (empty($_user))
-    httpStatusExit(401, 'Unauthorized');
-
 // TODO: WACL
-if (!count($_domain_data) || !\sites\is_owner($_domain, $_user))
+$acl_public = \sites\is_public_write($_domain);
+if ($acl_public) {
+} elseif (empty($_user)) {
+    httpStatusExit(401, 'Unauthorized');
+} elseif (!\sites\is_owner($_domain, $_user)) {
     httpStatusExit(403, 'Forbidden');
+}
 
+// action
 @mkdir(dirname($_filename));
 $_data = file_get_contents('php://input');
 
