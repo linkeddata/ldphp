@@ -45,6 +45,8 @@ if (in_array('OPTIONS', array($_SERVER['REQUEST_METHOD'], $_SERVER['REDIRECT_REQ
     exit;
 }
 
+require_once('input.php');
+require_once('output.php');
 if (in_array($_filename_ext, array('css', 'html', 'js'))) {
     $_input = 'raw';
     $_output = 'raw';

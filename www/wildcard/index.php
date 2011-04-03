@@ -37,14 +37,19 @@ foreach($listing as $item) {
     $is_dir = is_dir("$_filename/$item");
     $item_ext = strrpos($item, '.');
     $item_ext = $item_ext ? substr($item, 1+$item_ext) : '';
+    $item_elt = $item;
+    if (in_array($item_ext, array('sqlite')))
+        $item_elt = substr($item_elt, 0, -strlen($item_ext)-1);
     if ($is_dir)
-        $item = "$item/";
+        $item_elt = "$item_elt/";
     echo '<tr><td>';
     if (!$is_dir) {
-        echo '<a href="javascript:cloud.edit(\''.$item.'\');"><img src="//'.BASE_DOMAIN.'/common/images/pencil.gif" /></a> ';
+        echo '<a href="javascript:cloud.edit(\''.$item_elt.'\');"><img src="//'.BASE_DOMAIN.'/common/images/pencil.gif" /></a> ';
     }
     echo '</td><td>';
-    echo '<a href="', $item, '">', $item, '</a>';
+    echo '<a href="', $item_elt, '">', $item_elt, '</a>';
+    if ($item_ext == 'sqlite')
+        echo ' (sqlite)';
     echo '</td><td>';
     if ($is_dir) {
         echo 'Directory';
@@ -61,7 +66,7 @@ foreach($listing as $item) {
             //'?query=SELECT+%2A+WHERE+%7B%3Fs+%3Fp+%3Fo%7D&callback=load'=>'SPARQL/JS'
         ) as $ext=>$label) {
             echo $i++ ? ', ' : ': ';
-            printf('<a href="%s%s">%s</a>', $item, $ext, $label);
+            printf('<a href="%s%s">%s</a>', $item_elt, $ext, $label);
         }
     }
     echo '</td><td>';
