@@ -86,7 +86,7 @@ foreach($listing as $item) {
 </tfoot>
 </table>
 <script type="text/javascript">
-$(document).observe('keypress', function(e) {
+$(document).observe('keydown', function(e) {
     if (e.keyCode == 27) { // ESC
         $('editor').hide();
     }
