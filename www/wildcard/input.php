@@ -25,7 +25,7 @@ $_content_type_map = array(
 $_input = '';
 foreach ($_content_type_map as $needle=>$input) {
     if (strstr($_content_type, $needle) !== FALSE) {
-        $_input_type = $input;
+        $_input = $input;
         break;
     }
 }
