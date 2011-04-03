@@ -15,7 +15,7 @@ $turtle .= '.';
 
 //TODO: locking
 if (sites\is_available($i_name)) {
-    @mkdir('/home/'.BASE_DOMAIN."/data/$i_name.".BASE_DOMAIN);
+    @mkdir($_ENV['CLOUD_DATA']."/$i_name.".BASE_DOMAIN);
     $sites->append('turtle', $turtle);
 }
 

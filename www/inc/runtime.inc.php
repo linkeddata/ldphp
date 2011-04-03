@@ -124,6 +124,12 @@ foreach (array($_SERVER['REMOTE_USER'], sess('f:id')) as $_user) {
     if (!is_null($_user) && strlen($_user))
         break;
 }
+
+# email ID
+if (substr($_user, 0, 4) != 'http' && stristr($_user,'@'))
+    $_user = "mailto:$_user";
+
+# facebook ID
 $_user_name = sess('f:name');
 if (!$_user_name && $_user) $_user_name = basename($_user);
 $_user_link = sess('f:link');

@@ -9,7 +9,7 @@ namespace RDF {
     class Graph {
         private $_world, $_base_uri, $_storage, $_model;
         private $_f_writeBaseURI;
-        function __construct($storage, $name, $options='', $base='http://null/') {
+        function __construct($storage, $name, $options='', $base='null:/') {
             // instance state
             $this->_world = librdf_php_get_world();
             $this->_base_uri = librdf_new_uri($this->_world, $base);
@@ -42,7 +42,7 @@ namespace RDF {
             return librdf_model_size($this->_model);
         }
         function append($content_type, $content) {
-            //echo "parsing: $content_type ".strlen($content)."\n";
+            //echo "parsing $content_type: ".strlen($content)." bytes\n";
             $p = librdf_new_parser($this->_world, $content_type, null, null);
             $r = librdf_parser_parse_string_into_model($p, $content, $this->_base_uri, $this->_model);
             librdf_free_parser($p);
