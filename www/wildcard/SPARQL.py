@@ -42,7 +42,7 @@ class Server(WSGIServer):
 
     def _application(self, environ):
         self.devel = 'HTTP_X_DEVEL' in environ
-        abs_path = environ['REQUEST_FILENAME']
+        abs_path = '/srv/clouds/'+environ['SERVER_NAME']+environ['SCRIPT_URL']
         method = environ['REQUEST_METHOD'].upper()
 
         # parse Content-Type
