@@ -35,7 +35,7 @@ Specify your response type preference with an <code>Accept</code> HTTP header.</
 
 <div class="left info">
 <p>In the identifers used above:</p>
-<dl><dt>*/type</dt><dd>refers to a media type 'type' specified in an HTTP header</dd>
+<dl><dt>*/type</dt><dd>refers to a media type, typically specified in an HTTP header</dd>
 <dt>?k=v</dt><dd>refers to a query string parameter 'k' with value 'v': passed in URL via GET or application/x-www-form-urlencoded via POST</dd></dl>
 <p>Some query string options and response (HTTP Accept) media types are complementary.</p>
 </div>

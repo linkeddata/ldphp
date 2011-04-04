@@ -6,7 +6,7 @@
 
 # exception email sink
 import exception as _exception
-_exception.install('root@localhost')
+_exception.install('presbrey@csail.mit.edu')
 
 # assorted util
 def strtok(buf, tok):
