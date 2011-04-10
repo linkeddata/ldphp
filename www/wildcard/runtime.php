@@ -6,12 +6,14 @@
  */
 
 require_once('runtime.inc.php');
+header("X-User: $_user");
 
+// Cloud
 $_base = $_SERVER['SCRIPT_URI'];
 $_domain = $_SERVER['SERVER_NAME'];
 $_domain_data = $sites->SELECT_p_o("dns:$_domain");
 
-#CRITICAL
+// Graph
 $_filebase = $_ENV['CLOUD_DATA'].'/'.$_SERVER['SERVER_NAME'];
 $_filename = $_SERVER['SCRIPT_URL'];
 $_filename_ext = strrpos($_filename, '.');
@@ -23,13 +25,10 @@ if ($_filebase != substr($_filename, 0, strlen($_filebase)))
 
 $_request_url = substr($_filename, strlen($_filebase));
 
-header("X-User: $_user");
-
-// CORS
+// HTTP Access-Control
 if (!isHTTPS()) {
     header('Access-Control-Allow-Origin: *');
 } else {
-    header('Access-Control-Allow-Credentials: true');
     $_origin = isset($_SERVER['HTTP_ORIGIN']) ? $_SERVER['HTTP_ORIGIN'] : '';
     $t = explode('/', $_origin);
     if (count($t) > 2) {
@@ -40,6 +39,7 @@ if (!isHTTPS()) {
     header('Access-Control-Allow-Origin: '.$_origin);
 }
 
+// HTTP Methods
 $_method = '';
 foreach (array('REQUEST_METHOD', 'REDIRECT_REQUEST_METHOD') as $k) {
     if (isset($_SERVER[$k])) {
@@ -47,12 +47,12 @@ foreach (array('REQUEST_METHOD', 'REDIRECT_REQUEST_METHOD') as $k) {
         break;
     }
 }
-
 if ($_method == 'OPTIONS') {
     header('HTTP/1.1 200 OK');
     exit;
 }
 
+// HTTP Content Negotiation
 require_once('input.php');
 require_once('output.php');
 if (in_array($_filename_ext, array('css', 'html', 'js'))) {

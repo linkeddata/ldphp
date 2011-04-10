@@ -1,15 +1,16 @@
 # $Id$
 
-# headers: SPARQL
-Header set "MS-Author-Via" "SPARQL"
-
-# headers: CORS
+# headers: HTTP Access-Control
+Header set "Access-Control-Allow-Credentials" "true"
 Header set "Access-Control-Allow-Methods" "GET, POST, PUT, DELETE, OPTIONS"
 Header set "Access-Control-Allow-Headers" "X-Requested-With, Content-Type"
 
-# headers: Caching
-Header set "Cache-Control" "no-store, no-cache, must-revalidate, post-check=0, pre-check=0"
-Header set "Pragma" "no-cache"
+# headers: HTTP Caching
+#Header set "Cache-Control" "no-store, no-cache, must-revalidate, post-check=0, pre-check=0"
+#Header set "Pragma" "no-cache"
+
+# headers: SPARQL
+Header set "MS-Author-Via" "SPARQL"
 
 # rewrite
 
