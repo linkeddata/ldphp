@@ -52,14 +52,11 @@ if (empty($_output)) {
     $_output_type = 'text/turtle';
 }
 
-if (!file_exists($_filename)) {
-    if ($_output && $_output != 'raw')
-        httpStatusExit(404, 'Not Found', 'empty.php');
-    else
-        httpStatusExit(404, 'Not Found', '403-404.php');
-} elseif ($_output == 'raw') {
+if ($_output == 'raw') {
     if ($_output_type)
         header("Content-Type: $_output_type");
+    if (!file_exists($_filename))
+        httpStatusExit(404, 'Not Found', '403-404.php');
     if ($_method == 'GET')
         readfile($_filename);
     exit;
@@ -67,16 +64,26 @@ if (!file_exists($_filename)) {
 
 $g = new \RDF\Graph('memory', '', '', $_base);
 if (!empty($_filename)) {
-    $g->append('turtle', file_get_contents($_filename));
+    if (file_exists($_filename))
+        $g->append('turtle', file_get_contents($_filename));
+    else
+        header('HTTP/1.1 404 Not Found');
 }
 
 header('X-Triples: '.$g->size());
+if (isset($i_query))
+    header('X-Query: '.str_replace(array("\r","\n"), '', $i_query));
 
 if (isset($i_callback)) {
     header('Content-Type: text/javascript');
     if ($_method == 'GET') {
-        echo "$i_callback(";
-        register_shutdown_function(function() { echo ');'; });
+        if ($_output == 'json' || isset($i_query)) {
+            echo $i_callback, '(';
+            register_shutdown_function(function() { echo ');'; });
+        } else {
+            echo $i_callback, '("';
+            register_shutdown_function(function() { echo '");'; });
+        }
     }
 } elseif (isset($i_query)) {
     header('Content-Type: application/json');
