@@ -1,11 +1,11 @@
 <?php
 /* GET.php
- * service HTTP GET controller
+ * service HTTP HEAD/GET controller
  *
  * $Id$
  */
 
-if ($_SERVER['REQUEST_METHOD'] != 'GET' && !isset($i_query))
+if (!in_array($_method, array('GET', 'HEAD')) && !isset($i_query))
     httpStatusExit(501, 'Not Implemented');
 
 // permissions
@@ -54,7 +54,8 @@ if (!file_exists($_filename)) {
 } elseif ($_output == 'raw') {
     if ($_output_type)
         header("Content-Type: $_output_type");
-    readfile($_filename);
+    if ($_method == 'GET')
+        readfile($_filename);
     exit;
 }
 
@@ -67,16 +68,19 @@ header('X-Triples: '.$g->size());
 
 if (isset($i_callback)) {
     header('Content-Type: text/javascript');
-    echo "$i_callback(";
-    register_shutdown_function(function() { echo ');'; });
+    if ($_method == 'GET') {
+        echo "$i_callback(";
+        register_shutdown_function(function() { echo ');'; });
+    }
 } elseif (isset($i_query)) {
     header('Content-Type: application/json');
 } else {
     header("Content-Type: $_output_type");
 }
 
-if (isset($i_query)) {
-    echo $g->query($i_query);
-} else {
-    echo $g->to_string($_output);
-}
+if ($_method == 'GET')
+    if (isset($i_query)) {
+        echo $g->query($i_query);
+    } else {
+        echo $g->to_string($_output);
+    }

@@ -40,7 +40,15 @@ if (!isHTTPS()) {
     header('Access-Control-Allow-Origin: '.$_origin);
 }
 
-if (in_array('OPTIONS', array($_SERVER['REQUEST_METHOD'], $_SERVER['REDIRECT_REQUEST_METHOD']))) {
+$_method = '';
+foreach (array('REQUEST_METHOD', 'REDIRECT_REQUEST_METHOD') as $k) {
+    if (isset($_SERVER[$k])) {
+        $_method = strtoupper($_SERVER[$k]);
+        break;
+    }
+}
+
+if ($_method == 'OPTIONS') {
     header('HTTP/1.1 200 OK');
     exit;
 }
