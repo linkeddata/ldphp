@@ -17,6 +17,11 @@ RewriteEngine On
 #RewriteMap lowercase int:tolower
 #RewriteRule ^/(.*)$ /srv/clouds/${lowercase:%{SERVER_NAME}}/$1
 
+RewriteCond %{REQUEST_METHOD} =GET [OR]
+RewriteCond %{REQUEST_METHOD} =HEAD [OR]
+RewriteCond %{REQUEST_METHOD} =OPTIONS
+RewriteRule ^(.*)$ GET.php [L]
+
 RewriteCond %{REQUEST_METHOD} =POST
 RewriteCond %{HTTP:Content-Type} =application/sparql-query
 RewriteRule ^(.*)$ SPARQL.py [L]
@@ -26,11 +31,6 @@ RewriteCond %{REQUEST_METHOD} =POST [OR]
 RewriteCond %{REQUEST_METHOD} =PUT [OR]
 RewriteCond %{REQUEST_METHOD} =DELETE
 RewriteRule ^(.*)$ %{REQUEST_METHOD}.php [L]
-
-RewriteCond %{REQUEST_METHOD} =OPTIONS [OR]
-RewriteCond %{REQUEST_METHOD} =HEAD [OR]
-RewriteCond %{REQUEST_METHOD} =GET
-RewriteRule ^(.*)$ GET.php [L]
 
 # drop all other Apache responses
 #RewriteRule .* - [L,R=501]

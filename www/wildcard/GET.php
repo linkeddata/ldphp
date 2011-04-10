@@ -1,6 +1,6 @@
 <?php
 /* GET.php
- * service HTTP HEAD/GET controller
+ * service HTTP GET/HEAD controller
  *
  * $Id$
  */
@@ -10,8 +10,14 @@ if (!in_array($_method, array('GET', 'HEAD')) && !isset($i_query))
 
 // permissions
 // TODO: WACL
-if (!count($_domain_data) || (!\sites\is_public($_domain) && (empty($_user) || !\sites\is_owner($_domain, $_user))))
-    httpStatusExit(501, 'Forbidden', '403-404.php');
+if (!count($_domain_data))
+    httpStatusExit(404, 'Not Found', '403-404.php');
+if (!\sites\is_public($_domain)) {
+    if (empty($_user))
+        httpStatusExit(401, 'Unauthorized', '401.php');
+    elseif (!\sites\is_owner($_domain, $_user))
+        httpStatusExit(403, 'Forbidden', '403-404.php');
+}
 
 if (is_dir($_filename)) {
     if (substr($_filename, -1) == '/') {
