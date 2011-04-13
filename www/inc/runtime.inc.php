@@ -53,7 +53,12 @@ if (substr($_user, 0, 4) != 'http' && stristr($_user,'@'))
 
 # facebook ID
 $_user_name = sess('f:name');
-if (!$_user_name && $_user) $_user_name = basename($_user);
+if (!$_user_name && $_user) {
+    $_user_name = basename($_user);
+    $c = strpos($_user_name, ':');
+    if ($c > 0)
+        $_user_name = substr($_user_name, $c+1);
+}
 $_user_link = sess('f:link');
 if (!$_user_link) $_user_link = $_user;
 $_user_picture = sess('f:picture');
