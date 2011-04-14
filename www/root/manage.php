@@ -21,7 +21,7 @@ include_once('header.php');
     <div>
         <img class="left" src="/common/images/check.gif" style="display: none" id="check_true" />
         <img class="left" src="/common/images/cancel.gif" style="display: none" id="check_false" />
-        <label class="right" for="create_name">.<?=BASE_DOMAIN?></label>
+        <label class="right" for="create_name"><?=$_ENV['CLOUD_BASE']?></label>
         <input class="right span-3" name="name" type="text" id="create_name" style="text-align: right; margin: 0" />
     </div>
     <div class="clear right prepend-top">
