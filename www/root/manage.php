@@ -10,6 +10,7 @@ if (!$_user) {
     exit;
 }
 
+$TITLE = 'manage';
 include_once('header.php');
 ?>
 

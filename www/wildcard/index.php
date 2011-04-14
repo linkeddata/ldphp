@@ -5,6 +5,7 @@
  * $Id$
  */
 
+$TITLE = 'Index of '.$_request_url;
 defined('HEADER') || include_once('header.php');
 ?>
 <div id="editor" class="notice" style="position: absolute; top: 5%; left: 20%; display: none;">
@@ -16,7 +17,7 @@ defined('HEADER') || include_once('header.php');
 <table id="index" class="cleft left" style="width: auto; min-width: 50%;">
 <thead>
     <tr>
-        <th colspan=4>Index for <?=$_request_url?></th>
+        <th colspan=4>Name</th>
         <th>Last Modified</th>
         <th>Size</th>
         <th>Owner</th>
@@ -73,7 +74,7 @@ foreach($listing as $item) {
     echo '</td><td>';
     echo '<a href="javascript:cloud.rm(\''.$item_elt.'\');"><img src="//'.BASE_DOMAIN.'/common/images/cancel.gif" /></a>';
     echo '</td><td>'.strftime('%c %Z', filemtime("$_filename/$item")).'</td>';
-    echo '<td>'.filesize("$_filename/$item").'</td>';
+    echo '<td>'.(!$is_dir?filesize("$_filename/$item"):'').'</td>';
     echo '<td>'.$_domain_data['http://data.fm/ns/schema#owner'][0]['value'].'</td>';
     echo '<td>'.substr(strstr($_domain_data['http://data.fm/ns/schema#aclRead'][0]['value'],'#'), 1);
     echo '/'.substr(strstr($_domain_data['http://data.fm/ns/schema#aclWrite'][0]['value'],'#'), 1);

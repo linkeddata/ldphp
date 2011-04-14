@@ -28,7 +28,7 @@ $src = "http://dig.xvm.mit.edu/redmine/projects/data-fm/repository/entry/trunk/$
 ?>
 <span id="codeID" style="display: none;"><a href="<?=$src?>"><?=$caller['id']?></a></span>
 <span id="codeTime" onclick="$('codeID').toggle();">generated in <?=substr($time, 0, 6)?>s
-<?=$sparql_n<1?'':sprintf('with %d SPARQL quer%s in %ss', $sparql_n, $sparql_n>1?'ies':'y', substr($sparql_t, 0, 6))?></span>
+<?=$sparql_n<1?'':sprintf('with %d quer%s in %ss', $sparql_n, $sparql_n>1?'ies':'y', substr($sparql_t, 0, 6))?></span>
 </address>
 </body>
 </html>
