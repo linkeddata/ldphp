@@ -5,6 +5,11 @@
  * $Id$
  */
 
+if (basename($_filename) == 'favicon.ico') {
+    header('Location: http'.(isHTTPS()?'s':'').'://'.BASE_DOMAIN.'/favicon.ico');
+    exit;
+} 
+
 if (!in_array($_method, array('GET', 'HEAD')) && !isset($i_query))
     httpStatusExit(501, 'Not Implemented');
 
