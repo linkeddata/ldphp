@@ -18,14 +18,14 @@ include_once('header.php');
 <?php $acls = array('public', 'known', 'private'); ?>
 <form action="create" method="get" id="create">
     <div class="clear left append-bottom">1. pick a name: (at least 4 chars)</div>
-    <div>
+    <div class="left" style="clear: left; width: 2em">
         <img class="left" src="/common/images/check.gif" style="display: none" id="check_true" />
         <img class="left" src="/common/images/cancel.gif" style="display: none" id="check_false" />
+        &nbsp;
+    </div>
+    <div class="left">
         <label class="right" for="create_name"><?=$_ENV['CLOUD_BASE']?></label>
         <input class="right span-3" name="name" type="text" id="create_name" style="text-align: right; margin: 0" />
-    </div>
-    <div class="clear right prepend-top">
-        <input id="create_check" type="button" value="check" />
     </div>
     <div class="clear left prepend-top">2. default read permissions:<br />
     <?php $i = 0; foreach($acls as $acl) {?>
