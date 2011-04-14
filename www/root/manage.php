@@ -33,7 +33,7 @@ include_once('header.php');
     <?php $i++; } ?>
     </div>
     <div class="clear left prepend-top">3. default write permissions:<br />
-    <?php $i = 0; foreach($acls as $acl) { ?>
+    <?php $i = 0; foreach(array_reverse($acls) as $acl) { ?>
         <input type="radio" name="aclWrite" value="<?=$acl?>" class="create_acl" id="aclWrite_<?=$acl?>" <?=$i==0?'checked ':''?>/><label for="aclWrite_<?=$acl?>"><?=$acl?></label>
     <?php $i++; } ?>
     </div>
