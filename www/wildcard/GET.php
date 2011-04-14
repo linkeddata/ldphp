@@ -62,11 +62,11 @@ if ($_output == 'raw') {
     exit;
 }
 
-$g = new \RDF\Graph('memory', '', '', $_base);
+$g = new \RDF\Graph('', $_filename, '', $_base);
 if (!empty($_filename)) {
     if (file_exists($_filename))
         $g->append('turtle', file_get_contents($_filename));
-    else
+    elseif (!$g->exists())
         header('HTTP/1.1 404 Not Found');
 }
 

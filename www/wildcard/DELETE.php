@@ -13,13 +13,17 @@ if (empty($_user))
 if (!count($_domain_data) || !\sites\is_owner($_domain, $_user))
     httpStatusExit(403, 'Forbidden');
 
-if (!file_exists($_filename))
-    httpStatusExit(404, 'Not Found');
-
 if (is_dir($_filename)) {
     rmdir($_filename);
-} else {
+} elseif (file_exists($_filename)) {
     unlink($_filename);
+} else {
+    $g = new \RDF\Graph('', $_filename, '', '');
+    if ($g->exists()) {
+        $g->delete();
+    } else {
+        httpStatusExit(404, 'Not Found');
+    }
 }
 
 if (file_exists($_filename))

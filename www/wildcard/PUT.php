@@ -7,12 +7,15 @@
 
 // permissions
 // TODO: WACL
-if (empty($_user))
+$acl_public = \sites\is_public_write($_domain);
+if ($acl_public && !empty($_user)) {
+} elseif (empty($_user)) {
     httpStatusExit(401, 'Unauthorized');
-
-if (!count($_domain_data) || !\sites\is_owner($_domain, $_user))
+} elseif (!\sites\is_owner($_domain, $_user)) {
     httpStatusExit(403, 'Forbidden');
+}
 
+// action
 @mkdir(dirname($_filename));
 $_data = file_get_contents('php://input');
 
@@ -21,11 +24,12 @@ if ($_input == 'raw') {
     exit;
 }
 
-$g = new \RDF\Graph('memory', '', '', $_base);
+$g = new \RDF\Graph('', $_filename, '', $_base);
+$g->truncate();
 if (!empty($_input) && $g->append($_input, $_data)) {
-    file_put_contents($_filename, (string)$g);
+    $g->save();
 } elseif ($g->append('turtle', $_data)) {
-    file_put_contents($_filename, (string)$g);
+    $g->save();
 }
 
 header('X-Triples: '.$g->size());

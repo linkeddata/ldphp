@@ -7,22 +7,86 @@
 
 namespace RDF {
     class Graph {
-        private $_world, $_base_uri, $_storage, $_model;
+        private $_world, $_base_uri, $_store, $_model;
         private $_f_writeBaseURI;
+        private $_name, $_exists, $_storage;
         function __construct($storage, $name, $options='', $base='null:/') {
+            $ext = strrpos($name, '.');
+            $ext = $ext ? substr($name, 1+$ext) : '';
+            $this->_exists = false;
+            if (empty($storage) && !empty($name)) {
+                $storage = 'memory';
+                if (file_exists($name)) {
+                    $this->_exists = true;
+                    if ($ext == 'sqlite')
+                        $storage = 'sqlite';
+                } elseif (file_exists("$name.sqlite")) {
+                    $this->_exists = true;
+                    $name = "$name.sqlite";
+                    $ext = 'sqlite';
+                    $storage = 'sqlite';
+                } else {
+                    /*
+                    if ($ext != 'sqlite') {
+                        $name = "$name.sqlite";
+                        $storage = 'sqlite';
+                    }
+                    */
+                    if ($ext == 'sqlite') {
+                        $storage = 'sqlite';
+                        if (empty($options))
+                            $options = "new='yes'";
+                    }
+                }
+            }
+            $this->_name = $name;
+            if ($storage == 'memory')
+                $name = '';
+            $this->_storage = $storage;
+            /*
+            header('X-Filename: '.$this->_name);
+            header('X-Storage: '.$this->_storage);
+            header('X-Options: '.$options);
+            */
+
             // instance state
             $this->_world = librdf_php_get_world();
             $this->_base_uri = librdf_new_uri($this->_world, $base);
-            $this->_storage = librdf_new_storage($this->_world, $storage, $name, $options);
-            $this->_model = librdf_new_model($this->_world, $this->_storage, null);
-            // common
+            $this->_store = librdf_new_storage($this->_world, $this->_storage, $this->_name, $options);
+            $this->_model = librdf_new_model($this->_world, $this->_store, null);
+
+            // const objs
             $this->_f_writeBaseURI = librdf_new_uri($this->_world, 'http://feature.librdf.org/raptor-writeBaseURI');
             $this->_n_0 = librdf_new_node_from_literal($this->_world, 0, null, 0);
+
+            if ($storage == 'memory' && $this->exists())
+                $this->append('turtle', file_get_contents($this->_name));
+        }
+        function exists() { return $this->_exists; }
+        function save() {
+            if ($this->_storage == 'memory' && !empty($this->_name)) {
+                file_put_contents($this->_name, $this->__toString());
+            }
+            return librdf_model_sync($this->_model);
+        }
+        function truncate() {
+            if ($this->_storage == 'memory') {
+                librdf_free_model($this->_model);
+                librdf_free_storage($this->_store);
+                $this->_store = librdf_new_storage($this->_world, $this->_storage, '', '');
+                $this->_model = librdf_new_model($this->_world, $this->_store, null);
+            }
+        }
+        function delete() {
+            if ($this->exists()) {
+                unlink($this->_name);
+                $this->_exists = false;
+            }
         }
         function __destruct() {
             // instance state
             librdf_free_model($this->_model);
-            librdf_free_storage($this->_storage);
+            librdf_free_storage($this->_store);
             librdf_free_uri($this->_base_uri);
             // common
             librdf_free_uri($this->_f_writeBaseURI);

@@ -25,20 +25,15 @@ if ($acl_public) {
 $_data = file_get_contents('php://input');
 
 if ($_input == 'raw') {
-    $f = fopen($_filename, 'a');
-    fwrite($f, $_data);
-    fclose($f);
+    file_put_contents($_filename, $_data, FILE_APPEND | LOCK_EX);
     exit;
 }
 
-$g = new \RDF\Graph('memory', '', '', $_base);
-if (file_exists($_filename)) {
-    $g->append('turtle', file_get_contents($_filename));
-}
+$g = new \RDF\Graph('', $_filename, '', $_base);
 if (!empty($_input) && $g->append($_input, $_data)) {
-    file_put_contents($_filename, (string)$g);
+    $g->save();
 } elseif ($g->append('turtle', $_data)) {
-    file_put_contents($_filename, (string)$g);
+    $g->save();
 }
 
 header('X-Triples: '.$g->size());
