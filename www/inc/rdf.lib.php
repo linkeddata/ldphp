@@ -77,7 +77,8 @@ namespace RDF {
         function truncate() {
             librdf_free_model($this->_model);
             librdf_free_storage($this->_store);
-            $this->delete();
+            if ($this->_storage != 'memory')
+                $this->delete();
             $this->_store = librdf_new_storage(
                 $this->_world, $this->_storage,
                 $this->_storage == 'memory' ? '' : $this->_name,
