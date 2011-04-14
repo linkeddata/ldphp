@@ -14,6 +14,8 @@ namespace RDF {
             $ext = strrpos($name, '.');
             $ext = $ext ? substr($name, 1+$ext) : '';
             $this->_exists = false;
+
+            // auto-detect empty storage from name
             if (empty($storage) && !empty($name)) {
                 $storage = 'memory';
                 if (file_exists($name)) {
@@ -27,6 +29,7 @@ namespace RDF {
                     $storage = 'sqlite';
                 } else {
                     /*
+                    // auto-enable SQLite
                     if ($ext != 'sqlite') {
                         $name = "$name.sqlite";
                         $storage = 'sqlite';
@@ -44,9 +47,11 @@ namespace RDF {
                 $name = '';
             $this->_storage = $storage;
             /*
-            header('X-Filename: '.$this->_name);
-            header('X-Storage: '.$this->_storage);
-            header('X-Options: '.$options);
+            if (DEVEL) {
+                header('X-Filename: '.$this->_name);
+                header('X-Storage: '.$this->_storage);
+                header('X-Options: '.$options);
+            }
             */
 
             // instance state
@@ -70,12 +75,16 @@ namespace RDF {
             return librdf_model_sync($this->_model);
         }
         function truncate() {
-            if ($this->_storage == 'memory') {
-                librdf_free_model($this->_model);
-                librdf_free_storage($this->_store);
-                $this->_store = librdf_new_storage($this->_world, $this->_storage, '', '');
-                $this->_model = librdf_new_model($this->_world, $this->_store, null);
-            }
+            librdf_free_model($this->_model);
+            librdf_free_storage($this->_store);
+            $this->delete();
+            $this->_store = librdf_new_storage(
+                $this->_world, $this->_storage,
+                $this->_storage == 'memory' ? '' : $this->_name,
+                $this->_storage == 'sqlite' ? "new='yes'" : ''
+            );
+            $this->_model = librdf_new_model($this->_world, $this->_store, null);
+            $this->_exists = $this->_model ? true : false;
         }
         function delete() {
             if ($this->exists()) {
