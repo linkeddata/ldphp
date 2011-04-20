@@ -30,6 +30,11 @@ define('REQUEST_BASE', $BASE);
 define('REQUEST_URL', $URI);
 define('REQUEST_URI', $BASE.$URI);
 
+if (file_exists(dirname(__FILE__).'/config.inc.php')) {
+    require_once(dirname(__FILE__).'/config.inc.php');
+    if (!isset($_showCode)) $_showCode = true;
+}
+
 // session startup
 session_set_cookie_params(157680000, '/', $_ENV['CLOUD_BASE']);
 session_start();

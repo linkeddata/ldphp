@@ -17,6 +17,7 @@ if (isset($timings)) {
         $sparql_t += $t['time'];
     }
 }
+if ($_showCode) {
 ?>
 <hr style="margin-bottom: 0;" />
 <address>
@@ -30,5 +31,6 @@ $src = "http://dig.xvm.mit.edu/redmine/projects/data-fm/repository/entry/trunk/$
 <span id="codeTime" onclick="$('codeID').toggle();">generated in <?=substr($time, 0, 6)?>s
 <?=$sparql_n<1?'':sprintf('with %d quer%s in %ss', $sparql_n, $sparql_n>1?'ies':'y', substr($sparql_t, 0, 6))?></span>
 </address>
+<?php } ?>
 </body>
 </html>

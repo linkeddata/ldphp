@@ -7,6 +7,8 @@
 
 $TITLE = 'Index of '.$_request_url;
 defined('HEADER') || include_once('header.php');
+if (!isset($_edit)) $_edit = true;
+if ($_edit) {
 ?>
 <div id="editor" class="notice" style="position: absolute; top: 5%; left: 20%; display: none;">
     <img class="clear right" src="//<?=BASE_DOMAIN?>/common/images/cancel.gif" onclick="$(this).up().hide()" />
@@ -14,6 +16,7 @@ defined('HEADER') || include_once('header.php');
     <textarea class="clear left" id="editorarea" style="width: 50em; bottom: 2em" disabled="disabled"></textarea>
     <input class="clear right" type="button" value="Save" onclick="cloud.save();" />
 </div>
+<?php } ?>
 <table id="index" class="cleft left" style="width: auto; min-width: 50%;">
 <thead>
     <tr>
@@ -44,8 +47,10 @@ foreach($listing as $item) {
         $item_elt = substr($item_elt, 0, -strlen($item_ext)-1);
     if ($is_dir)
         $item_elt = "$item_elt/";
+    elseif (!$item_ext && isset($_ext))
+        $item_elt = "$item_elt$_ext";
     echo '<tr><td>';
-    if (!$is_dir) {
+    if ($_edit && !$is_dir) {
         echo '<a href="javascript:cloud.edit(\''.$item_elt.'\');"><img src="//'.BASE_DOMAIN.'/common/images/pencil.gif" /></a> ';
     }
     echo '</td><td>';
@@ -57,7 +62,7 @@ foreach($listing as $item) {
         echo 'Directory';
     } elseif (in_array($item_ext, array('html', 'css', 'js'))) {
         echo 'text/', $item_ext=='js'?'javascript':$item_ext;
-    } else {
+    } elseif ($_edit) {
         echo 'text/turtle';
         $i = 0;
         foreach (array(
@@ -72,7 +77,8 @@ foreach($listing as $item) {
         }
     }
     echo '</td><td>';
-    echo '<a href="javascript:cloud.rm(\''.$item_elt.'\');"><img src="//'.BASE_DOMAIN.'/common/images/cancel.gif" /></a>';
+    if ($_edit)
+        echo '<a href="javascript:cloud.rm(\''.$item_elt.'\');"><img src="//'.BASE_DOMAIN.'/common/images/cancel.gif" /></a>';
     echo '</td><td>'.strftime('%c %Z', filemtime("$_filename/$item")).'</td>';
     echo '<td>'.(!$is_dir?filesize("$_filename/$item"):'').'</td>';
     echo '<td>'.$_domain_data['http://data.fm/ns/schema#owner'][0]['value'].'</td>';
@@ -83,6 +89,7 @@ foreach($listing as $item) {
 }
 ?>
 </tbody>
+<?php if ($_edit) { ?>
 <tfoot>
     <tr>
         <td colspan=7>
@@ -92,7 +99,9 @@ foreach($listing as $item) {
         </td>
     </tr>
 </tfoot>
+<?php } ?>
 </table>
+<?php if ($_edit) { ?>
 <script type="text/javascript">
 $(document).observe('keydown', function(e) {
     if (e.keyCode == 27) { // ESC
@@ -101,5 +110,6 @@ $(document).observe('keydown', function(e) {
 });
 </script>
 <?php
+}
 TAG(__FILE__, __LINE__, '$Id$');
 defined('FOOTER') || include_once('footer.php');
