@@ -11,7 +11,7 @@ defined('HEADER') || include_once('header.php');
 <strong>Welcome!</strong> This <a target="_blank" href="http://www.w3.org/DesignIssues/ReadWriteLinkedData.html">Read/Write</a> <a target="_blank" href="http://www.w3.org/DesignIssues/LinkedData.html">Linked Data</a> service is free (and open-source) for educational and personal use.
 </div>
 
-<p class="left">All endpoints interpret the HTTP request URI as the base URI for RDF operations and the default-graph URI for SPARQL operations.</p>
+<p class="clear left">All endpoints interpret the HTTP request URI as the base URI for RDF operations and the default-graph URI for SPARQL operations.</p>
 <p class="clear left">Specify the media type of your request data with a <code>Content-Type</code> HTTP header.<br />
 Specify your response type preference with an <code>Accept</code> HTTP header.</p>
 
