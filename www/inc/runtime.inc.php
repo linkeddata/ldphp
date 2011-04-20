@@ -63,6 +63,7 @@ $_user_picture = sess('f:picture');
 
 if (file_exists(dirname(__FILE__).'/config.inc.php')) {
     require_once(dirname(__FILE__).'/config.inc.php');
+    if (!isset($_edit)) $_edit = true;
     if (!isset($_showCode)) $_showCode = true;
 }
 
