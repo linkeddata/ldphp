@@ -20,10 +20,11 @@ $_filename_ext = strrpos($_filename, '.');
 $_filename_ext = $_filename_ext ? substr($_filename, 1+$_filename_ext) : '';
 if (!strlen($_filename) || $_filename[0] != '/')
     $_filename = "/$_filename";
-if ($_filebase != substr($_filename, 0, strlen($_filebase)))
+if (substr($_filename, 0, strlen($_filebase)) != $_filebase)
     $_filename = "$_filebase$_filename";
-
 $_request_url = substr($_filename, strlen($_filebase));
+
+$_acl = new \RDF\Graph('', "$_filebase/.acl.sqlite", '', $_base);
 
 // HTTP Access-Control
 if (!isHTTPS()) {

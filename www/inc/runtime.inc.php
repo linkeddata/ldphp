@@ -30,11 +30,6 @@ define('REQUEST_BASE', $BASE);
 define('REQUEST_URL', $URI);
 define('REQUEST_URI', $BASE.$URI);
 
-if (file_exists(dirname(__FILE__).'/config.inc.php')) {
-    require_once(dirname(__FILE__).'/config.inc.php');
-    if (!isset($_showCode)) $_showCode = true;
-}
-
 // session startup
 session_set_cookie_params(157680000, '/', $_ENV['CLOUD_BASE']);
 session_start();
@@ -48,7 +43,7 @@ import_request_variables('gp', 'i_');
 date_default_timezone_set('America/New_York');
 
 $_user = '';
-foreach (array($_SERVER['REMOTE_USER'], sess('f:id')) as $_user) {
+foreach (array($_SERVER['REMOTE_USER'], sess('f:id'), sess('u:id')) as $_user) {
     if (!is_null($_user) && strlen($_user))
         break;
 }
@@ -63,14 +58,23 @@ if (empty($_user))
 
 # facebook ID
 $_user_name = sess('f:name');
-if (!$_user_name && $_user) {
-    $_user_name = basename($_user);
-    $c = strpos($_user_name, ':');
-    if ($c > 0)
-        $_user_name = substr($_user_name, $c+1);
-}
 $_user_link = sess('f:link');
-if (!$_user_link) $_user_link = $_user;
 $_user_picture = sess('f:picture');
+
+if (file_exists(dirname(__FILE__).'/config.inc.php')) {
+    require_once(dirname(__FILE__).'/config.inc.php');
+    if (!isset($_showCode)) $_showCode = true;
+}
+
+if ($_user) {
+    if (!$_user_name) {
+        $_user_name = basename($_user);
+        $c = strpos($_user_name, ':');
+        if ($c > 0)
+            $_user_name = substr($_user_name, $c+1);
+    }
+    if (!$_user_link)
+        $_user_link = $_user;
+}
 
 TAG(__FILE__, __LINE__, '$Id$');

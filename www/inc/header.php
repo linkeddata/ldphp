@@ -34,7 +34,7 @@ if (!isset($TITLE)) {
         echo '</a>';
     }
     ?></div>
-    <div id="status"><a href="//<?=BASE_DOMAIN?>">
+    <div id="status"><a target="_blank" href="//<?=BASE_DOMAIN?>">
         <img src="//<?=BASE_DOMAIN?>/common/images/load_bigroller.gif" style="display: none" id="statusLoading" />
         <img src="//<?=BASE_DOMAIN?>/common/images/rdf_flyer.24.gif" id="statusComplete" />
     </a></div>
