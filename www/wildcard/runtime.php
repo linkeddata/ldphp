@@ -48,7 +48,7 @@ function wac($method) {
         $p = substr($p, 0, -1);
     while (true) {
         if (!strpos($p, '/')) break;
-        $q = "PREFIX acl: <http://www.w3.org/ns/auth/acl#> SELECT * WHERE { ?z a acl:Authorization; acl:agent <$_user>; acl:mode acl:$method; acl:accessTo <$p>. }";
+        $q = "PREFIX acl: <http://www.w3.org/ns/auth/acl#> SELECT * WHERE { ?z acl:agent <$_user>; acl:mode acl:$method; acl:accessTo <$p>. }";
         $r = $_acl->SELECT($q);
         if (isset($r['results']['bindings']) && count($r['results']['bindings']) > 0)
             return true;
