@@ -6,11 +6,10 @@
  */
 
 // permissions
-// TODO: WACL
 if (empty($_user))
     httpStatusExit(401, 'Unauthorized');
 
-if (!count($_domain_data) || !\sites\is_owner($_domain, $_user))
+if (!count($_domain_data) || (!\sites\is_owner($_domain, $_user) && !wac('Write')))
     httpStatusExit(403, 'Forbidden');
 
 $frag = strrchr($_SERVER['REQUEST_URI'], '#');

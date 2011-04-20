@@ -24,9 +24,24 @@ if (substr($_filename, 0, strlen($_filebase)) != $_filebase)
     $_filename = "$_filebase$_filename";
 $_request_url = substr($_filename, strlen($_filebase));
 
-// WACL
+// HTTP Access Control
+if (!isHTTPS()) {
+    header('Access-Control-Allow-Origin: *');
+} else {
+    $_origin = isset($_SERVER['HTTP_ORIGIN']) ? $_SERVER['HTTP_ORIGIN'] : '';
+    $t = explode('/', $_origin);
+    if (count($t) > 2) {
+        $_origin = "{$t[0]}//{$t[2]}";
+    } else {
+        $_origin = '*';
+    }
+    header('Access-Control-Allow-Origin: '.$_origin);
+}
+
+// Web Access Control
+header('Link: /.meta; rel=meta');
 $_acl = new \RDF\Graph('', "$_filebase/.meta.sqlite", '', $_base);
-function wacl($method) {
+function wac($method) {
     global $_acl, $_user, $_base;
     $p = $_base;
     if (substr($p, -1, 1) == '/')
@@ -40,20 +55,6 @@ function wacl($method) {
         $p = dirname($p);
     }
     return false;
-}
-
-// HTTP Access-Control
-if (!isHTTPS()) {
-    header('Access-Control-Allow-Origin: *');
-} else {
-    $_origin = isset($_SERVER['HTTP_ORIGIN']) ? $_SERVER['HTTP_ORIGIN'] : '';
-    $t = explode('/', $_origin);
-    if (count($t) > 2) {
-        $_origin = "{$t[0]}//{$t[2]}";
-    } else {
-        $_origin = '*';
-    }
-    header('Access-Control-Allow-Origin: '.$_origin);
 }
 
 // HTTP Methods

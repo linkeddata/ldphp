@@ -14,13 +14,12 @@ if (!in_array($_method, array('GET', 'HEAD')) && !isset($i_query))
     httpStatusExit(501, 'Not Implemented');
 
 // permissions
-// TODO: WACL
 if (!count($_domain_data))
     httpStatusExit(404, 'Not Found', '403-404.php');
 if (!\sites\is_public($_domain)) {
     if (empty($_user))
         httpStatusExit(401, 'Unauthorized', '401.php');
-    elseif (!\sites\is_owner($_domain, $_user) && !wacl('Read'))
+    elseif (!\sites\is_owner($_domain, $_user) && !wac('Read'))
         httpStatusExit(403, 'Forbidden', '403-404.php');
 }
 

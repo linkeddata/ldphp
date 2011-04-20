@@ -11,12 +11,11 @@ if (isset($i_query)) {
 }
 
 // permissions
-// TODO: WACL
 $acl_public = \sites\is_public_write($_domain);
 if ($acl_public) {
 } elseif (empty($_user)) {
     httpStatusExit(401, 'Unauthorized');
-} elseif (!\sites\is_owner($_domain, $_user)) {
+} elseif (!\sites\is_owner($_domain, $_user) && !wac('Write')) {
     httpStatusExit(403, 'Forbidden');
 }
 
