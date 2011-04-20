@@ -6,16 +6,25 @@
  */
 
 defined('HEADER') || include_once('header.php');
+$open = substr($_SERVER['SERVER_ADDR'], 0, 3) == '18.';
 ?>
+<?php if ($open) { ?>
 <div id="welcome" class="box">
 <strong>Welcome!</strong> This <a target="_blank" href="http://www.w3.org/DesignIssues/ReadWriteLinkedData.html">Read/Write</a> <a target="_blank" href="http://www.w3.org/DesignIssues/LinkedData.html">Linked Data</a> service is free (and open-source) for educational and personal use.
 </div>
+<?php } ?>
 
-<p class="clear left">All endpoints interpret the HTTP request URI as the base URI for RDF operations and the default-graph URI for SPARQL operations.</p>
-<p class="clear left">Specify the media type of your request data with a <code>Content-Type</code> HTTP header.<br />
+<p class="cleft left">This web data platform supports several generations of standards and recommendations:</p>
+<ul class="cleft left">
+<li>Web 1, 2, and 3: DAV, AJAX, <a target="_blank" href="http://en.wikipedia.org/wiki/JSONP">JSONP</a>, <a target="_blank" href="http://enable-cors.org/">CORS</a></li>
+<li>Semantic Web: R/W Linked Data, RDF/XML/JSON content negotiation, <a target="_blank" href="http://www.w3.org/TR/sparql11-query/">SPARQL 1.1</a>, and <a target="_blank" href="http://www.w3.org/wiki/WebID">WebID</a></li>
+</ul>
+
+<p class="cleft left">All endpoints interpret the HTTP request URI as the base URI for RDF operations and the default-graph URI for SPARQL operations.</p>
+<p class="cleft left">Specify the media type of your request data with a <code>Content-Type</code> HTTP header.<br />
 Specify your response type preference with an <code>Accept</code> HTTP header.</p>
 
-<div id="http-methods" class="left" style="clear: left; margin: 0.5em; padding: 0.5em;">
+<div id="http-methods" class="cleft left" style="margin: 0.5em; padding: 0.5em;">
 <h4>Request methods:</h4>
 <ul>
 <li>Read: GET, HEAD, OPTIONS</li>
@@ -58,8 +67,7 @@ Specify your response type preference with an <code>Accept</code> HTTP header.</
 <p>Some query string options and response (HTTP Accept) media types are complementary.</p>
 </div>
 
-<p class="clear left"><strong><?=BASE_DOMAIN?></strong> supports <a target="_blank" href="http://www.w3.org/2001/sw/">W3C Semantic Web</a> best practices such as RDF, content negotiation, <a target="_blank" href="http://www.w3.org/TR/sparql11-query/">SPARQL 1.1 Updates</a>, <a target="_blank" href="http://enable-cors.org/">CORS</a>, and <a target="_blank" href="http://www.w3.org/wiki/WebID">WebID</a>.</p>
-<?php if (substr($_SERVER['SERVER_ADDR'], 0, 3) == '18.') { ?>
+<?php if ($open) { ?>
 <p class="clear left">All uses of this service must comply with the <a target="_blank" href="http://ist.mit.edu/services/athena/olh/rules#mitnet">MITnet rules of use</a>.</p>
 <?php }
 TAG(__FILE__, __LINE__, '$Id$');
