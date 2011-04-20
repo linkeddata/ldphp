@@ -25,7 +25,7 @@ if (substr($_filename, 0, strlen($_filebase)) != $_filebase)
 $_request_url = substr($_filename, strlen($_filebase));
 
 // WACL
-$_acl = new \RDF\Graph('', "$_filebase/.acl.sqlite", '', $_base);
+$_acl = new \RDF\Graph('', "$_filebase/.meta.sqlite", '', $_base);
 function wacl($method) {
     global $_acl, $_user, $_base;
     $p = $_base;
