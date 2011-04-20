@@ -16,4 +16,4 @@ if ($acl_public) {
 }
 
 // action
-@mkdir($_filename);
+@mkdir($_filename, 0777, true);

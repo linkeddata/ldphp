@@ -16,7 +16,10 @@ if ($acl_public && !empty($_user)) {
 }
 
 // action
-@mkdir(dirname($_filename));
+$d = dirname($_filename);
+if (!file_exists($d))
+    mkdir($d, 0777, true);
+
 $_data = file_get_contents('php://input');
 
 if ($_input == 'raw') {
