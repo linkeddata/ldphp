@@ -43,14 +43,14 @@ import_request_variables('gp', 'i_');
 date_default_timezone_set('America/New_York');
 
 $_user = '';
-foreach (array($_SERVER['REMOTE_USER'], sess('f:id'), sess('u:id')) as $_user) {
+foreach (array($_SERVER['REMOTE_USER'], sess('u:id'), sess('f:id')) as $_user) {
     if (!is_null($_user) && strlen($_user))
         break;
 }
 
-# email ID
-if (substr($_user, 0, 4) != 'http' && stristr($_user,'@'))
-    $_user = "mailto:$_user";
+if (substr($_user, 0, 4) != 'http')
+    if (substr($_user, 0, 7) != 'mailto:' && stristr($_user,'@'))
+        $_user = "mailto:$_user";
 
 # domain ID
 if (empty($_user))
