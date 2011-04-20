@@ -15,9 +15,12 @@ if (!isHTTPS()) {
     $ssl_uri = "https://{$_SERVER['SERVER_NAME']}{$_SERVER['REQUEST_URI']}";
 ?>
     <li><a href="<?=$ssl_uri?>">access this cloud over SSL</a> if its inaccessible</li>
-<?php } ?>
+<?php }
+if ($_edit) {
+?>
     <li><a href="//<?=BASE_DOMAIN?>">create this cloud</a> if it does not exist</li>
 </ul></div>
 <?php
+}
 TAG(__FILE__, __LINE__, '$Id$');
 defined('FOOTER') || include_once('footer.php');
