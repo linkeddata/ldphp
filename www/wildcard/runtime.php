@@ -24,7 +24,23 @@ if (substr($_filename, 0, strlen($_filebase)) != $_filebase)
     $_filename = "$_filebase$_filename";
 $_request_url = substr($_filename, strlen($_filebase));
 
+// WACL
 $_acl = new \RDF\Graph('', "$_filebase/.acl.sqlite", '', $_base);
+function wacl($method) {
+    global $_acl, $_user, $_base;
+    $p = $_base;
+    if (substr($p, -1, 1) == '/')
+        $p = substr($p, 0, -1);
+    while (true) {
+        if (!strpos($p, '/')) break;
+        $q = "PREFIX acl: <http://www.w3.org/ns/auth/acl#> SELECT * WHERE { ?z a acl:Authorization; acl:agent <$_user>; acl:mode acl:$method; acl:accessTo <$p>. }";
+        $r = $_acl->SELECT($q);
+        if (isset($r['results']['bindings']) && count($r['results']['bindings']) > 0)
+            return true;
+        $p = dirname($p);
+    }
+    return false;
+}
 
 // HTTP Access-Control
 if (!isHTTPS()) {

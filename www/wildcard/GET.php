@@ -20,7 +20,7 @@ if (!count($_domain_data))
 if (!\sites\is_public($_domain)) {
     if (empty($_user))
         httpStatusExit(401, 'Unauthorized', '401.php');
-    elseif (!\sites\is_owner($_domain, $_user))
+    elseif (!\sites\is_owner($_domain, $_user) && !wacl('Read'))
         httpStatusExit(403, 'Forbidden', '403-404.php');
 }
 
