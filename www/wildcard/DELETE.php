@@ -13,6 +13,16 @@ if (empty($_user))
 if (!count($_domain_data) || !\sites\is_owner($_domain, $_user))
     httpStatusExit(403, 'Forbidden');
 
+$frag = strrchr($_SERVER['REQUEST_URI'], '#');
+if ($frag) {
+    $g = new \RDF\Graph('', $_filename, '', $_SERVER['SCRIPT_URI']);
+    $r = $g->remove_any($_SERVER['REQUEST_URI']);
+    header('X-Triples: '.$r);
+    if ($r)
+        $g->save();
+    exit;
+}
+
 if (is_dir($_filename)) {
     rmdir($_filename);
 } elseif (file_exists($_filename)) {
