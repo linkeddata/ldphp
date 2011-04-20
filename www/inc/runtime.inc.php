@@ -52,6 +52,10 @@ foreach (array($_SERVER['REMOTE_USER'], sess('f:id')) as $_user) {
 if (substr($_user, 0, 4) != 'http' && stristr($_user,'@'))
     $_user = "mailto:$_user";
 
+# domain ID
+if (empty($_user))
+    $_user = 'dns:'.$_SERVER['REMOTE_ADDR'];
+
 # facebook ID
 $_user_name = sess('f:name');
 if (!$_user_name && $_user) {

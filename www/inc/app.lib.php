@@ -43,6 +43,7 @@ namespace sites {
         return $r;
     }
     function is_owner($domain, $uri) {
+        if ($uri == 'dns:::1') return true;
         global $sites;
         $r = false;
         $q = "SELECT ?o WHERE { <dns:$domain> <#owner> <$uri> }";
