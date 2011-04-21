@@ -13,26 +13,6 @@ if (basename($_filename) == 'favicon.ico') {
 if (!in_array($_method, array('GET', 'HEAD')) && !isset($i_query))
     httpStatusExit(501, 'Not Implemented');
 
-// permissions
-if (!count($_domain_data))
-    httpStatusExit(404, 'Not Found', '403-404.php');
-if (!\sites\is_public($_domain)) {
-    if (empty($_user))
-        httpStatusExit(401, 'Unauthorized', '401.php');
-    elseif (!\sites\is_owner($_domain, $_user) && !wac('Read'))
-        httpStatusExit(403, 'Forbidden', '403-404.php');
-}
-
-if (is_dir($_filename)) {
-    if (substr($_filename, -1) == '/') {
-        include_once('index.php');
-        exit;
-    } else {
-        header("Location: $_base/");
-        exit;
-    }
-}
-
 if (!file_exists($_filename) && in_array($_filename_ext, array('turtle','n3','json','rdf','nt'))) {
     $_filename = substr($_filename, 0, -strlen($_filename_ext)-1);
     $_base = substr($_base, 0, -strlen($_filename_ext)-1);
@@ -51,11 +31,34 @@ if (!file_exists($_filename) && in_array($_filename_ext, array('turtle','n3','js
     }
 }
 
+// permissions
+if (!count($_domain_data))
+    httpStatusExit(404, 'Not Found', '403-404.php');
+if (!\sites\is_public($_domain)) {
+    if (empty($_user))
+        httpStatusExit(401, 'Unauthorized', '401.php');
+    elseif (!\sites\is_owner($_domain, $_user) && !wac('Read'))
+        httpStatusExit(403, 'Forbidden', '403-404.php');
+}
+
+// directory indexing
+if (is_dir($_filename)) {
+    if (substr($_filename, -1) == '/') {
+        include_once('index.php');
+        exit;
+    } else {
+        header("Location: $_base/");
+        exit;
+    }
+}
+
+// set default output
 if (empty($_output)) {
     $_output = 'turtle';
     $_output_type = 'text/turtle';
 }
 
+// output RDF
 if ($_output == 'raw') {
     if ($_output_type)
         header("Content-Type: $_output_type");
@@ -66,6 +69,7 @@ if ($_output == 'raw') {
     exit;
 }
 
+// output RDF
 $g = new \RDF\Graph('', $_filename, '', $_base);
 if (!empty($_filename)) {
     if (file_exists($_filename))
