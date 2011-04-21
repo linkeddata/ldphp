@@ -25,6 +25,11 @@ if (!isset($TITLE)) {
     <div id="alert" style="position: absolute; top: 0; left: 0; width: 100%; padding-top: 5px; text-align: center; z-index: 1000; display: none;">
         <div id="alertbody" style="display: inline;"></div>
     </div>
+    <div id="status"><a target="_blank" href="//<?=BASE_DOMAIN?>">
+        <img src="//<?=BASE_DOMAIN?>/common/images/load_bigroller.gif" style="display: none" id="statusLoading" />
+        <img src="//<?=BASE_DOMAIN?>/common/images/rdf_flyer.24.gif" id="statusComplete" />
+    </a></div>
+    <div id="title"><h2><strong><?=$_SERVER['SERVER_NAME']?></strong>: <?=$TITLE?></h2></div>
     <div id="identity"><?php
     if ($_user_link) {
         if (stristr($_user, 's://graph.facebook.com/'))
@@ -34,10 +39,5 @@ if (!isset($TITLE)) {
         echo '</a>';
     }
     ?></div>
-    <div id="status"><a target="_blank" href="//<?=BASE_DOMAIN?>">
-        <img src="//<?=BASE_DOMAIN?>/common/images/load_bigroller.gif" style="display: none" id="statusLoading" />
-        <img src="//<?=BASE_DOMAIN?>/common/images/rdf_flyer.24.gif" id="statusComplete" />
-    </a></div>
-    <div id="title"><h2><strong><?=$_SERVER['SERVER_NAME']?></strong>: <?=$TITLE?></h2></div>
 <?php
 TAG(__FILE__, __LINE__, '$Id$');

@@ -41,23 +41,25 @@ if (!isHTTPS()) {
 // Web Access Control
 header('Link: /.meta; rel=meta');
 $_acl = new \RDF\Graph('', "$_filebase/.meta.sqlite", '', $_base);
-function wac($method) {
+function wac($method,$uri=null) {
     // method: Read/Write/Control
     global $_acl, $_user, $_base;
-    $p = $_base;
+    $uri = is_null($uri) ? $_base : $uri;
     // strip trailing slash
-    if (substr($p, -1, 1) == '/')
-        $p = substr($p, 0, -1);
+    if (substr($uri, -1, 1) == '/')
+        $uri = substr($uri, 0, -1);
+    $p = $uri;
     // walk path
     while (true) {
         if (!strpos($p, '/')) break;
+        $verb = $p == $uri ? 'accessTo' : 'defaultForNew';
         // specific authorization
-        $q = "PREFIX acl: <http://www.w3.org/ns/auth/acl#> SELECT * WHERE { ?z acl:agent <$_user>; acl:mode acl:$method; acl:accessTo <$p> . }";
+        $q = "PREFIX acl: <http://www.w3.org/ns/auth/acl#> SELECT * WHERE { ?z acl:agent <$_user>; acl:mode acl:$method; acl:$verb <$p> . }";
         $r = $_acl->SELECT($q);
         if (isset($r['results']['bindings']) && count($r['results']['bindings']) > 0)
             return true;
         // public authorization
-        $q = "PREFIX acl: <http://www.w3.org/ns/auth/acl#> SELECT * WHERE { ?z acl:agentClass <http://xmlns.com/foaf/0.1/Agent>; acl:mode acl:$method; acl:accessTo <$p> . }";
+        $q = "PREFIX acl: <http://www.w3.org/ns/auth/acl#> SELECT * WHERE { ?z acl:agentClass <http://xmlns.com/foaf/0.1/Agent>; acl:mode acl:$method; acl:$verb <$p> . }";
         $r = $_acl->SELECT($q);
         if (isset($r['results']['bindings']) && count($r['results']['bindings']) > 0)
             return true;
