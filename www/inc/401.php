@@ -7,22 +7,17 @@
 
 defined('HEADER') || include_once('header.php');
 ?>
-<div class="clear left error">
+<div class="cleft left error">
 You must login to access this URL
 </div>
 
-<div class="clear left notice">
-If you have just installed a new WebID SSL certificate,<br />
-please restart your browser to trigger its certificate UI
+<div class="cleft left info">
+If you just installed a new SSL certificate, try <a target="_blank" href="http://code.google.com/p/chromium/issues/detail?id=29784">restarting your browser</a> to trigger its selection
 </div>
 
-<div class="clear left info">
-We strongly recommend using <a target="_blank" href="http://getfirefox.org/">Firefox</a> (3.5+)
-<br /><br />
-Current shipping Safari/IE and Chrome builds are also known to work
+<div class="cleft">
+<a target="_blank" href="http://getfirefox.org/">Firefox</a> 3.5+, currently shipping Safari, IE, and Chrome builds are known to work
 </div>
-
-<div style="clear:both"></div>
 
 <?php
 TAG(__FILE__, __LINE__, '$Id$');

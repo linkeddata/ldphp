@@ -19,7 +19,7 @@ if (isset($timings)) {
 }
 if ($_showCode) {
 ?>
-<hr style="margin-bottom: 0;" />
+<hr style="margin-top: 1em; margin-bottom: 0;" />
 <address>
 <?php
 $src = explode('/', $_SERVER['SCRIPT_FILENAME']);
