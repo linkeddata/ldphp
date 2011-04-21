@@ -6,7 +6,7 @@
  */
 
 if (isset($i_query)) {
-    include_once('method/GET.php');
+    require_once('GET.php');
     exit;
 }
 

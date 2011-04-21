@@ -99,7 +99,7 @@ if (isset($i_callback)) {
     header("Content-Type: $_output_type");
 }
 
-if ($_method == 'GET')
+if (in_array($_method, array('GET', 'POST')))
     if (isset($i_query)) {
         echo $g->query($i_query);
     } else {
