@@ -42,13 +42,22 @@ if (!isHTTPS()) {
 header('Link: /.meta; rel=meta');
 $_acl = new \RDF\Graph('', "$_filebase/.meta.sqlite", '', $_base);
 function wac($method) {
+    // method: Read/Write/Control
     global $_acl, $_user, $_base;
     $p = $_base;
+    // strip trailing slash
     if (substr($p, -1, 1) == '/')
         $p = substr($p, 0, -1);
+    // walk path
     while (true) {
         if (!strpos($p, '/')) break;
-        $q = "PREFIX acl: <http://www.w3.org/ns/auth/acl#> SELECT * WHERE { ?z acl:agent <$_user>; acl:mode acl:$method; acl:accessTo <$p>. }";
+        // specific authorization
+        $q = "PREFIX acl: <http://www.w3.org/ns/auth/acl#> SELECT * WHERE { ?z acl:agent <$_user>; acl:mode acl:$method; acl:accessTo <$p> . }";
+        $r = $_acl->SELECT($q);
+        if (isset($r['results']['bindings']) && count($r['results']['bindings']) > 0)
+            return true;
+        // public authorization
+        $q = "PREFIX acl: <http://www.w3.org/ns/auth/acl#> SELECT * WHERE { ?z acl:agentClass <http://xmlns.com/foaf/0.1/Agent>; acl:mode acl:$method; acl:accessTo <$p> . }";
         $r = $_acl->SELECT($q);
         if (isset($r['results']['bindings']) && count($r['results']['bindings']) > 0)
             return true;
