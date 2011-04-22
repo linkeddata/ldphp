@@ -49,7 +49,7 @@ foreach($listing as $item) {
         $item_elt = substr($item_elt, 0, -strlen($item_ext)-1);
     if ($is_dir)
         $item_elt = "$item_elt/";
-    elseif (!$item_ext && isset($_ext))
+    elseif (isset($_ext) && (!$item_ext || $item_ext == 'sqlite'))
         $item_elt = "$item_elt$_ext";
     echo '<tr><td>';
     if ($_edit && !$is_dir) {
@@ -70,9 +70,7 @@ foreach($listing as $item) {
         foreach (array(
             //'.json?callback=load'=>'JS',
             '.json'=>'JSON',
-            '.rdf'=>'RDF/XML',
-            '?query=SELECT+%2A+WHERE+%7B%3Fs+%3Fp+%3Fo%7D'=>'SPARQL',
-            //'?query=SELECT+%2A+WHERE+%7B%3Fs+%3Fp+%3Fo%7D&callback=load'=>'SPARQL/JS'
+            '?query=SELECT+%2A+WHERE+%7B%3Fs+%3Fp+%3Fo%7D+LIMIT+10'=>'SPARQL',
         ) as $ext=>$label) {
             echo $i++ ? ', ' : ': ';
             printf('<a href="%s%s">%s</a>', $item_elt, $ext, $label);
