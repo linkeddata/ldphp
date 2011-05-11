@@ -16,7 +16,7 @@ include_once('header.php');
 
 <div class="left cleft box colborder">
 <h3>new cloud</h3>
-<?php $acls = array('public', 'known', 'private'); ?>
+<?php $acls = array('public', 'private'); ?>
 <form action="create" method="get" id="create">
     <div class="clear left append-bottom">1. pick a name: (at least 4 chars)</div>
     <div class="left" style="clear: left; width: 2em">
