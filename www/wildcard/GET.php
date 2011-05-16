@@ -71,12 +71,8 @@ if ($_output == 'raw') {
 
 // output RDF
 $g = new \RDF\Graph('', $_filename, '', $_base);
-if (!empty($_filename)) {
-    if (file_exists($_filename))
-        $g->append('turtle', file_get_contents($_filename));
-    elseif (!$g->exists())
-        header('HTTP/1.1 404 Not Found');
-}
+if (!empty($_filename) && !$g->exists())
+    header('HTTP/1.1 404 Not Found');
 
 header('X-Triples: '.$g->size());
 if (isset($i_query))
