@@ -40,7 +40,7 @@ if (!isHTTPS()) {
 
 // Web Access Control
 header('Link: /.meta; rel=meta');
-$_acl = new \RDF\Graph('', "$_filebase/.meta.sqlite", '', $_base);
+$_acl = new \RDF\Graph('', file_exists("$_filebase/.meta")?"$_filebase/.meta":"$_filebase/.meta.sqlite", '', $_base);
 function wac($method,$uri=null) {
     // method: Read/Write/Control
     global $_acl, $_user, $_base;

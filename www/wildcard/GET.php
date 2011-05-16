@@ -32,8 +32,6 @@ if (!file_exists($_filename) && in_array($_filename_ext, array('turtle','n3','js
 }
 
 // permissions
-if (!count($_domain_data))
-    httpStatusExit(404, 'Not Found', '403-404.php');
 if (!\sites\is_public($_domain)) {
     if (empty($_user))
         httpStatusExit(401, 'Unauthorized', '401.php');
