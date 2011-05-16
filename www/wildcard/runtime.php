@@ -25,6 +25,11 @@ if (substr($_filename, 0, strlen($_filebase)) != $_filebase)
 $_request_url = substr($_filename, strlen($_filebase));
 
 // HTTP Access Control
+if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS'])) {
+    header('Access-Control-Allow-Headers: '.$_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS']);
+} else {
+    header('Access-Control-Allow-Headers: Content-Type, X-Prototype-Version, X-Requested-With');
+}
 if (!isHTTPS()) {
     header('Access-Control-Allow-Origin: *');
 } else {
