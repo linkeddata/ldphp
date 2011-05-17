@@ -1,6 +1,6 @@
 <?php
-/* index.php
- * service index page
+/* index.html.php
+ * service HTML index page
  *
  * $Id$
  */

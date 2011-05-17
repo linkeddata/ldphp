@@ -41,13 +41,14 @@ if (!\sites\is_public($_domain)) {
 
 // directory indexing
 if (is_dir($_filename)) {
-    if (substr($_filename, -1) == '/') {
-        include_once('index.php');
-        exit;
-    } else {
+    if (substr($_filename, -1) != '/') {
         header("Location: $_base/");
-        exit;
+    } elseif (isset($_output) && !empty($_output)) {
+        include_once('index.rdf.php');
+    } else {
+        include_once('index.html.php');
     }
+    exit;
 }
 
 // set default output
@@ -56,7 +57,7 @@ if (empty($_output)) {
     $_output_type = 'text/turtle';
 }
 
-// output RDF
+// output raw
 if ($_output == 'raw') {
     if ($_output_type)
         header("Content-Type: $_output_type");
