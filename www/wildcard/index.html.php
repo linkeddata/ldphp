@@ -51,6 +51,7 @@ foreach($listing as $item) {
         $item_elt = "$item_elt/";
     elseif (isset($_ext) && (!$item_ext || $item_ext == 'sqlite'))
         $item_elt = "$item_elt$_ext";
+
     echo '<tr><td>';
     if ($_edit && !$is_dir) {
         echo '<a href="javascript:cloud.edit(\''.$item_elt.'\');"><img src="//'.BASE_DOMAIN.'/common/images/pencil.gif" /></a> ';
