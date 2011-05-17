@@ -63,7 +63,7 @@ foreach($listing as $item) {
     echo '</td><td>';
     if ($is_dir) {
         echo 'Directory';
-    } elseif (in_array($item_ext, array('html', 'css', 'js'))) {
+    } elseif (in_array($item_ext, $_RAW_EXT)) {
         echo 'text/', $item_ext=='js'?'javascript':$item_ext;
     } elseif ($_edit) {
         echo 'text/turtle';

@@ -5,6 +5,7 @@
  * $Id$
  */
 
+$_RAW_EXT = array('css', 'html', 'js');
 require_once('runtime.inc.php');
 header("X-User: $_user");
 
@@ -89,7 +90,7 @@ if ($_method == 'OPTIONS') {
 // HTTP Content Negotiation
 require_once('input.php');
 require_once('output.php');
-if (in_array($_filename_ext, array('css', 'html', 'js'))) {
+if (in_array($_filename_ext, $_RAW_EXT)) {
     $_input = 'raw';
     $_output = 'raw';
     $_output_type = 'text/'.($_filename_ext=='js'?'javascript':$_filename_ext);
