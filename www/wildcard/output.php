@@ -46,7 +46,7 @@ foreach ($_accept_list as $haystack) {
     }
     if (!empty($_output)) break;
 }
-if (empty($output))
+if (empty($_output))
 foreach (array_keys($_accept_data) as $haystack) {
     foreach ($_accept_type_map as $needle=>$output) {
         if (strstr($haystack, $needle) !==FALSE) {
