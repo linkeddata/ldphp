@@ -25,9 +25,13 @@ foreach($listing as $item) {
         $item_elt = substr($item_elt, 0, -strlen($item_ext)-1);
     if ($is_dir)
         $item_elt = "$item_elt/";
+    /* Following breaks graph walking by index
+     * We strongly prefer Accept-based conneg
+
     elseif (isset($_ext) && (!$item_ext || $item_ext == 'sqlite'))
         $item_elt = "$item_elt$_ext";
 
+     */
     if ($is_dir)
         $item_type = 'p:Directory';
     elseif (in_array($item_ext, $_RAW_EXT))
