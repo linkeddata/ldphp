@@ -10,7 +10,7 @@ defined('HEADER') || include_once('header.php');
 if (!isset($_edit)) $_edit = true;
 if ($_edit) {
 ?>
-<div id="editor" class="notice" style="position: absolute; top: 5%; left: 20%; display: none;">
+<div id="editor" class="notice" style="position: fixed; top: 5%; left: 20%; display: none;">
     <img class="clear right" src="//<?=BASE_DOMAIN?>/common/images/cancel.gif" onclick="$(this).up().hide()" />
     <input class="cleft left" style="margin: 0;" type="text" id="editorpath" placeholder="loading..." />
     <textarea class="clear left" id="editorarea" style="width: 50em; bottom: 2em" disabled="disabled"></textarea>
