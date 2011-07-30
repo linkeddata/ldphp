@@ -6,10 +6,32 @@
  */
 
 namespace RDF {
+
+    function absolutize($base, $url) {
+        if (!$url)
+            return $base;
+        $url_p = parse_url($url);
+        if (array_key_exists('scheme', $url_p))
+            return $url;
+        $base_p = parse_url("$base ");
+        if (!array_key_exists('path', $base_p))
+            $base_p = parse_url("$base/ ");
+        $path = ($url[0] == '/') ? $url : dirname($base_p['path']) . "/$url";
+        $path = preg_replace('~/\./~', '/', $path);
+        $parts = array();
+        foreach (explode('/', preg_replace('~/+~', '/', $path)) as $part)
+            if ($part === '..') {
+                array_pop($parts);
+            } elseif ($part != '') {
+                $parts[] = $part;
+            }
+        return (array_key_exists('scheme', $base_p) ? $base_p['scheme'] . '://' . $base_p['host'] : '') . '/' . implode('/', $parts);
+    }
+
     class Graph {
         private $_world, $_base_uri, $_store, $_model;
         private $_f_writeBaseURI;
-        private $_name, $_exists, $_storage;
+        private $_name, $_exists, $_storage, $_base;
         function __construct($storage, $name, $options='', $base='null:/') {
             $ext = strrpos($name, '.');
             $ext = $ext ? substr($name, 1+$ext) : '';
@@ -46,6 +68,7 @@ namespace RDF {
             if ($storage == 'memory')
                 $name = '';
             $this->_storage = $storage;
+            $this->_base = $base;
             /*
             if (DEVEL) {
                 header('X-Filename: '.$this->_name);
@@ -145,8 +168,8 @@ namespace RDF {
         }
         function any($s=null, $p=null, $o=null) {
             $r = array();
-            if (!is_null($s)) $s = librdf_new_node_from_uri_string($this->_world, $s);
-            if (!is_null($p)) $p = librdf_new_node_from_uri_string($this->_world, $p);
+            if (!is_null($s)) $s = librdf_new_node_from_uri_string($this->_world, absolutize($this->_base, $s));
+            if (!is_null($p)) $p = librdf_new_node_from_uri_string($this->_world, absolutize($this->_base, $p));
             $pattern = librdf_new_statement_from_nodes($this->_world, $s, $p, $o);
             $stream = librdf_model_find_statements($this->_model, $pattern);
             while (!librdf_stream_end($stream)) {
@@ -161,8 +184,8 @@ namespace RDF {
         }
         function remove_any($s=null, $p=null, $o=null) {
             $r = 0;
-            if (!is_null($s)) $s = librdf_new_node_from_uri_string($this->_world, $s);
-            if (!is_null($p)) $p = librdf_new_node_from_uri_string($this->_world, $p);
+            if (!is_null($s)) $s = librdf_new_node_from_uri_string($this->_world, absolutize($this->_base, $s));
+            if (!is_null($p)) $p = librdf_new_node_from_uri_string($this->_world, absolutize($this->_base, $p));
             $pattern = librdf_new_statement_from_nodes($this->_world, $s, $p, $o);
             $stream = librdf_model_find_statements($this->_model, $pattern);
             while (!librdf_stream_end($stream)) {
@@ -226,8 +249,8 @@ namespace RDF {
             timings();
             return $r;
         }
-    }
-}
+    } // class Graph
+} // namespace RDF
 
 /*
 $_NS = array(
