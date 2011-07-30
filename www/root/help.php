@@ -30,7 +30,12 @@ Specify your response type preference with an <code>Accept</code> HTTP header.</
 <li>Read: GET, HEAD, OPTIONS</li>
 <li>Write: PUT, MKCOL, DELETE</li>
 <li>Append: POST</li>
-<li>SPARQL: POST (*/sparql-query)</li>
+<li>Update:
+    <ul>
+        <li>JSON PATCH (application/json)</li>
+        <li>SPARQL POST (*/sparql-query)</li>
+    </ul>
+</li>
 </ul>
 </div>
 
@@ -49,10 +54,11 @@ Specify your response type preference with an <code>Accept</code> HTTP header.</
 <div id="media-types" class="left" style="margin: 0.5em; padding: 0.5em;">
 <h4>RDF media types:</h4>
 <ul>
-<li>Turtle: */turtle, */rdf+n3, */n3</li>
+<li>JSON: application/json</li>
 <li>NTriples: */rdf+nt, */nt</li>
 <li>RDF/XML: */rdf+xml</li>
 <li>RDFa: */html, */xhtml</li>
+<li>Turtle: */turtle, */rdf+n3, */n3</li>
 </ul>
 (defaults to Turtle)
 </div>
@@ -60,7 +66,7 @@ Specify your response type preference with an <code>Accept</code> HTTP header.</
 
 <div class="clear left">
 <dl>
-<dt>*/type</dt><dd>refers to a media type, typically specified in an HTTP header</dd>
+<dt>*/type</dt><dd>refers to a media type, specified in HTTP header (Accept or Content-Type)</dd>
 <dt>name.ext</dt><dd>refers to a filename, specified by HTTP request URI</dd>
 <dt>?k=v</dt><dd>refers to a query string parameter 'k' with value 'v': passed in URL via GET or application/x-www-form-urlencoded via POST</dd>
 </dl>
