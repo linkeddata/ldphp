@@ -270,14 +270,14 @@ namespace RDF {
         }
         function append_array($data) {
             $r = 0;
-            foreach ($data as $s=>$data_s) {
-                foreach ($data_s as $p=>$data_p) {
-                    $r += $this->append_objects($s, $p, $data_p);
+            foreach ($data as $s=>$s_data) {
+                foreach ($s_data as $p=>$p_data) {
+                    $r += $this->append_objects($s, $p, $p_data);
                 }
             }
             return $r;
         }
-        function replace_array($data) {
+        function patch_array($data) {
             $r = 0;
             foreach ($data as $s=>$s_data) {
                 foreach ($s_data as $p=>$p_data) {
