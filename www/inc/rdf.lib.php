@@ -249,6 +249,44 @@ namespace RDF {
             timings();
             return $r;
         }
+        function append_objects($s, $p, $lst) {
+            if (!is_null($s)) { $s = librdf_new_node_from_uri_string($this->_world, absolutize($this->_base, $s)); }
+            if (!is_null($p)) { $p = librdf_new_node_from_uri_string($this->_world, absolutize($this->_base, $p)); }
+            $r = 0;
+            foreach ($lst as $elt) {
+                if (isset($elt['type']) && isset($elt['value'])) {
+                    if ($elt['type'] == 'literal') {
+                        $o = librdf_new_node_from_literal($this->_world, $elt['value'], NULL, 0);
+                    } elseif ($elt['type'] == 'uri') {
+                        $o = librdf_new_node_from_uri_string($this->_world, absolutize($this->_base, $elt['value']));
+                    }
+                    $r += librdf_model_add($this->_model, $s, $p, $o) ? 0 : 1;
+                    //$o && librdf_free_node($o);
+                }
+            }
+            //$p && librdf_free_node($p);
+            //$s && librdf_free_node($s);
+            return $r;
+        }
+        function append_array($data) {
+            $r = 0;
+            foreach ($data as $s=>$data_s) {
+                foreach ($data_s as $p=>$data_p) {
+                    $r += $this->append_objects($s, $p, $data_p);
+                }
+            }
+            return $r;
+        }
+        function replace_array($data) {
+            $r = 0;
+            foreach ($data as $s=>$s_data) {
+                foreach ($s_data as $p=>$p_data) {
+                    $r += $this->remove_any($s, $p);
+                    $r += $this->append_objects($s, $p, $p_data);
+                }
+            }
+            return $r;
+        }
     } // class Graph
 } // namespace RDF
 

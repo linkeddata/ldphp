@@ -34,8 +34,14 @@ if ($_input == 'raw') {
 $g = new \RDF\Graph('', $_filename, '', $_base);
 if (!empty($_input) && $g->append($_input, $_data)) {
     $g->save();
+} elseif ($_content_type == 'application/json' && $_SERVER['REQUEST_METHOD'] == 'PATCH') {
+    if ($g->replace_array(json_decode($_data, 1)))
+        $g->save();
+} elseif ($_content_type == 'application/json') {
+    if ($g->append_array(json_decode($_data, 1)))
+        $g->save();
 } elseif ($g->append('turtle', $_data)) {
     $g->save();
 }
 
-header('X-Triples: '.$g->size());
+@header('X-Triples: '.$g->size());

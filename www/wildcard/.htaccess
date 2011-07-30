@@ -27,6 +27,7 @@ RewriteCond %{HTTP:Content-Type} =application/sparql-query
 RewriteRule ^(.*)$ SPARQL.py [L]
 
 RewriteCond %{REQUEST_METHOD} =MKCOL [OR]
+RewriteCond %{REQUEST_METHOD} =PATCH [OR]
 RewriteCond %{REQUEST_METHOD} =POST [OR]
 RewriteCond %{REQUEST_METHOD} =PUT [OR]
 RewriteCond %{REQUEST_METHOD} =DELETE
