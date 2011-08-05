@@ -88,7 +88,7 @@ namespace RDF {
             $this->_n_0 = librdf_new_node_from_literal($this->_world, 0, null, 0);
 
             if ($storage == 'memory' && $this->exists())
-                $this->append('turtle', file_get_contents($this->_name));
+                $this->append_file('turtle', "file://{$this->_name}", $this->_base);
         }
         function exists() { return $this->_exists; }
         function save() {
@@ -139,10 +139,19 @@ namespace RDF {
             return librdf_model_size($this->_model);
         }
         function append($content_type, $content) {
-            //echo "parsing $content_type: ".strlen($content)." bytes\n";
             $p = librdf_new_parser($this->_world, $content_type, null, null);
             $r = librdf_parser_parse_string_into_model($p, $content, $this->_base_uri, $this->_model);
             librdf_free_parser($p);
+            return $r == 0;
+        }
+        function append_file($content_type, $file, $base=null) {
+            $p = librdf_new_parser($this->_world, $content_type, null, null);
+            $file_uri = librdf_new_uri($this->_world, $file);
+            $base_uri = librdf_new_uri($this->_world, is_null($base)?$this->_base:$base);
+            $r = librdf_parser_parse_into_model($p, $file_uri, $base_uri, $this->_model);
+            librdf_free_parser($p);
+            librdf_free_uri($base_uri);
+            librdf_free_uri($file_uri);
             return $r == 0;
         }
         function load($uri) {
