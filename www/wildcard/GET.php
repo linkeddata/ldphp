@@ -72,12 +72,20 @@ if ($_output == 'raw') {
 // output RDF
 if (!isset($g))
     $g = new \RDF\Graph('', $_filename, '', $_base);
-$g_size = $g->size();
 
-if (!empty($_filename) && !$g->exists() && !$g_size)
+// .ALL: directory accumulator
+if (!$g->exists() && substr($_filename, -4) == '.ALL') {
+    $_basebase = dirname($_base);
+    $_filedir = dirname($_filename);
+    $contents = scandir($_filedir);
+    foreach($contents as $item) {
+        if (strstr($item, '.')) continue;
+        $g->append_file('turtle', "file://$_filedir/$item", "$_basebase/$item");
+    }
+} elseif (!empty($_filename) && !$g->exists() && !$g->size())
     header('HTTP/1.1 404 Not Found');
 
-header('X-Triples: '.$g_size);
+header('X-Triples: '.$g->size());
 if (isset($i_query))
     header('X-Query: '.str_replace(array("\r","\n"), '', $i_query));
 
