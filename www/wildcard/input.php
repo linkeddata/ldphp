@@ -8,11 +8,11 @@ $_content_type = isset($_SERVER['CONTENT_TYPE']) ? $_SERVER['CONTENT_TYPE'] : ''
 
 // negotiation: setup type maps
 $_content_type_map = array(
-    '/rdf+n3' => 'turtle',
-    '/n3' => 'turtle',
     '/turtle' => 'turtle',
-    '/rdf+nt' => 'ntriples',
+    '/n3' => 'turtle',
     '/nt' => 'ntriples',
+    '/rdf+n3' => 'turtle',
+    '/rdf+nt' => 'ntriples',
     '/rdf+xml' => 'rdfxml',
     '/rdf' => 'rdfxml',
     '/html' => 'rdfa',

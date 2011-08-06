@@ -20,14 +20,14 @@ asort($_accept_data, SORT_NUMERIC);
 $_accept_data = array_reverse($_accept_data);
 
 $_accept_type_map = array(
-    '/rdf+n3' => 'turtle',
-    '/n3' => 'turtle',
+    '/json' => 'json',
     '/turtle' => 'turtle',
-    '/rdf+nt' => 'ntriples',
+    '/n3' => 'turtle',
     '/nt' => 'ntriples',
+    '/rdf+n3' => 'turtle',
+    '/rdf+nt' => 'ntriples',
     '/rdf+xml' => 'rdfxml-abbrev',
     '/rdf' => 'rdfxml-abbrev',
-    '/json' => 'json',
     '/atom+xml' => 'atom',
     '/rss+xml' => 'rss-1.0',
     '/rss' => 'rss-1.0',
