@@ -33,8 +33,8 @@ if (!empty($_input) && $g->append($_input, $_data)) {
 } elseif ($_content_type == 'application/json') {
     $g->append_array(json_decode($_data, 1));
     $g->save();
-} elseif ($g->append('turtle', $_data)) {
-    $g->save();
+} else {
+    httpStatusExit(406, 'Content-Type Not Acceptable');
 }
 
 @header('X-Triples: '.$g->size());
