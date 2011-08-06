@@ -6,6 +6,7 @@
  */
 
 namespace RDF {
+    require_once('contrib/jsonld.php');
 
     function absolutize($base, $url) {
         if (!$url)
@@ -139,6 +140,7 @@ namespace RDF {
             return librdf_model_size($this->_model);
         }
         function append($content_type, $content) {
+            if ($content_type == 'json-ld') return $this->append_jsonld($content);
             $p = librdf_new_parser($this->_world, $content_type, null, null);
             $r = librdf_parser_parse_string_into_model($p, $content, $this->_base_uri, $this->_model);
             librdf_free_parser($p);
@@ -295,6 +297,30 @@ namespace RDF {
                 }
             }
             return $r;
+        }
+        function append_jsonld($content) {
+            $data = jsonld_normalize(json_decode($content));
+            foreach($data as $s_data) {
+                $s = $s_data->{'@subject'}->{'@iri'};
+                if ($s{0} == '_') continue;
+                unset($s_data->{'@subject'});
+                foreach($s_data as $p=>$p_data) {
+                    if (gettype($p_data) != 'array')
+                        $p_data = array($p_data);
+                    $o_lst = array();
+                    foreach($p_data as $o) {
+                        if (gettype($o) == 'string') {
+                            array_push($o_lst, array('type'=>'literal', 'value'=>$o));
+                        } else {
+                            $o = $o->{'@iri'};
+                            if ($o{0} == '_') continue;
+                            array_push($o_lst, array('type'=>'uri', 'value'=>$o));
+                        }
+                    }
+                    $this->append_objects($s, $p, $o_lst);
+                }
+            }
+            return true;
         }
     } // class Graph
 } // namespace RDF

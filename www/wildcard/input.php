@@ -19,6 +19,7 @@ $_content_type_map = array(
     '/xhtml' => 'rdfa',
     '/rss+xml' => 'rss-tag-soup',
     '/rss' => 'rss-tag-soup',
+    '/json-ld' => 'json-ld',
 );
 
 // negotiation: process HTTP Content-Type
