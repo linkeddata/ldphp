@@ -166,9 +166,10 @@ namespace RDF {
                 $r['type'] = 'uri';
                 $r['value'] = substr($r['value'], 1, -1);
             } elseif (librdf_node_is_literal($node)) {
-                $r['type'] == 'literal';
+                $r['type'] = 'literal';
                 $r['value'] = substr($r['value'], 1, -1);
             } elseif (librdf_node_is_blank($node)) {
+                $r['type'] = 'bnode';
             }
             return $r;
         }
@@ -263,8 +264,11 @@ namespace RDF {
             return $r;
         }
         function append_objects($s, $p, $lst) {
-            if (!is_null($s)) { $s = librdf_new_node_from_uri_string($this->_world, absolutize($this->_base, $s)); }
-            if (!is_null($p)) { $p = librdf_new_node_from_uri_string($this->_world, absolutize($this->_base, $p)); }
+            if (!is_null($s))
+                $s = (strlen($s) > 1 && $s{0} == '_' && $s{1} == ':')
+                   ? librdf_new_node_from_blank_identifier($this->_world, $s)
+                   : librdf_new_node_from_uri_string($this->_world, absolutize($this->_base, $s));
+            if (!is_null($p)) $p = librdf_new_node_from_uri_string($this->_world, absolutize($this->_base, $p));
             $r = 0;
             foreach ($lst as $elt) {
                 if (isset($elt['type']) && isset($elt['value'])) {
@@ -272,6 +276,8 @@ namespace RDF {
                         $o = librdf_new_node_from_literal($this->_world, $elt['value'], NULL, 0);
                     } elseif ($elt['type'] == 'uri') {
                         $o = librdf_new_node_from_uri_string($this->_world, absolutize($this->_base, $elt['value']));
+                    } elseif ($elt['type'] == 'bnode') {
+                        $o = librdf_new_node_from_blank_identifier($this->_world, $elt['value']);
                     }
                     $r += librdf_model_add($this->_model, $s, $p, $o) ? 0 : 1;
                     //$o && librdf_free_node($o);
@@ -304,19 +310,20 @@ namespace RDF {
             $data = jsonld_normalize(json_decode($content));
             foreach($data as $s_data) {
                 $s = $s_data->{'@subject'}->{'@iri'};
-                if ($s{0} == '_') continue;
                 unset($s_data->{'@subject'});
                 foreach($s_data as $p=>$p_data) {
                     if (gettype($p_data) != 'array')
                         $p_data = array($p_data);
                     $o_lst = array();
                     foreach($p_data as $o) {
-                        if (gettype($o) == 'string') {
-                            array_push($o_lst, array('type'=>'literal', 'value'=>$o));
-                        } else {
+                        if (gettype($o) == 'object') {
                             $o = $o->{'@iri'};
-                            if ($o{0} == '_') continue;
-                            array_push($o_lst, array('type'=>'uri', 'value'=>$o));
+                            if (strlen($o) > 1 && $o{0} == '_' && $o{1} == ':')
+                                array_push($o_lst, array('type'=>'bnode', 'value'=>$o));
+                            else
+                                array_push($o_lst, array('type'=>'uri', 'value'=>$o));
+                        } else {
+                            array_push($o_lst, array('type'=>'literal', 'value'=>$o));
                         }
                     }
                     $this->append_objects($s, $p, $o_lst);
@@ -331,10 +338,10 @@ namespace RDF {
                 $elt = $this->_statement(librdf_stream_get_object($stream));
                 $d = new \stdClass();
                 $d->{'@subject'} = $elt[0]['value'];
-                if ($elt[2]['type'] == 'uri')
-                    $d->{$elt[1]['value']} = (object)array('@iri'=>$elt[2]['value']);
-                else
+                if ($elt[2]['type'] == 'literal')
                     $d->{$elt[1]['value']} = $elt[2]['value'];
+                else
+                    $d->{$elt[1]['value']} = (object)array('@iri'=>$elt[2]['value']);
                 $r[] = $d;
                 librdf_stream_next($stream);
             }
