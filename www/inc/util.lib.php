@@ -65,7 +65,7 @@ function timings($query=null) {
   }
 }
 
-function httpStatusExit($status, $message, $require=null) {
+function httpStatusExit($status, $message, $require=null, $body=null) {
     if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH']  == 'XMLHttpRequest') {
         $x_json = json_encode(array('status'=>$status,'message'=>$message));
     }
@@ -77,6 +77,8 @@ function httpStatusExit($status, $message, $require=null) {
         require_once($require);
     else
         echo "<h1>$status $message</h1>";
+    if ($body)
+        echo "<p>$body</p>";
     exit;
 }
 

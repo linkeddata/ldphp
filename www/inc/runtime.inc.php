@@ -38,35 +38,51 @@ session_start();
 require_once('rdf.lib.php');
 require_once('app.lib.php');
 
+date_default_timezone_set('America/New_York');
 import_request_variables('gp', 'i_');
 
-date_default_timezone_set('America/New_York');
-
+# init user ID
 $_user = '';
 foreach (array($_SERVER['REMOTE_USER'], sess('u:id'), sess('f:id')) as $_user) {
     if (!is_null($_user) && strlen($_user))
         break;
 }
 
+# proper Emails
 if (substr($_user, 0, 4) != 'http')
     if (substr($_user, 0, 7) != 'mailto:' && stristr($_user,'@'))
         $_user = "mailto:$_user";
 
-# domain ID
+# fallback to DNS
 if (empty($_user))
     $_user = 'dns:'.$_SERVER['REMOTE_ADDR'];
 
-# facebook ID
-$_user_name = sess('f:name');
-$_user_link = sess('f:link');
-$_user_picture = sess('f:picture');
-
+# init options
+$_options = new stdClass();
+$_options->clobber = false;
 if (file_exists(dirname(__FILE__).'/config.inc.php')) {
     require_once(dirname(__FILE__).'/config.inc.php');
+}
+if (isset($_SERVER['HTTP_X_OPTIONS']))
+foreach (explode(',',$_SERVER['HTTP_X_OPTIONS']) as $elt) {
+    $k = trim($elt);
+    $v = true;
+    if ($k[0] == 'n' && $k[1] == 'o') {
+        $k = substr($k, 2);
+        $v = false;
+    }
+    if (isset($_options->$k))
+        $_options->$k = $v;
 }
 if (!isset($_edit)) $_edit = true;
 if (!isset($_showCode)) $_showCode = true;
 
+# init user props
+$_user_name = sess('f:name');
+$_user_link = sess('f:link');
+$_user_picture = sess('f:picture');
+
+# ensure user props
 if ($_user) {
     if (!$_user_name) {
         $_user_name = basename($_user);

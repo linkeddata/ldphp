@@ -27,6 +27,8 @@ if ($_input == 'raw') {
 }
 
 $g = new \RDF\Graph('', $_filename, '', $_base);
+if (!$_options->clobber && $g->exists())
+    httpStatusExit(409, 'Resource Exists', null, 'First DELETE the resource or set X-Options: clobber');
 $g->truncate();
 if (!empty($_input) && $g->append($_input, $_data)) {
     $g->save();
