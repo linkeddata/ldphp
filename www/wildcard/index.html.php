@@ -23,10 +23,6 @@ if ($_edit) {
         <th colspan=4>Name</th>
         <th>Last Modified</th>
         <th>Size</th>
-<?php if ($_edit) { ?>
-        <th>Owner</th>
-        <th>ACL (R/W)</th>
-<?php } ?>
     </tr>
 </thead>
 <tbody>
@@ -80,14 +76,8 @@ foreach($listing as $item) {
     echo '</td><td>';
     if ($_edit)
         echo '<a href="javascript:cloud.rm(\''.$item_elt.'\');"><img src="//'.BASE_DOMAIN.'/common/images/cancel.gif" /></a>';
-    echo '</td><td>'.strftime('%c %Z', filemtime("$_filename/$item")).'</td>';
+    echo '</td><td>'.strftime('%F %X %Z', filemtime("$_filename/$item")).'</td>';
     echo '<td>'.(!$is_dir?filesize("$_filename/$item"):'').'</td>';
-    if ($_edit) {
-        echo '<td>'.$_domain_data['http://data.fm/ns/schema#owner'][0]['value'].'</td>';
-        echo '<td>'.substr(strstr($_domain_data['http://data.fm/ns/schema#aclRead'][0]['value'],'#'), 1);
-        echo '/'.substr(strstr($_domain_data['http://data.fm/ns/schema#aclWrite'][0]['value'],'#'), 1);
-        echo '</td>';
-    }
     echo '</td></tr>';
 }
 ?>

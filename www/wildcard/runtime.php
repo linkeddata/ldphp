@@ -12,7 +12,6 @@ header("X-User: $_user");
 // Cloud
 $_base = $_SERVER['SCRIPT_URI'];
 $_domain = $_SERVER['SERVER_NAME'];
-$_domain_data = $sites->SELECT_p_o("dns:$_domain");
 
 // Graph
 $_filebase = $_ENV['CLOUD_DATA'].'/'.$_SERVER['SERVER_NAME'];
