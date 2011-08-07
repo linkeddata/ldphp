@@ -130,6 +130,7 @@ namespace RDF {
             return $this->to_string('turtle');
         }
         function to_string($name) {
+            if ($name == 'json-ld') return $this->to_jsonld_string();
             $s = librdf_new_serializer($this->_world, $name, null, null);
             librdf_serializer_set_feature($s, $this->_f_writeBaseURI, $this->_n_0);
             $r = librdf_serializer_serialize_model_to_string($s, $this->_base_uri, $this->_model);
@@ -166,6 +167,7 @@ namespace RDF {
                 $r['value'] = substr($r['value'], 1, -1);
             } elseif (librdf_node_is_literal($node)) {
                 $r['type'] == 'literal';
+                $r['value'] = substr($r['value'], 1, -1);
             } elseif (librdf_node_is_blank($node)) {
             }
             return $r;
@@ -321,6 +323,23 @@ namespace RDF {
                 }
             }
             return true;
+        }
+        function to_jsonld_string() {
+            $r = array();
+            $stream = librdf_model_as_stream($this->_model);
+            while (!librdf_stream_end($stream)) {
+                $elt = $this->_statement(librdf_stream_get_object($stream));
+                $d = new \stdClass();
+                $d->{'@subject'} = $elt[0]['value'];
+                if ($elt[2]['type'] == 'uri')
+                    $d->{$elt[1]['value']} = (object)array('@iri'=>$elt[2]['value']);
+                else
+                    $d->{$elt[1]['value']} = $elt[2]['value'];
+                $r[] = $d;
+                librdf_stream_next($stream);
+            }
+            librdf_free_stream($stream);
+            return json_encode(jsonld_normalize($r));
         }
     } // class Graph
 } // namespace RDF

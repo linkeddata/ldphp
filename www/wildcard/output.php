@@ -20,6 +20,7 @@ asort($_accept_data, SORT_NUMERIC);
 $_accept_data = array_reverse($_accept_data);
 
 $_accept_type_map = array(
+    '/json-ld' => 'json-ld',
     '/json' => 'json',
     '/turtle' => 'turtle',
     '/n3' => 'turtle',
