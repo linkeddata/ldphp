@@ -70,7 +70,7 @@ newJS = function(url, callback){
 cloud = {};
 cloud.append = function(path, data) {
     data = data || ''
-    new HTTP(this.request_url+path, { method: 'post', body: data, onSuccess: function() {
+    new HTTP(this.request_url+path, { method: 'post', body: data, requestHeaders: {'Content-Type':'text/turtle'}, onSuccess: function() {
         window.location.reload();
     }});
 }
@@ -89,7 +89,7 @@ cloud.mkdir = function(path) {
     }});
 }
 cloud.put = function(path, data) {
-    new HTTP(this.request_url+path, { method: 'put', body: data, onSuccess: function() {
+    new HTTP(this.request_url+path, { method: 'put', body: data, requestHeaders: {'Content-Type':'text/turtle'}, onSuccess: function() {
         //window.location.reload();
     }});
 }
