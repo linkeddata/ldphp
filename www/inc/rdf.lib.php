@@ -81,7 +81,7 @@ namespace RDF {
             // instance state
             $this->_world = librdf_php_get_world();
             $this->_base_uri = librdf_new_uri($this->_world, $base);
-            $this->_store = librdf_new_storage($this->_world, $this->_storage, $this->_name, $options);
+            $this->_store = librdf_new_storage($this->_world, $this->_storage, $name, $options);
             $this->_model = librdf_new_model($this->_world, $this->_store, null);
 
             // const objs
