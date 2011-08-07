@@ -13,7 +13,7 @@ if (basename($_filename) == 'favicon.ico') {
 if (!in_array($_method, array('GET', 'HEAD')) && !isset($i_query))
     httpStatusExit(501, 'Not Implemented');
 
-if (!file_exists($_filename) && in_array($_filename_ext, array('turtle','n3','json','rdf','nt'))) {
+if (!file_exists($_filename) && in_array($_filename_ext, array('turtle','n3','json','rdf','nt','json-ld'))) {
     $_filename = substr($_filename, 0, -strlen($_filename_ext)-1);
     $_base = substr($_base, 0, -strlen($_filename_ext)-1);
     if ($_filename_ext == 'turtle' || $ext == 'n3') {
@@ -28,6 +28,9 @@ if (!file_exists($_filename) && in_array($_filename_ext, array('turtle','n3','js
     } elseif ($_filename_ext == 'nt') {
         $_output = 'ntriples';
         $_output_type = 'text/plain';
+    } elseif ($_filename_ext == 'json-ld') {
+        $_output = 'json-ld';
+        $_output_type = 'application/json';
     }
 }
 

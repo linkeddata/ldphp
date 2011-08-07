@@ -364,7 +364,7 @@ namespace RDF {
                 librdf_stream_next($stream);
             }
             librdf_free_stream($stream);
-            return json_encode(jsonld_normalize($r));
+            return str_replace('\\/', '/', json_encode(jsonld_normalize($r)));
         }
     } // class Graph
 } // namespace RDF
