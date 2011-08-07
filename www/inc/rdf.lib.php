@@ -161,15 +161,19 @@ namespace RDF {
             return librdf_model_load($this->_model, $uri, 'guess', null, null);
         }
         function _node($node) {
-            $r = array('value' => librdf_node_to_string($node));
+            $r = array();
             if (librdf_node_is_resource($node)) {
                 $r['type'] = 'uri';
-                $r['value'] = substr($r['value'], 1, -1);
+                $r['value'] = librdf_uri_to_string(librdf_node_get_uri($node));
             } elseif (librdf_node_is_literal($node)) {
                 $r['type'] = 'literal';
-                $r['value'] = substr($r['value'], 1, -1);
+                $r['value'] = librdf_node_get_literal_value($node);
+                $dt = librdf_node_get_literal_value_datatype_uri($node);
+                if ($dt)
+                    $r['datatype'] = librdf_uri_to_string($dt);
             } elseif (librdf_node_is_blank($node)) {
                 $r['type'] = 'bnode';
+                $r['value'] = librdf_node_get_blank_identifier($node);
             }
             return $r;
         }
@@ -273,7 +277,13 @@ namespace RDF {
             foreach ($lst as $elt) {
                 if (isset($elt['type']) && isset($elt['value'])) {
                     if ($elt['type'] == 'literal') {
-                        $o = librdf_new_node_from_literal($this->_world, $elt['value'], NULL, 0);
+                        if (isset($elt['datatype'])) {
+                            $dt = librdf_new_uri($this->_world, $elt['datatype']);
+                            $o = librdf_new_node_from_typed_literal($this->_world, $elt['value'], NULL, $dt);
+                            librdf_free_uri($dt);
+                        } else {
+                            $o = librdf_new_node_from_literal($this->_world, $elt['value'], NULL, 0);
+                        }
                     } elseif ($elt['type'] == 'uri') {
                         $o = librdf_new_node_from_uri_string($this->_world, absolutize($this->_base, $elt['value']));
                     } elseif ($elt['type'] == 'bnode') {
@@ -316,14 +326,19 @@ namespace RDF {
                         $p_data = array($p_data);
                     $o_lst = array();
                     foreach($p_data as $o) {
-                        if (gettype($o) == 'object') {
+                        if (gettype($o) != 'object')
+                            $o = (object)array('@literal'=>$o);
+                        if (isset($o->{'@iri'})) {
                             $o = $o->{'@iri'};
                             if (strlen($o) > 1 && $o{0} == '_' && $o{1} == ':')
                                 array_push($o_lst, array('type'=>'bnode', 'value'=>$o));
                             else
                                 array_push($o_lst, array('type'=>'uri', 'value'=>$o));
-                        } else {
-                            array_push($o_lst, array('type'=>'literal', 'value'=>$o));
+                        } elseif (isset($o->{'@literal'})) {
+                            if (isset($o->{'@datatype'}))
+                                array_push($o_lst, array('type'=>'literal', 'value'=>$o->{'@literal'}, 'datatype'=>$o->{'@datatype'}));
+                            else
+                                array_push($o_lst, array('type'=>'literal', 'value'=>$o->{'@literal'}));
                         }
                     }
                     $this->append_objects($s, $p, $o_lst);
@@ -339,7 +354,10 @@ namespace RDF {
                 $d = new \stdClass();
                 $d->{'@subject'} = $elt[0]['value'];
                 if ($elt[2]['type'] == 'literal')
-                    $d->{$elt[1]['value']} = $elt[2]['value'];
+                    if (isset($elt[2]['datatype']))
+                        $d->{$elt[1]['value']} = (object)array('@literal'=>$elt[2]['value'],'@datatype'=>$elt[2]['datatype']);
+                    else
+                        $d->{$elt[1]['value']} = $elt[2]['value'];
                 else
                     $d->{$elt[1]['value']} = (object)array('@iri'=>$elt[2]['value']);
                 $r[] = $d;
