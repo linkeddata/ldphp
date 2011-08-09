@@ -82,7 +82,7 @@ if (!$g->exists() && substr($_filename, -4) == '.ALL') {
     $_filedir = dirname($_filename);
     $contents = scandir($_filedir);
     foreach($contents as $item) {
-        if (strstr($item, '.')) continue;
+        if (strrchr($item, '.') == '.sqlite') continue;
         $g->append_file('turtle', "file://$_filedir/$item", "$_basebase/$item");
     }
 } elseif (!empty($_filename) && !$g->exists() && !$g->size())
