@@ -14,16 +14,16 @@ if (!isset($_ENV['CLOUD_BASE'])) $_ENV['CLOUD_BASE'] = '.data.fm';
 if (!isset($_ENV['CLOUD_HOME'])) $_ENV['CLOUD_HOME'] = '/srv/cloud';
 if (!isset($_ENV['CLOUD_DATA'])) $_ENV['CLOUD_DATA'] = '/srv/clouds';
 define('BASE_DOMAIN', $_ENV['CLOUD_NAME']);
-define('BASE_URI', 'http://'.BASE_DOMAIN);
-define('BASE_HTTP', BASE_URI.'/');
+define('BASE_URI', (isHTTPS()?'https':'http').'://'.BASE_DOMAIN);
+define('BASE_HTTP', 'http://'.BASE_DOMAIN.'/');
 define('X_AGENT', isset($_SERVER['X_AGENT']) ? $_SERVER['X_AGENT'] : 'Mozilla');
 define('X_PAD', isset($_SERVER['X_PAD']) ? $_SERVER['X_PAD'] : '(null)');
 
 define('REQUEST_TIME', $_SERVER['REQUEST_TIME']);
 if (isHTTPS()) {
-$BASE = 'https://'.$_SERVER['SERVER_NAME'].($_SERVER['SERVER_PORT']!='443'?':'.$_SERVER['SERVER_PORT']:'');
+    $BASE = 'https://'.$_SERVER['SERVER_NAME'].($_SERVER['SERVER_PORT']!='443'?':'.$_SERVER['SERVER_PORT']:'');
 } else {
-$BASE = 'http://'.$_SERVER['SERVER_NAME'].($_SERVER['SERVER_PORT']!='80'?':'.$_SERVER['SERVER_PORT']:'');
+    $BASE = 'http://'.$_SERVER['SERVER_NAME'].($_SERVER['SERVER_PORT']!='80'?':'.$_SERVER['SERVER_PORT']:'');
 }
 $URI = isset($_SERVER['REDIRECT_URL']) ? $_SERVER['REDIRECT_URL'] : $_SERVER['REQUEST_URI'];
 define('REQUEST_BASE', $BASE);
@@ -60,6 +60,7 @@ if (empty($_user))
 # init options
 $_options = new stdClass();
 $_options->clobber = false;
+$_options->glob = false;
 if (file_exists(dirname(__FILE__).'/config.inc.php')) {
     require_once(dirname(__FILE__).'/config.inc.php');
 }

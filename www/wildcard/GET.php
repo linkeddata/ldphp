@@ -76,15 +76,14 @@ if ($_output == 'raw') {
 if (!isset($g))
     $g = new \RDF\Graph('', $_filename, '', $_base);
 
-// .ALL: directory accumulator
-if (!$g->exists() && substr($_filename, -4) == '.ALL') {
-    $_basebase = dirname($_base);
-    $_filedir = dirname($_filename);
-    $contents = scandir($_filedir);
-    foreach($contents as $item) {
+// *: glob
+if ($_options->glob && !$g->exists() && strpos($_filename, '*') !== false) {
+    foreach(glob($_filename) as $item) {
+        if (!substr($item, 0, strlen($_filebase)) == $_filebase) continue;
         $item_ext = strrchr($item, '.');
         if ($item_ext == '.sqlite' || ($item_ext && in_array(substr($item_ext, 1), $_RAW_EXT))) continue;
-        $g->append_file('turtle', "file://$_filedir/$item", "$_basebase/$item");
+        $item_uri = REQUEST_BASE.substr($item, strlen($_filebase));
+        $g->append_file('turtle', "file://$item", $item_uri);
     }
 } elseif (!empty($_filename) && !$g->exists() && !$g->size())
     header('HTTP/1.1 404 Not Found');
