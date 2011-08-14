@@ -77,8 +77,8 @@ if (!isset($g))
     $g = new \RDF\Graph('', $_filename, '', $_base);
 
 // *: glob
-if ($_options->glob && !$g->exists() && strpos($_filename, '*') !== false) {
-    foreach(glob($_filename) as $item) {
+if ($_options->glob && !$g->exists() && (strpos($_filename, '*') !== false || strpos($_filename, '{') !== false)) {
+    foreach(glob($_filename, GLOB_BRACE|GLOB_NOSORT) as $item) {
         if (!substr($item, 0, strlen($_filebase)) == $_filebase) continue;
         $item_ext = strrchr($item, '.');
         if ($item_ext == '.sqlite' || ($item_ext && in_array(substr($item_ext, 1), $_RAW_EXT))) continue;
