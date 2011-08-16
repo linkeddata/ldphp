@@ -135,6 +135,7 @@ namespace RDF {
             librdf_serializer_set_feature($s, $this->_f_writeBaseURI, $this->_n_0);
             $r = librdf_serializer_serialize_model_to_string($s, $this->_base_uri, $this->_model);
             librdf_free_serializer($s);
+            assert(strlen($r) || $this->size()<1);
             return $r;
         }
         function size() {
@@ -213,8 +214,8 @@ namespace RDF {
             }
             librdf_free_stream($stream);
             librdf_free_statement($pattern);
-            $s && librdf_free_node($s);
-            $p && librdf_free_node($p);
+            //$s && librdf_free_node($s);
+            //$p && librdf_free_node($p);
             return $r;
         }
         function query($query, $base_uri=null) {
