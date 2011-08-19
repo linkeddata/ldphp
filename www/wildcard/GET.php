@@ -103,14 +103,19 @@ if (isset($i_callback)) {
             register_shutdown_function(function() { echo '");'; });
         }
     }
-} elseif (isset($i_query)) {
+} elseif (isset($i_query) || isset($i_any)) {
     header('Content-Type: application/json');
 } else {
     header("Content-Type: $_output_type");
 }
 
 if (in_array($_method, array('GET', 'POST')))
-    if (isset($i_query)) {
+    if (isset($i_any)) {
+        echo json_encode($g->any(
+            isset($i_any['s']) ? $i_any['s'] : null,
+            isset($i_any['p']) ? $i_any['p'] : null
+        ));
+    } elseif (isset($i_query)) {
         echo $g->query($i_query);
     } else {
         echo $g->to_string($_output);

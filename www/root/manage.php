@@ -57,12 +57,16 @@ if (!count($d)) {
         echo "<a href=\"$link\">$site</a><a href=\"\"></a>";
         echo '<img class="right" src="/common/images/cancel.gif" onclick="cloud.remove(\'', $site,'\')">';
         echo "<br />";
-        foreach($sites->any("dns:$site") as $elt) {
-            $p = basename($elt[1]['value']);
-            if (substr($p, 0, 10) == 'schema#acl') {
-                $p = substr($p, 7);
-                $o = basename($elt[2]['value']);
-                echo '<dd>', $p, ': ', $o, '</dd>';
+        foreach ($sites->any("dns:$site") as $s=>$p_data) {
+            foreach ($p_data as $p=>$o_data) {
+                $p = basename($p);
+                if (substr($p, 0, 10) == 'schema#acl') {
+                    $p = substr($p, 7);
+                    foreach ($o_data as $o) {
+                        $o = basename($o['value']);
+                        echo '<dd>', $p, ': ', $o, '</dd>';
+                    }
+                }
             }
         }
         echo '<br />';

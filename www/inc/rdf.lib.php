@@ -192,7 +192,12 @@ namespace RDF {
             $pattern = librdf_new_statement_from_nodes($this->_world, $s, $p, $o);
             $stream = librdf_model_find_statements($this->_model, $pattern);
             while (!librdf_stream_end($stream)) {
-                $r[] = $this->_statement(librdf_stream_get_object($stream));
+                $q = $this->_statement(librdf_stream_get_object($stream));
+                if (!isset($r[$q[0]['value']]))
+                    $r[$q[0]['value']] = array();
+                if (!isset($r[$q[0]['value']][$q[1]['value']]))
+                    $r[$q[0]['value']][$q[1]['value']] = array();
+                $r[$q[0]['value']][$q[1]['value']][] = $q[2];
                 librdf_stream_next($stream);
             }
             librdf_free_stream($stream);
