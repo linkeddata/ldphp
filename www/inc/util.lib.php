@@ -97,3 +97,37 @@ function TAG($file, $line, $id) {
         'time' => microtime(true)
     );
 }
+
+function http($method, $uri, $content=null) {
+    $c = stream_context_create(array('http'=>array(
+        'method' => $method,
+        'header' =>"Connection: close\r\nContent-Type: application/json\r\nAccept: application/json\r\nReferer: https://{$_SERVER['SERVER_NAME']}{$_SERVER['REQUEST_URI']}\r\n",
+        'content' => $content,
+        'ignore_errors' => true,
+        'max_redirects' => 0,
+    )));
+    $f = fopen($uri, 'r', false, $c);
+    $h = stream_get_meta_data($f);
+    $r = stream_get_contents($f);
+    fclose($f);
+    $status = 0;
+    $header = array();
+    if (isset($h['wrapper_data'])) {
+        $status = array_shift($h['wrapper_data']);
+        $header['Status'] = $status;
+        $lst = explode(' ', $status);
+        if (count($lst) > 1)
+            $status = (int)$lst[1];
+        foreach ($h['wrapper_data'] as $elt) {
+            $i = strpos($elt, ': ');
+            $k = substr($elt, 0, $i);
+            if (!isset($header[$k]))
+                $header[$k] = array(substr($elt, $i+2));
+            //elseif (!is_array($header[$k]))
+            //    $header[$k] = array($header[$k], substr($elt, $i+2));
+            else
+                $header[$k][] = substr($elt, $i+2);
+        }
+    }
+    return (object)array('uri'=>$uri, 'status'=>$status, 'header'=>$header, 'body'=>$r);
+}

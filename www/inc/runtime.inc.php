@@ -25,7 +25,8 @@ if (isHTTPS()) {
 } else {
     $BASE = 'http://'.$_SERVER['SERVER_NAME'].($_SERVER['SERVER_PORT']!='80'?':'.$_SERVER['SERVER_PORT']:'');
 }
-$URI = isset($_SERVER['REDIRECT_URL']) ? $_SERVER['REDIRECT_URL'] : $_SERVER['REQUEST_URI'];
+//$URI = isset($_SERVER['REDIRECT_URL']) ? $_SERVER['REDIRECT_URL'] : $_SERVER['REQUEST_URI'];
+$URI = $_SERVER['REQUEST_URI'];
 define('REQUEST_BASE', $BASE);
 define('REQUEST_URL', $URI);
 define('REQUEST_URI', $BASE.$URI);
