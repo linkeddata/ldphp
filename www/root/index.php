@@ -5,13 +5,20 @@
  * $Id$
  */
 
+header('X-XRDS-Location: '.REQUEST_BASE.'/yadis');
 defined('HEADER') || include_once('header.php');
 if ($_edit) {
 ?>
 <div id="login" class="notice" align="center">
-    This service requires a<br /><a target="_blank" href="http://www.w3.org/wiki/WebID">WebID</a> or Facebook Login:<br /><br />
-    <a href="https://<?=BASE_DOMAIN?>/login"><img style="float: left" src="/common/images/loginWebID.png" /></a>
+    Login with <a target="_blank" href="http://www.w3.org/wiki/WebID">WebID</a>, Facebook,<br />Gmail, AOL, or Yahoo:<br /><br />
     <div style="float: right;"><fb:login-button perms="email"></fb:login-button></div>
+    <a href="https://<?=BASE_DOMAIN?>/login"><img style="float: left" src="/common/images/loginWebID.png" /></a>
+    <br /><br />
+    <form action="rely" style="float: left; clear: left;">
+    <input type="submit" name="provider" value="Gmail" />
+    <input type="submit" name="provider" value="AOL" />
+    <input type="submit" name="provider" value="Yahoo" />
+    </form>
 </div>
 <div id="fb-root"></div>
 <script type="text/javascript" src="//connect.facebook.net/en_US/all.js"></script>
