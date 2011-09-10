@@ -44,7 +44,7 @@ if (!isHTTPS()) {
 }
 
 // Web Access Control
-header('Link: /.meta; rel=meta');
+header('Link: </.meta>; rel=meta');
 $_acl = new \RDF\Graph('', file_exists("$_filebase/.meta")?"$_filebase/.meta":"$_filebase/.meta.sqlite", '', $_base);
 function wac($method,$uri=null) {
     // method: Read/Write/Control
@@ -83,6 +83,8 @@ foreach (array('REQUEST_METHOD', 'REDIRECT_REQUEST_METHOD') as $k) {
 }
 if ($_method == 'OPTIONS') {
     header('HTTP/1.1 200 OK');
+    header('Allow: GET, PUT, POST, OPTIONS, HEAD, MKCOL, DELETE, PATCH');
+    header('Accept-Patch: application/json');
     exit;
 }
 
