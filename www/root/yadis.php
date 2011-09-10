@@ -15,7 +15,7 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
   <XRD>
   <Service xmlns="xri://$xrd*($v*2.0)">
     <Type>http://specs.openid.net/auth/2.0/return_to</Type>
-    <URI><?=REQUEST_BASE?>/verify</URI>
+    <URI><?=REQUEST_BASE?>/rp_callback</URI>
   </Service>
   </XRD>
 </xrds:XRDS>

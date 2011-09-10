@@ -1,5 +1,5 @@
 <?php
-/* verify.php
+/* rp_callback.php
  * Verifies assertions returned by the IDP
  *
  * $Id$
@@ -7,10 +7,10 @@
 
 // Reference: http://code.google.com/apis/identitytoolkit/v1/reference.html#method_identitytoolkit_relyingparty_verifyAssertion
 function verify($continueUrl, $response) {
-    $q = array();
+    $q = array('userIp' => $_SERVER['REMOTE_ADDR']);
     $q['requestUri'] = $continueUrl;
     $q['postBody'] = $response;
-    $q = http('POST', 'https://www.googleapis.com/identitytoolkit/v1/relyingparty/verifyAssertion?key='.GIT_KEY, json_encode($q));
+    $q = http('POST', 'https://www.googleapis.com/identitytoolkit/v1/relyingparty/verifyAssertion?key='.GAPIKEY, json_encode($q));
     if ($q->status == 200)
         return json_decode($q->body, true);
     return array();

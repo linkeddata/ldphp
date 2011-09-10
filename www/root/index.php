@@ -14,7 +14,7 @@ if ($_edit) {
     <div style="float: right;"><fb:login-button perms="email"></fb:login-button></div>
     <a href="https://<?=BASE_DOMAIN?>/login"><img style="float: left" src="/common/images/loginWebID.png" /></a>
     <br /><br />
-    <form action="rely" style="float: left; clear: left;">
+    <form action="rp_auth" style="float: left; clear: left;">
     <input type="submit" name="provider" value="Gmail" />
     <input type="submit" name="provider" value="AOL" />
     <input type="submit" name="provider" value="Yahoo" />
