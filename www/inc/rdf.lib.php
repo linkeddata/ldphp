@@ -34,6 +34,7 @@ namespace RDF {
         private $_f_writeBaseURI;
         private $_name, $_exists, $_storage, $_base;
         function __construct($storage, $name, $options='', $base='null:/') {
+            global $_options;
             $ext = strrpos($name, '.');
             $ext = $ext ? substr($name, 1+$ext) : '';
             $this->_exists = false;
@@ -50,13 +51,11 @@ namespace RDF {
                     $name = "$name.sqlite";
                     $ext = 'sqlite';
                     $storage = 'sqlite';
-                } elseif ($ext == 'sqlite') {
+                } elseif ($ext == 'sqlite' || $_options->sqlite) {
                     $storage = 'sqlite';
                 }
             }
-            if ($storage == 'memory') {
-                $name = '';
-            } elseif ($storage == 'sqlite') {
+            if ($storage == 'sqlite') {
                 if ($ext != 'sqlite') {
                     $ext = 'sqlite';
                     $name = "$name.sqlite";
@@ -69,18 +68,16 @@ namespace RDF {
             $this->_name = $name;
             $this->_storage = $storage;
             $this->_base = $base;
-            /*
             if (DEVEL) {
                 header('X-Filename: '.$this->_name);
                 header('X-Storage: '.$this->_storage);
                 header('X-Options: '.$options);
             }
-            */
 
             // instance state
             $this->_world = librdf_php_get_world();
             $this->_base_uri = librdf_new_uri($this->_world, $base);
-            $this->_store = librdf_new_storage($this->_world, $this->_storage, $name, $options);
+            $this->_store = librdf_new_storage($this->_world, $this->_storage, $this->_storage=='memory'?'':$name, $options);
             $this->_model = librdf_new_model($this->_world, $this->_store, null);
 
             // const objs
