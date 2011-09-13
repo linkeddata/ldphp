@@ -31,7 +31,7 @@ if ($_input == 'raw') {
     exit;
 }
 
-$g = new \RDF\Graph('', $_filename, '', $_base);
+$g = new \RDF\Graph($_options->sqlite ? 'sqlite' : '', $_filename, '', $_base);
 if (!empty($_input) && $g->append($_input, $_data)) {
     $g->save();
 } elseif ($_content_type == 'application/json' && $_SERVER['REQUEST_METHOD'] == 'PATCH') {

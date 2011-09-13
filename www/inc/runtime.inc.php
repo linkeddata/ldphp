@@ -62,6 +62,7 @@ if (empty($_user))
 $_options = new stdClass();
 $_options->clobber = false;
 $_options->glob = false;
+$_options->sqlite = false;
 if (file_exists(dirname(__FILE__).'/config.inc.php')) {
     require_once(dirname(__FILE__).'/config.inc.php');
 }

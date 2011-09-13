@@ -26,7 +26,7 @@ if ($_input == 'raw') {
     exit;
 }
 
-$g = new \RDF\Graph('', $_filename, '', $_base);
+$g = new \RDF\Graph($_options->sqlite ? 'sqlite' : '', $_filename, '', $_base);
 if (!$_options->clobber && $g->exists())
     httpStatusExit(409, 'Resource Exists', null, 'First DELETE the resource or set X-Options: clobber');
 $g->truncate();

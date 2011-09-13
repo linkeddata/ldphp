@@ -50,24 +50,23 @@ namespace RDF {
                     $name = "$name.sqlite";
                     $ext = 'sqlite';
                     $storage = 'sqlite';
-                } else {
-                    /*
-                    // auto-enable SQLite
-                    if ($ext != 'sqlite') {
-                        $name = "$name.sqlite";
-                        $storage = 'sqlite';
-                    }
-                    */
-                    if ($ext == 'sqlite') {
-                        $storage = 'sqlite';
-                        if (empty($options))
-                            $options = "new='yes'";
-                    }
+                } elseif ($ext == 'sqlite') {
+                    $storage = 'sqlite';
                 }
             }
-            $this->_name = $name;
-            if ($storage == 'memory')
+            if ($storage == 'memory') {
                 $name = '';
+            } elseif ($storage == 'sqlite') {
+                if ($ext != 'sqlite') {
+                    $ext = 'sqlite';
+                    $name = "$name.sqlite";
+                }
+                if (file_exists($name))
+                    $this->_exists = true;
+                if (empty($options) && !$this->exists())
+                    $options = "new='yes'";
+            }
+            $this->_name = $name;
             $this->_storage = $storage;
             $this->_base = $base;
             /*
