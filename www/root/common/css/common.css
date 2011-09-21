@@ -12,7 +12,15 @@ address { color: gray; }
 #codeID a { color: gray; }
 #codeTime { float: right; }
 
-input[type=submit], input[type=button] { border: 1px solid black; border-collapse: collapse; }
+input[type=submit], input[type=button] {
+    border: 1px solid black;
+    border-collapse: collapse;
+}
+#login input[type=submit] {
+    background-color: #6078AB;
+    color: white;
+    font-weight: bold;
+}
 div.span-icon {
     height: 16px;
     width: 16px;

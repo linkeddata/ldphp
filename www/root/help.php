@@ -17,7 +17,7 @@ $open = substr($_SERVER['SERVER_ADDR'], 0, 3) == '18.';
 <p class="cleft left">This web data platform supports several generations of standards and recommendations:</p>
 <ul class="cleft left">
 <li>Web 1 and 2: DAV, AJAX, <a target="_blank" href="http://en.wikipedia.org/wiki/JSONP">JSONP</a>, <a target="_blank" href="http://enable-cors.org/">CORS</a></li>
-<li>Semantic Web: Read/Write Linked Data, RDF/XML/JSON content negotiation, <a target="_blank" href="http://www.w3.org/TR/sparql11-query/">SPARQL 1.1</a>, and <a target="_blank" href="http://www.w3.org/wiki/WebID">WebID</a></li>
+<li>Read/Write Linked Data, RDF/XML/JSON content negotiation, <a target="_blank" href="http://www.w3.org/TR/sparql11-query/">SPARQL 1.1</a>, and <a target="_blank" href="http://www.w3.org/wiki/WebID">WebID</a></li>
 </ul>
 
 <p class="cleft left">All endpoints interpret the HTTP request URI as the base URI for RDF operations and the default-graph URI for SPARQL operations.</p>
