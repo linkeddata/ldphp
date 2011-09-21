@@ -30,7 +30,7 @@ namespace RDF {
     }
 
     class Graph {
-        private $_world, $_base_uri, $_store, $_model;
+        private $_world, $_base_uri, $_store, $_model, $_stream;
         private $_f_writeBaseURI;
         private $_name, $_exists, $_storage, $_base;
         function __construct($storage, $name, $options='', $base='null:/') {
@@ -79,6 +79,7 @@ namespace RDF {
             $this->_base_uri = librdf_new_uri($this->_world, $base);
             $this->_store = librdf_new_storage($this->_world, $this->_storage, $this->_storage=='memory'?'':$name, $options);
             $this->_model = librdf_new_model($this->_world, $this->_store, null);
+            $this->_stream = null;
 
             // const objs
             $this->_f_writeBaseURI = librdf_new_uri($this->_world, 'http://feature.librdf.org/raptor-writeBaseURI');
@@ -87,6 +88,7 @@ namespace RDF {
             if ($storage == 'memory' && $this->exists())
                 $this->append_file('turtle', "file://{$this->_name}", $this->_base);
         }
+        function base() { return $this->_base; }
         function exists() { return $this->_exists; }
         function save() {
             if ($this->_storage == 'memory' && !empty($this->_name)) {
@@ -114,6 +116,8 @@ namespace RDF {
             }
         }
         function __destruct() {
+            if ($this->_stream)
+                librdf_free_stream($this->_stream);
             // instance state
             librdf_free_model($this->_model);
             librdf_free_storage($this->_store);
@@ -136,6 +140,15 @@ namespace RDF {
         }
         function size() {
             return librdf_model_size($this->_model);
+        }
+        function to_stream() {
+            if ($this->_stream)
+                librdf_free_stream($this->_stream);
+            $this->_stream = librdf_model_as_stream($this->_model);
+            return $this->_stream;
+        }
+        function add_stream($stream) {
+            return librdf_model_add_statements($this->_model, $stream) == 0;
         }
         function append($content_type, $content) {
             if ($content_type == 'json-ld') return $this->append_jsonld($content);
