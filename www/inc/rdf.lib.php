@@ -301,25 +301,30 @@ namespace RDF {
         }
         function append_array($data) {
             $r = 0;
+            librdf_model_transaction_start($this->_model);
             foreach ($data as $s=>$s_data) {
                 foreach ($s_data as $p=>$p_data) {
                     $r += $this->append_objects($s, $p, $p_data);
                 }
             }
+            librdf_model_transaction_commit($this->_model);
             return $r;
         }
         function patch_array($data) {
             $r = 0;
+            librdf_model_transaction_start($this->_model);
             foreach ($data as $s=>$s_data) {
                 foreach ($s_data as $p=>$p_data) {
                     $r += $this->remove_any($s, $p);
                     $r += $this->append_objects($s, $p, $p_data);
                 }
             }
+            librdf_model_transaction_commit($this->_model);
             return $r;
         }
         function append_jsonld($content) {
             $data = jsonld_normalize(json_decode($content));
+            librdf_model_transaction_start($this->_model);
             foreach($data as $s_data) {
                 $s = $s_data->{'@subject'}->{'@iri'};
                 unset($s_data->{'@subject'});
@@ -346,6 +351,7 @@ namespace RDF {
                     $this->append_objects($s, $p, $o_lst);
                 }
             }
+            librdf_model_transaction_commit($this->_model);
             return true;
         }
         function to_jsonld_string() {
