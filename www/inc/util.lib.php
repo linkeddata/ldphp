@@ -66,6 +66,7 @@ function timings($query=null) {
 }
 
 function httpStatusExit($status, $message, $require=null, $body=null) {
+    global $_options, $TAGS;
     if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH']  == 'XMLHttpRequest') {
         $x_json = json_encode(array('status'=>$status,'message'=>$message));
     }

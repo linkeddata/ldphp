@@ -1,5 +1,5 @@
 <?php
-/* runtime.php
+/* runtime.inc.php
  * application main runtime
  *
  * $Id$
@@ -7,15 +7,14 @@
 
 // base dependencies
 require_once('util.lib.php');
+set_include_path(dirname(__FILE__).PATH_SEPARATOR.get_include_path());
 
 // base constants
-if (!isset($_ENV['CLOUD_NAME'])) $_ENV['CLOUD_NAME'] = 'data.fm';
-if (!isset($_ENV['CLOUD_BASE'])) $_ENV['CLOUD_BASE'] = '.data.fm';
-if (!isset($_ENV['CLOUD_HOME'])) $_ENV['CLOUD_HOME'] = '/srv/cloud';
-if (!isset($_ENV['CLOUD_DATA'])) $_ENV['CLOUD_DATA'] = '/srv/clouds';
+if (!isset($_ENV['CLOUD_NAME'])) $_ENV['CLOUD_NAME'] = $_SERVER['SERVER_NAME'];
+if (!isset($_ENV['CLOUD_BASE'])) $_ENV['CLOUD_BASE'] = strstr($_SERVER['SERVER_NAME'], '.');
+if (!isset($_ENV['CLOUD_HOME'])) $_ENV['CLOUD_HOME'] = realpath(dirname(__FILE__).'/../../');
+if (!isset($_ENV['CLOUD_DATA'])) $_ENV['CLOUD_DATA'] = $_ENV['CLOUD_HOME'].'/data';
 define('BASE_DOMAIN', $_ENV['CLOUD_NAME']);
-define('BASE_URI', (isHTTPS()?'https':'http').'://'.BASE_DOMAIN);
-define('BASE_HTTP', 'http://'.BASE_DOMAIN.'/');
 define('X_AGENT', isset($_SERVER['X_AGENT']) ? $_SERVER['X_AGENT'] : 'Mozilla');
 define('X_PAD', isset($_SERVER['X_PAD']) ? $_SERVER['X_PAD'] : '(null)');
 
@@ -44,6 +43,7 @@ import_request_variables('gp', 'i_');
 
 # init user ID
 $_user = '';
+if (!isset($_SERVER['REMOTE_USER'])) $_SERVER['REMOTE_USER'] = '';
 foreach (array($_SERVER['REMOTE_USER'], sess('u:id'), sess('f:id')) as $_user) {
     if (!is_null($_user) && strlen($_user))
         break;
@@ -60,7 +60,11 @@ if (empty($_user))
 
 # init options
 $_options = new stdClass();
+$_options->base_url = '';
 $_options->clobber = false;
+$_options->coderev = true;
+$_options->debug = true;
+$_options->editui = true;
 $_options->glob = false;
 $_options->sqlite = false;
 if (file_exists(dirname(__FILE__).'/config.inc.php')) {
@@ -77,13 +81,11 @@ foreach (explode(',',$_SERVER['HTTP_X_OPTIONS']) as $elt) {
     if (isset($_options->$k))
         $_options->$k = $v;
 }
-if (!isset($_edit)) $_edit = true;
-if (!isset($_showCode)) $_showCode = true;
 
 # init user props
 $_user_name = sess('f:name');
-$_user_link = sess('f:link');
-$_user_picture = sess('f:picture');
+if (!isSess('u:link')) sess('u:link', sess('f:link'));
+if (!isSess('u:link')) sess('u:link', $_user);
 
 # ensure user props
 if ($_user) {
@@ -93,8 +95,8 @@ if ($_user) {
         if ($c > 0)
             $_user_name = substr($_user_name, $c+1);
     }
-    if (!$_user_link)
-        $_user_link = $_user;
+    if (!isSess('u:name')) sess('u:name', $_user_name);
+    if (!isSess('u:id')) sess('u:id', $_user);
 }
 
 TAG(__FILE__, __LINE__, '$Id$');

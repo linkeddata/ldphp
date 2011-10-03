@@ -4,6 +4,8 @@
 #
 # $Id$
 
+require_once('runtime.php');
+
 $_content_type = isset($_SERVER['CONTENT_TYPE']) ? $_SERVER['CONTENT_TYPE'] : '';
 
 // negotiation: setup type maps

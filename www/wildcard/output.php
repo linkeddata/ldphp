@@ -4,6 +4,8 @@
 #
 # $Id$
 
+require_once('runtime.php');
+
 // negotiation: parse HTTP Accept
 $_accept = isset($_SERVER['HTTP_ACCEPT']) ? $_SERVER['HTTP_ACCEPT'] : '';
 $_accept_list = array();

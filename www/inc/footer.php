@@ -17,15 +17,15 @@ if (isset($timings)) {
         $sparql_t += $t['time'];
     }
 }
-if ($_showCode) {
+if ($_options->coderev) {
 ?>
 <hr style="margin-top: 1em; margin-bottom: 0;" />
 <address>
 <?php
-$src = explode('/', $_SERVER['SCRIPT_FILENAME']);
+$src = explode('/', __FILE__);
 $src = array_slice($src, array_search('www', $src));
 $src = implode('/', $src);
-$src = "http://dig.xvm.mit.edu/redmine/projects/data-fm/repository/entry/trunk/$src";
+$src = "https://github.com/presbrey/data.fm/tree/master/$src";
 ?>
 <span id="codeID" style="display: none;"><a href="<?=$src?>"><?=$caller['id']?></a></span>
 <span id="codeTime" onclick="$('codeID').toggle();">generated in <?=substr($time, 0, 6)?>s

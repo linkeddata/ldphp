@@ -5,6 +5,8 @@
  * $Id$
  */
 
+require_once('runtime.php');
+
 // permissions
 if (empty($_user))
     httpStatusExit(401, 'Unauthorized');

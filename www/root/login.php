@@ -26,7 +26,7 @@ if (isset($i_display) && $i_display == 'popup') {
     }
     header('Location: '.REQUEST_BASE.'/login');
 } elseif (!$_user && !isHTTPS()) {
-    header('Location: https://'.BASE_DOMAIN.'/login?'.newQSA());
+    header('Location: https://'.BASE_DOMAIN.$_options->base_url.'/login?'.newQSA());
 } elseif (!$_user) {
     require_once('401.php');
 } else {

@@ -5,13 +5,15 @@
  * $Id$
  */
 
+require_once('runtime.php');
+
 $TITLE = 'Index of '.$_request_url;
 defined('HEADER') || include_once('header.php');
-if (!isset($_edit)) $_edit = true;
-if ($_edit) {
+if (!isset($_options->editui)) $_options->editui = true;
+if ($_options->editui) {
 ?>
 <div id="editor" class="notice" style="position: fixed; top: 5%; left: 20%; display: none;">
-    <img class="clear right" src="//<?=BASE_DOMAIN?>/common/images/cancel.gif" onclick="$(this).up().hide()" />
+    <img class="clear right" src="//<?=BASE_DOMAIN.$_options->base_url?>/common/images/cancel.gif" onclick="$(this).up().hide()" />
     <input class="cleft left" style="margin: 0;" type="text" id="editorpath" placeholder="loading..." />
     <textarea class="clear left" id="editorarea" style="width: 50em; bottom: 2em" disabled="disabled"></textarea>
     <input class="clear right" type="button" value="Save" onclick="cloud.save();" />
@@ -49,8 +51,8 @@ foreach($listing as $item) {
         $item_elt = "$item_elt$_ext";
 
     echo '<tr><td>';
-    if ($_edit && !$is_dir) {
-        echo '<a href="javascript:cloud.edit(\''.$item_elt.'\');"><img src="//'.BASE_DOMAIN.'/common/images/pencil.gif" /></a> ';
+    if ($_options->editui && !$is_dir) {
+        echo '<a href="javascript:cloud.edit(\''.$item_elt.'\');"><img src="//'.BASE_DOMAIN.$_options->base_url.'/common/images/pencil.gif" /></a> ';
     }
     echo '</td><td>';
     echo '<a href="', $item_elt, '">', $item_elt, '</a>';
@@ -61,7 +63,7 @@ foreach($listing as $item) {
         echo 'Directory';
     } elseif (in_array($item_ext, $_RAW_EXT)) {
         echo 'text/', $item_ext=='js'?'javascript':$item_ext;
-    } elseif ($_edit) {
+    } elseif ($_options->editui) {
         echo 'text/turtle';
         $i = 0;
         foreach (array(
@@ -74,15 +76,15 @@ foreach($listing as $item) {
         }
     }
     echo '</td><td>';
-    if ($_edit)
-        echo '<a href="javascript:cloud.rm(\''.$item_elt.'\');"><img src="//'.BASE_DOMAIN.'/common/images/cancel.gif" /></a>';
+    if ($_options->editui)
+        echo '<a href="javascript:cloud.rm(\''.$item_elt.'\');"><img src="//'.BASE_DOMAIN.$_options->base_url.'/common/images/cancel.gif" /></a>';
     echo '</td><td>'.strftime('%F %X %Z', filemtime("$_filename/$item")).'</td>';
     echo '<td>'.(!$is_dir?filesize("$_filename/$item"):'').'</td>';
     echo '</td></tr>';
 }
 ?>
 </tbody>
-<?php if ($_edit) { ?>
+<?php if ($_options->editui) { ?>
 <tfoot>
     <tr>
         <td colspan=7>
@@ -94,7 +96,7 @@ foreach($listing as $item) {
 </tfoot>
 <?php } ?>
 </table>
-<?php if ($_edit) { ?>
+<?php if ($_options->editui) { ?>
 <script type="text/javascript">
 $(document).observe('keydown', function(e) {
     if (e.keyCode == 27) { // ESC

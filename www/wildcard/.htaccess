@@ -20,6 +20,7 @@ RewriteEngine On
 RewriteCond %{REQUEST_METHOD} =GET [OR]
 RewriteCond %{REQUEST_METHOD} =HEAD [OR]
 RewriteCond %{REQUEST_METHOD} =OPTIONS
+RewriteCond %{REQUEST_URI} !/common/
 RewriteRule ^(.*)$ GET.php [L]
 
 RewriteCond %{REQUEST_METHOD} =POST

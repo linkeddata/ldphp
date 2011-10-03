@@ -5,11 +5,16 @@
  * $Id$
  */
 
+require_once(dirname(__FILE__).'/../inc/runtime.inc.php');
+
 $_RAW_EXT = array('css', 'html', 'js');
-require_once('runtime.inc.php');
 header("X-User: $_user");
 
 // Cloud
+if (!isset($_SERVER['SCRIPT_URL']))
+    $_SERVER['SCRIPT_URL'] = isset($_SERVER['REDIRECT_URL']) ? $_SERVER['REDIRECT_URL'] : $_SERVER['REQUEST_URI'];
+if (!isset($_SERVER['SCRIPT_URI']))
+    $_SERVER['SCRIPT_URI'] = REQUEST_BASE.$_SERVER['SCRIPT_URL'];
 $_base = $_SERVER['SCRIPT_URI'];
 $_domain = $_SERVER['SERVER_NAME'];
 
@@ -23,6 +28,10 @@ if (!strlen($_filename) || $_filename[0] != '/')
 if (substr($_filename, 0, strlen($_filebase)) != $_filebase)
     $_filename = "$_filebase$_filename";
 $_request_url = substr($_filename, strlen($_filebase));
+
+if ($_options->debug) {
+    header('X-Filename: '.$_filename);
+}
 
 // HTTP Access Control
 if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS'])) {
@@ -44,8 +53,9 @@ if (!isHTTPS()) {
 }
 
 // Web Access Control
-header('Link: </.meta>; rel=meta');
-$_acl = new \RDF\Graph('', file_exists("$_filebase/.meta")?"$_filebase/.meta":"$_filebase/.meta.sqlite", '', $_base);
+header('Link: <'.$_options->base_url.'/.meta>; rel=meta');
+$_metabase = $_filebase.$_options->base_url;
+$_acl = new \RDF\Graph('', file_exists("$_metabase/.meta.sqlite")?"$_metabase/.meta":"$_metabase/.meta", '', $_base);
 function wac($method,$uri=null) {
     // method: Read/Write/Control
     global $_acl, $_user, $_base;

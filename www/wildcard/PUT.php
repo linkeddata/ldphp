@@ -5,6 +5,8 @@
  * $Id$
  */
 
+require_once('runtime.php');
+
 // permissions
 $acl_public = \sites\is_public_write($_domain);
 if ($acl_public && !empty($_user)) {

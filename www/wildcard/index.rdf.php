@@ -5,6 +5,8 @@
  * $Id$
  */
 
+require_once('runtime.php');
+
 $g = new \RDF\Graph('memory', '', '', $_base);
 
 $listing = array();

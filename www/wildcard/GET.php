@@ -5,8 +5,10 @@
  * $Id$
  */
 
+require_once('runtime.php');
+
 if (basename($_filename) == 'favicon.ico') {
-    header('Location: http'.(isHTTPS()?'s':'').'://'.BASE_DOMAIN.'/favicon.ico');
+    header('Location: http'.(isHTTPS()?'s':'').'://'.BASE_DOMAIN.$_options->base_url.'/favicon.ico');
     exit;
 } 
 
@@ -16,7 +18,7 @@ if (!in_array($_method, array('GET', 'HEAD')) && !isset($i_query))
 if (!file_exists($_filename) && in_array($_filename_ext, array('turtle','n3','json','rdf','nt','json-ld'))) {
     $_filename = substr($_filename, 0, -strlen($_filename_ext)-1);
     $_base = substr($_base, 0, -strlen($_filename_ext)-1);
-    if ($_filename_ext == 'turtle' || $ext == 'n3') {
+    if ($_filename_ext == 'turtle' || $_filename_ext == 'n3') {
         $_output = 'turtle';
         $_output_type = 'text/turtle';
     } elseif ($_filename_ext == 'json') {

@@ -68,7 +68,7 @@ namespace RDF {
             $this->_name = $name;
             $this->_storage = $storage;
             $this->_base = $base;
-            if (DEVEL) {
+            if (False && DEVEL) {
                 header('X-Filename: '.$this->_name);
                 header('X-Storage: '.$this->_storage);
                 header('X-Options: '.$options);

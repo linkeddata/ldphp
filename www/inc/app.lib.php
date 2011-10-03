@@ -6,6 +6,7 @@
  */
 
 namespace sites {
+    require_once('rdf.lib.php');
     $sites = new \RDF\Graph('sqlite', $_ENV['CLOUD_DATA'].'/clouds.sqlite', '', 'http://data.fm/ns/schema');
     function is_valid($name) {
         $r = gettype($name) == 'string' && strlen($name) > 3;

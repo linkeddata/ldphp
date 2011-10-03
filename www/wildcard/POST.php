@@ -1,9 +1,12 @@
 <?php
 /* POST.php
  * service HTTP POST controller
+ * (PATCH is a variant of POST)
  *
  * $Id$
  */
+
+require_once('runtime.php');
 
 if (isset($i_query)) {
     require_once('GET.php');
