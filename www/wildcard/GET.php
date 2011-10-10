@@ -90,8 +90,8 @@ if ($_options->glob && !$g->exists() && (strpos($_filename, '*') !== false || st
 } elseif (!empty($_filename) && !$g->exists() && !$g->size())
     header('HTTP/1.1 404 Not Found');
 
-if (isset($i_poll) && is_array($i_poll)) {
-    $etag = isset($i_poll['etag']) ? $i_poll['etag'] : null;
+if (isset($i_wait)) {
+    $etag = (is_array($i_wait) && isset($i_wait['etag'])) ? $i_wait['etag'] : $g->etag();
     while ($etag == $g->etag()) {
         sleep(1);
         clearstatcache();
@@ -99,7 +99,10 @@ if (isset($i_poll) && is_array($i_poll)) {
     $g->reload();
 }
 
-header('ETag: '.$g->etag());
+$etag = $g->etag();
+if ($etag)
+    header('ETag: '.$etag);
+
 header('X-Triples: '.$g->size());
 if (isset($i_query))
     header('X-Query: '.str_replace(array("\r","\n"), '', $i_query));
