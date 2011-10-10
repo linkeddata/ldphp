@@ -90,6 +90,16 @@ if ($_options->glob && !$g->exists() && (strpos($_filename, '*') !== false || st
 } elseif (!empty($_filename) && !$g->exists() && !$g->size())
     header('HTTP/1.1 404 Not Found');
 
+if (isset($i_poll) && is_array($i_poll)) {
+    $etag = isset($i_poll['etag']) ? $i_poll['etag'] : null;
+    while ($etag == $g->etag()) {
+        sleep(1);
+        clearstatcache();
+    }
+    $g->reload();
+}
+
+header('ETag: '.$g->etag());
 header('X-Triples: '.$g->size());
 if (isset($i_query))
     header('X-Query: '.str_replace(array("\r","\n"), '', $i_query));

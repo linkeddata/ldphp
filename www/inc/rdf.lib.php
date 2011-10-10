@@ -30,7 +30,7 @@ namespace RDF {
     }
 
     class Graph {
-        private $_world, $_base_uri, $_store, $_model, $_stream;
+        private $_world, $_base_uri, $_options, $_store, $_model, $_stream;
         private $_f_writeBaseURI;
         private $_name, $_exists, $_storage, $_base;
         function __construct($storage, $name, $options='', $base='null:/') {
@@ -67,29 +67,52 @@ namespace RDF {
             }
             $this->_name = $name;
             $this->_storage = $storage;
+            $this->_options = $options;
             $this->_base = $base;
-            if (False && DEVEL) {
-                header('X-Filename: '.$this->_name);
-                header('X-Storage: '.$this->_storage);
-                header('X-Options: '.$options);
-            }
 
             // instance state
             $this->_world = librdf_php_get_world();
             $this->_base_uri = librdf_new_uri($this->_world, $base);
-            $this->_store = librdf_new_storage($this->_world, $this->_storage, $this->_storage=='memory'?'':$name, $options);
-            $this->_model = librdf_new_model($this->_world, $this->_store, null);
             $this->_stream = null;
 
             // const objs
             $this->_f_writeBaseURI = librdf_new_uri($this->_world, 'http://feature.librdf.org/raptor-writeBaseURI');
             $this->_n_0 = librdf_new_node_from_literal($this->_world, 0, null, 0);
 
-            if ($storage == 'memory' && $this->exists())
-                $this->append_file('turtle', "file://{$this->_name}", $this->_base);
+            $this->reload();
+            //$this->sendHeaders();
+        }
+        function reload() {
+            if ($this->_model)
+                librdf_free_model($this->_model);
+            if ($this->_store)
+                librdf_free_storage($this->_store);
+            $this->_store = librdf_new_storage(
+                $this->_world, $this->_storage,
+                $this->_storage == 'memory' ? '' : $this->_name,
+                $this->_options
+            );
+            $this->_model = librdf_new_model($this->_world, $this->_store, null);
+            $this->_exists = $this->_model ? true : false;
+            if ($this->_storage == 'memory') {
+                if ($this->exists())
+                    $this->append_file('turtle', "file://{$this->_name}", $this->_base);
+            }
+        }
+        function sendHeaders() {
+            header('X-Base: '.$this->_base);
+            header('X-Filename: '.$this->_name);
+            header('X-Size: '.$this->size());
+            header('X-Storage: '.$this->_storage);
+            header('X-Options: '.$this->_options);
         }
         function base() { return $this->_base; }
         function exists() { return $this->_exists; }
+        function etag() {
+            if ($this->exists()) {
+                return filemtime($this->_name).'-'.md5(file_get_contents($this->_name, false, null, -1, 1024000));
+            }
+        }
         function save() {
             if ($this->_storage == 'memory' && !empty($this->_name)) {
                 file_put_contents($this->_name, $this->__toString());
