@@ -5,6 +5,8 @@
  * $Id$
  */
 
+require_once('runtime.php');
+
 defined('HEADER') || include_once('header.php');
 $open = substr($_SERVER['SERVER_ADDR'], 0, 3) == '18.';
 ?>

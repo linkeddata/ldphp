@@ -5,6 +5,8 @@
  * $Id$
  */
 
+require_once('runtime.php');
+
 header('Content-Type: application/xrds+xml');
 echo '<?xml version="1.0" encoding="UTF-8"?>';
 ?>

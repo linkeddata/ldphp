@@ -5,6 +5,8 @@
  * $Id$
  */
 
+require_once('runtime.php');
+
 // Reference: http://code.google.com/apis/identitytoolkit/v1/reference.html#method_identitytoolkit_relyingparty_verifyAssertion
 function verify($continueUrl, $response) {
     $q = array('userIp' => $_SERVER['REMOTE_ADDR']);

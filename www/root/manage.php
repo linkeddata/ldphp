@@ -5,6 +5,8 @@
  * $Id$
  */
 
+require_once('runtime.php');
+
 if (!$_user || substr($_user, 0, 4) == 'dns:') {
     require_once('401.php');
     exit;

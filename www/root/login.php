@@ -5,6 +5,8 @@
  * $Id$
  */
 
+require_once('runtime.php');
+
 if (isset($i_display) && $i_display == 'popup') {
     $next = newQSA(array('display'=>NULL));
     echo "<script>opener.document.location = '$next';window.close();</script>";

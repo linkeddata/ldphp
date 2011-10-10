@@ -4,6 +4,9 @@
  *
  * $Id$
  */
+
+require_once('runtime.php');
+
 if (isset($i_reset)) {
     sess($i_reset, null);
 }

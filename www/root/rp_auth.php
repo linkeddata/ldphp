@@ -5,6 +5,8 @@
  * $Id$
  */
 
+require_once('runtime.php');
+
 // Reference: http://code.google.com/apis/identitytoolkit/v1/reference.html#method_identitytoolkit_relyingparty_createAuthUrl
 $url = 'https://www.googleapis.com/identitytoolkit/v1/relyingparty/createAuthUrl?key='.GAPIKEY;
 $q = array(

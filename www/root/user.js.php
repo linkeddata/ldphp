@@ -1,5 +1,7 @@
 <?php
 
+require_once('runtime.php');
+
 if (!isset($i_callback))
     $i_callback = 'user';
 
