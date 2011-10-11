@@ -109,8 +109,8 @@ namespace RDF {
         function base() { return $this->_base; }
         function exists() { return $this->_exists; }
         function etag() {
-            if ($this->exists()) {
-                return filemtime($this->_name).'-'.md5(file_get_contents($this->_name, false, null, -1, 1024000));
+            if ($this->exists() && file_exists($this->_name)) {
+                return filemtime($this->_name).'-'.strtolower(md5(file_get_contents($this->_name, false, null, -1, 1024000)));
             }
         }
         function save() {
