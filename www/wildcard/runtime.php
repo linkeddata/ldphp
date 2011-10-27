@@ -55,7 +55,7 @@ if (!isHTTPS()) {
 // Web Access Control
 header('Link: <'.$_options->base_url.'/.meta>; rel=meta');
 $_metabase = $_filebase.$_options->base_url;
-$_acl = new \RDF\Graph('', file_exists("$_metabase/.meta.sqlite")?"$_metabase/.meta":"$_metabase/.meta", '', $_base);
+$_acl = new \RDF\Graph('', file_exists("$_metabase/.meta.sqlite")?"$_metabase/.meta":"$_metabase/.meta", '', REQUEST_BASE.'/.meta');
 function wac($method,$uri=null) {
     // method: Read/Write/Control
     global $_acl, $_user, $_base;
