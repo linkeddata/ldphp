@@ -10,7 +10,10 @@ require_once('runtime.php');
 $i_name = strtolower($i_name);
 $i_acl = strtolower($i_acl);
 
-$domain_uri = "dns:$i_name".$_ENV['CLOUD_BASE'];
+$base = $_ENV['CLOUD_BASE'];
+if (substr($base, 0, 1) != '.') $base = ".$base";
+
+$domain_uri = "dns:$i_name$base";
 $turtle = "<$domain_uri> <#owner> <$_user>";
 $turtle .= "; <#aclRead> <acl#$i_aclRead>";
 $turtle .= "; <#aclWrite> <acl#$i_aclWrite>";
