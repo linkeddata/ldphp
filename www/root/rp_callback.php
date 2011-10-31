@@ -23,8 +23,11 @@ $email = isset($result['verifiedEmail']) ? strtolower($result['verifiedEmail']) 
 $name = isset($result['displayName']) ? $result['displayName'] : '';
 $firstName = isset($result['firstName']) ? $result['firstName'] : '';
 $lastName = isset($result['lastName']) ? $result['lastName'] : '';
-if (strlen($email))
+if (strlen($email)) {
     sess('u:id', "mailto:$email");
+    sess('u:link', "mailto:$email");
+    sess('u:name', strlen($name) ? $name : $email);
+}
 ?>
 <script type="text/javascript">
 if (opener) {
