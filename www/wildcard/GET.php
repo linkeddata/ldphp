@@ -37,12 +37,10 @@ if (!file_exists($_filename) && in_array($_filename_ext, array('turtle','n3','js
 }
 
 // permissions
-if (!\sites\is_public($_domain)) {
-    if (empty($_user))
-        httpStatusExit(401, 'Unauthorized', '401.php');
-    elseif (!\sites\is_owner($_domain, $_user) && !wac('Read'))
-        httpStatusExit(403, 'Forbidden', '403-404.php');
-}
+if (empty($_user))
+    httpStatusExit(401, 'Unauthorized', '401.php');
+elseif (!\sites\is_owner($_domain, $_user) && !wac('Read'))
+    httpStatusExit(403, 'Forbidden', '403-404.php');
 
 // directory indexing
 if (is_dir($_filename)) {
