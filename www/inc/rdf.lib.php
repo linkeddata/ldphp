@@ -233,9 +233,9 @@ namespace RDF {
                 librdf_stream_next($stream);
             }
             librdf_free_stream($stream);
-            librdf_free_statement($pattern);
-            $s && librdf_free_node($s);
-            $p && librdf_free_node($p);
+            //librdf_free_statement($pattern);
+            //$s && librdf_free_node($s);
+            //$p && librdf_free_node($p);
             return $r;
         }
         function remove_any($s=null, $p=null, $o=null) {
@@ -250,7 +250,7 @@ namespace RDF {
                 librdf_stream_next($stream);
             }
             librdf_free_stream($stream);
-            librdf_free_statement($pattern);
+            //librdf_free_statement($pattern);
             //$s && librdf_free_node($s);
             //$p && librdf_free_node($p);
             return $r;
