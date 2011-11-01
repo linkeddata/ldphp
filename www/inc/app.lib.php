@@ -25,24 +25,6 @@ namespace sites {
             $r = count($q['results']['bindings']) < 1;
         return $r;
     }
-    function is_public($domain) {
-        global $sites;
-        $r = false;
-        $q = "SELECT ?o WHERE { <dns:$domain> <#aclRead> <acl#public> }";
-        $q = $sites->SELECT($q);
-        if (isset($q['results']['bindings']))
-            $r = count($q['results']['bindings']) > 0;
-        return $r;
-    }
-    function is_public_write($domain) {
-        global $sites;
-        $r = false;
-        $q = "SELECT ?o WHERE { <dns:$domain> <#aclWrite> <acl#public> }";
-        $q = $sites->SELECT($q);
-        if (isset($q['results']['bindings']))
-            $r = count($q['results']['bindings']) > 0;
-        return $r;
-    }
     function is_owner($domain, $uri) {
         if ($uri == 'dns:::1') return true;
         global $sites;

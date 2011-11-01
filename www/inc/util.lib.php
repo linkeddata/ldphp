@@ -54,7 +54,7 @@ function timings($query=null) {
 
   if (is_null($query)) {
     $timings[$key]['time'] = microtime(true)-$timings[$key]['time'];
-    if (mysql_error())
+    if (function_exists('mysql_error') && mysql_error())
         $timings[$key]['error'] = mysql_error();
     return true;
   } else {

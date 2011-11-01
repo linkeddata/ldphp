@@ -5,6 +5,8 @@
  * $Id$
  */
 
+require_once('../runtime.php');
+
 $_method = strtoupper($_SERVER['REQUEST_METHOD']);
 if (isset($_POST['_method'])) {
     $_method = strtoupper($_POST['_method']);

@@ -8,9 +8,7 @@
 require_once('runtime.php');
 
 // permissions
-$acl_public = \sites\is_public_write($_domain);
-if ($acl_public && !empty($_user)) {
-} elseif (empty($_user)) {
+if (empty($_user)) {
     httpStatusExit(401, 'Unauthorized');
 } elseif (!\sites\is_owner($_domain, $_user) && !wac('Write')) {
     httpStatusExit(403, 'Forbidden');

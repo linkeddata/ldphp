@@ -31,7 +31,7 @@ namespace RDF {
 
     class Graph {
         private $_world, $_base_uri, $_options, $_store, $_model, $_stream;
-        private $_f_writeBaseURI;
+        private $_f_relativeURIs, $_f_writeBaseURI;
         private $_name, $_exists, $_storage, $_base;
         function __construct($storage, $name, $options='', $base='null:/') {
             global $_options;
@@ -76,6 +76,7 @@ namespace RDF {
             $this->_stream = null;
 
             // const objs
+            $this->_f_relativeURIs = librdf_new_uri($this->_world, 'http://feature.librdf.org/raptor-relativeURIs');
             $this->_f_writeBaseURI = librdf_new_uri($this->_world, 'http://feature.librdf.org/raptor-writeBaseURI');
             $this->_n_0 = librdf_new_node_from_literal($this->_world, 0, null, 0);
 
@@ -146,6 +147,7 @@ namespace RDF {
             librdf_free_storage($this->_store);
             librdf_free_uri($this->_base_uri);
             // common
+            librdf_free_uri($this->_f_relativeURIs);
             librdf_free_uri($this->_f_writeBaseURI);
             librdf_free_node($this->_n_0);
         }
@@ -155,6 +157,8 @@ namespace RDF {
         function to_string($name) {
             if ($name == 'json-ld') return $this->to_jsonld_string();
             $s = librdf_new_serializer($this->_world, $name, null, null);
+            if ($name == 'json')
+                librdf_serializer_set_feature($s, $this->_f_relativeURIs, $this->_n_0);
             librdf_serializer_set_feature($s, $this->_f_writeBaseURI, $this->_n_0);
             $r = librdf_serializer_serialize_model_to_string($s, $this->_base_uri, $this->_model);
             librdf_free_serializer($s);
@@ -233,9 +237,9 @@ namespace RDF {
                 librdf_stream_next($stream);
             }
             librdf_free_stream($stream);
-            librdf_free_statement($pattern);
-            $s && librdf_free_node($s);
-            $p && librdf_free_node($p);
+            //librdf_free_statement($pattern);
+            //$s && librdf_free_node($s);
+            //$p && librdf_free_node($p);
             return $r;
         }
         function remove_any($s=null, $p=null, $o=null) {
@@ -250,7 +254,7 @@ namespace RDF {
                 librdf_stream_next($stream);
             }
             librdf_free_stream($stream);
-            librdf_free_statement($pattern);
+            //librdf_free_statement($pattern);
             //$s && librdf_free_node($s);
             //$p && librdf_free_node($p);
             return $r;
