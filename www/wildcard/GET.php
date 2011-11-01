@@ -79,7 +79,7 @@ if (!isset($g))
     $g = new \RDF\Graph('', $_filename, '', $_base);
 
 // *: glob
-if ($_options->glob && !$g->exists() && (strpos($_filename, '*') !== false || strpos($_filename, '{') !== false)) {
+if ($_options->glob && (strpos($_filename, '*') !== false || strpos($_filename, '{') !== false)) {
     foreach(glob($_filename, GLOB_BRACE|GLOB_NOSORT) as $item) {
         if (!substr($item, 0, strlen($_filebase)) == $_filebase) continue;
         $item_ext = strrchr($item, '.');
