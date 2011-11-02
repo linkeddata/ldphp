@@ -94,7 +94,7 @@ namespace RDF {
                 $this->_options
             );
             $this->_model = librdf_new_model($this->_world, $this->_store, null);
-            $this->_exists = $this->_model ? true : false;
+            $this->_exists = ($this->_name && file_exists($this->_name)) ? true : false;
             if ($this->_storage == 'memory') {
                 if ($this->exists())
                     $this->append_file('turtle', "file://{$this->_name}", $this->_base);
