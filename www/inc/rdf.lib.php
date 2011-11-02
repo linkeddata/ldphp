@@ -191,7 +191,8 @@ class Graph {
     }
     function append($content_type, $content) {
         if ($content_type == 'json-ld') return $this->append_jsonld($content);
-        elseif ($content_type == 'json' && raptor_version_decimal_get()<20004) return $this->append_array(json_decode($content,1));
+        elseif ($content_type == 'json' && raptor_version_decimal_get()<20004)
+            return $this->append_array(json_decode($content,1));
         $p = librdf_new_parser($this->_world, $content_type, null, null);
         $r = librdf_parser_parse_string_into_model($p, $content, $this->_base_uri, $this->_model);
         librdf_free_parser($p);
@@ -280,8 +281,8 @@ class Graph {
     }
     function remove_any($s=null, $p=null, $o=null) {
         $r = 0;
-        if (!is_null($s)) $s = $this->_uriNode(absolutize($this->_base, $s));
-        if (!is_null($p)) $p = $this->_uriNode(absolutize($this->_base, $p));
+        if (!is_null($s)) $s = $this->_uriNode($s);
+        if (!is_null($p)) $p = $this->_uriNode($p);
         $pattern = librdf_new_statement_from_nodes($this->_world, $s, $p, $o);
         $stream = librdf_model_find_statements($this->_model, $pattern);
         while (!librdf_stream_end($stream)) {
@@ -401,7 +402,8 @@ class Graph {
         return $r;
     }
     function patch_json($json) {
-        if (raptor_version_decimal_get()<20004) return $this->patch_array(json_decode($json,1));
+        if (raptor_version_decimal_get()<20004)
+            return $this->patch_array(json_decode($json,1));
         $r = 0;
         librdf_model_transaction_start($this->_model);
         $data = json_decode($json, 1);
