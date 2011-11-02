@@ -71,7 +71,7 @@ namespace RDF {
             $this->_base = $base;
 
             // instance state
-            $this->_world = librdf_php_get_world();
+            $this->_world = librdf_new_world();//librdf_php_get_world();
             $this->_base_uri = librdf_new_uri($this->_world, $base);
             $this->_stream = null;
 
@@ -140,6 +140,15 @@ namespace RDF {
             }
         }
         function __destruct() {
+            /*
+            if (isset($this->_uriNodes))
+                foreach ($this->_uriNodes as $elt) librdf_free_node($elt);
+            if (isset($this->_blankNodes))
+                foreach ($this->_blankNodes as $elt) librdf_free_node($elt);
+            if (isset($this->_literalNodes))
+                foreach ($this->_literalNodes as $type=>$nodes)
+                    foreach ($nodes as $elt) librdf_free_node($elt);
+            */
             if ($this->_stream)
                 librdf_free_stream($this->_stream);
             // instance state
@@ -150,6 +159,8 @@ namespace RDF {
             librdf_free_uri($this->_f_relativeURIs);
             librdf_free_uri($this->_f_writeBaseURI);
             librdf_free_node($this->_n_0);
+            if ($this->_world)
+                librdf_free_world($this->_world);
         }
         function __toString() {
             return $this->to_string('turtle');
@@ -179,6 +190,7 @@ namespace RDF {
         }
         function append($content_type, $content) {
             if ($content_type == 'json-ld') return $this->append_jsonld($content);
+            elseif ($content_type == 'json' && raptor_version_decimal_get()<20004) return $this->append_array(json_decode($content,1));
             $p = librdf_new_parser($this->_world, $content_type, null, null);
             $r = librdf_parser_parse_string_into_model($p, $content, $this->_base_uri, $this->_model);
             librdf_free_parser($p);
@@ -221,6 +233,29 @@ namespace RDF {
                 $this->_node(librdf_statement_get_object($statement))
             );
         }
+        function _uriNode($uri) {
+            if (!isset($this->_uriNodes[$uri]))
+                $r = $this->_uriNodes[$uri] = librdf_new_node_from_uri_string($this->_world, $uri);
+            else
+                $r = $this->_uriNodes[$uri];
+            return $r;
+        }
+        function _blankNode($id) {
+            if (!isset($this->_blankNodes[$id]))
+                $r = $this->_blankNodes[$id] = librdf_new_node_from_blank_identifier($this->_world, $id);
+            else
+                $r = $this->_blankNodes[$id];
+            return $r;
+        }
+        function _literalNode($value, $type=null) {
+            if (!isset($this->_literalNodes[$type]))
+                $this->_literalNodes[$type] = array();
+            if (!isset($this->_literalNodes[$type][$value]))
+                $r = $this->_literalNodes[$type][$value] = librdf_new_node_from_literal($this->_world, $value, NULL, 0);
+            else
+                $r = $this->_literalNodes[$type][$value];
+            return $r;
+        }
         function any($s=null, $p=null, $o=null) {
             $r = array();
             if (!is_null($s)) $s = librdf_new_node_from_uri_string($this->_world, absolutize($this->_base, $s));
@@ -244,8 +279,8 @@ namespace RDF {
         }
         function remove_any($s=null, $p=null, $o=null) {
             $r = 0;
-            if (!is_null($s)) $s = librdf_new_node_from_uri_string($this->_world, absolutize($this->_base, $s));
-            if (!is_null($p)) $p = librdf_new_node_from_uri_string($this->_world, absolutize($this->_base, $p));
+            if (!is_null($s)) $s = $this->_uriNode(absolutize($this->_base, $s));
+            if (!is_null($p)) $p = $this->_uriNode(absolutize($this->_base, $p));
             $pattern = librdf_new_statement_from_nodes($this->_world, $s, $p, $o);
             $stream = librdf_model_find_statements($this->_model, $pattern);
             while (!librdf_stream_end($stream)) {
@@ -309,27 +344,29 @@ namespace RDF {
             timings();
             return $r;
         }
-        function append_objects($s, $p, $lst) {
-            if (!is_null($s))
-                $s = (strlen($s) > 1 && $s{0} == '_' && $s{1} == ':')
-                   ? librdf_new_node_from_blank_identifier($this->_world, $s)
-                   : librdf_new_node_from_uri_string($this->_world, absolutize($this->_base, $s));
-            if (!is_null($p)) $p = librdf_new_node_from_uri_string($this->_world, absolutize($this->_base, $p));
+        function append_objects($s0, $p0, $lst) {
+            if (!is_null($s0))
+                $s = (strlen($s0) > 1 && $s0{0} == '_' && $s0{1} == ':')
+                   ? $this->_blankNode($s0)
+                   : $this->_uriNode(absolutize($this->_base, $s0));
+            if (!is_null($p0)) $p = $this->_uriNode(absolutize($this->_base, $p0));
             $r = 0;
             foreach ($lst as $elt) {
                 if (isset($elt['type']) && isset($elt['value'])) {
-                    if ($elt['type'] == 'literal') {
-                        if (isset($elt['datatype'])) {
-                            $dt = librdf_new_uri($this->_world, $elt['datatype']);
-                            $o = librdf_new_node_from_typed_literal($this->_world, $elt['value'], NULL, $dt);
-                            librdf_free_uri($dt);
-                        } else {
-                            $o = librdf_new_node_from_literal($this->_world, $elt['value'], NULL, 0);
-                        }
+                    $type = $elt['type'];
+                    $value = $elt['value'];
+                    $datatype = isset($elt['datatype']) ? $elt['datatype'] : '';
+                    if ($type == 'literal' && $datatype) {
+                        //$json = json_encode(array($s0=>array($p0=>array(array('type'=>'literal','value'=>$value)))));
+                        $datatype_uri = librdf_new_uri($this->_world, $datatype);
+                        $o = librdf_new_node_from_typed_literal($this->_world, $value, NULL, $datatype_uri);
+                        //librdf_free_uri($dt);
+                    } elseif ($type == 'literal') {
+                        $o = $this->_literalNode($value, null);
                     } elseif ($elt['type'] == 'uri') {
-                        $o = librdf_new_node_from_uri_string($this->_world, absolutize($this->_base, $elt['value']));
+                        $o = $this->_uriNode(absolutize($this->_base, $value));
                     } elseif ($elt['type'] == 'bnode') {
-                        $o = librdf_new_node_from_blank_identifier($this->_world, $elt['value']);
+                        $o = $this->_blankNode($value);
                     }
                     $r += librdf_model_add($this->_model, $s, $p, $o) ? 0 : 1;
                     //$o && librdf_free_node($o);
@@ -359,6 +396,20 @@ namespace RDF {
                     $r += $this->append_objects($s, $p, $p_data);
                 }
             }
+            librdf_model_transaction_commit($this->_model);
+            return $r;
+        }
+        function patch_json($json) {
+            if (raptor_version_decimal_get()<20004) return $this->patch_array(json_decode($json,1));
+            $r = 0;
+            librdf_model_transaction_start($this->_model);
+            $data = json_decode($json, 1);
+            foreach ($data as $s=>$s_data) {
+                foreach ($s_data as $p=>$p_data) {
+                    $r += $this->remove_any($s, $p);
+                }
+            }
+            $r += $this->append('json', $json);
             librdf_model_transaction_commit($this->_model);
             return $r;
         }
