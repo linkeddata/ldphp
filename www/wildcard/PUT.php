@@ -33,8 +33,8 @@ $g->truncate();
 if (!empty($_input) && $g->append($_input, $_data)) {
     $g->save();
 } elseif ($_content_type == 'application/json') {
-    $g->append_array(json_decode($_data, 1));
-    $g->save();
+    if ($g->append('json', $_data) || 1)
+        $g->save();
 } else {
     httpStatusExit(406, 'Content-Type Not Acceptable');
 }
