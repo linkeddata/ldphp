@@ -29,7 +29,7 @@ namespace sites {
         if ($uri == 'dns:::1') return true;
         global $sites;
         $r = false;
-        $q = "SELECT ?o WHERE { <dns:$domain> <#owner> <$uri> }";
+        $q = "SELECT * WHERE { <dns:$domain> <#owner> <$uri> }";
         $q = $sites->SELECT($q);
         if (isset($q['results']['bindings']))
             $r = count($q['results']['bindings']) > 0;
