@@ -13,6 +13,8 @@ header("X-User: $_user");
 // Cloud
 if (!isset($_SERVER['SCRIPT_URL']))
     $_SERVER['SCRIPT_URL'] = isset($_SERVER['REDIRECT_URL']) ? $_SERVER['REDIRECT_URL'] : $_SERVER['REQUEST_URI'];
+if (strpos($_SERVER['SCRIPT_URL'], '?'))
+    $_SERVER['SCRIPT_URL'] = strstr($_SERVER['SCRIPT_URL'], '?', true);
 if (!isset($_SERVER['SCRIPT_URI']))
     $_SERVER['SCRIPT_URI'] = REQUEST_BASE.$_SERVER['SCRIPT_URL'];
 $_base = $_SERVER['SCRIPT_URI'];
