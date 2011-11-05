@@ -77,9 +77,9 @@ function httpStatusExit($status, $message, $require=null, $body=null) {
     if ($require)
         require_once($require);
     else
-        echo "<h1>$status $message</h1>";
+        echo "<h1>$status $message</h1>\n";
     if ($body)
-        echo "<p>$body</p>";
+        echo "<p>$body</p>\n";
     exit;
 }
 
