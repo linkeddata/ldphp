@@ -72,7 +72,9 @@ class Graph {
         $this->_base = $base;
 
         // instance state
-        $this->_world = librdf_new_world();//librdf_php_get_world();
+        $this->_world = librdf_new_world();
+        if (function_exists('librdf_php_world_set_logger'))
+            librdf_php_world_set_logger($this->_world);
         $this->_base_uri = librdf_new_uri($this->_world, $base);
         $this->_stream = null;
 

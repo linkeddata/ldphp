@@ -34,6 +34,9 @@ define('REQUEST_URI', $BASE.$URI);
 session_set_cookie_params(157680000, '/', $_ENV['CLOUD_BASE']);
 session_start();
 
+if (function_exists('librdf_php_free_last_log'))
+    librdf_php_free_last_log();
+
 // application dependencies
 require_once('rdf.lib.php');
 require_once('app.lib.php');
