@@ -36,6 +36,10 @@ session_start();
 
 if (function_exists('librdf_php_free_last_log'))
     librdf_php_free_last_log();
+else {
+    function librdf_php_last_log_level(){}
+    function librdf_php_last_log_message(){}
+}
 
 // application dependencies
 require_once('rdf.lib.php');
