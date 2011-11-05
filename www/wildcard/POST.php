@@ -33,14 +33,14 @@ if ($_input == 'raw') {
 }
 
 $g = new \RDF\Graph('', $_filename, '', $_base);
-if (!empty($_input) && $g->append($_input, $_data)) {
+if (!empty($_input) && ($g->append($_input, $_data) || 1)) {
+    librdf_php_last_log_level() && httpStatusExit(400, 'Bad Request', null, librdf_php_last_log_message());
     $g->save();
 } elseif ($_content_type == 'application/json' && $_SERVER['REQUEST_METHOD'] == 'PATCH') {
-    if ($g->patch_json($_data) || 1)
+    if ($g->patch_json($_data) || 1) {
+        librdf_php_last_log_level() && httpStatusExit(400, 'Bad Request', null, librdf_php_last_log_message());
         $g->save();
-} elseif ($_content_type == 'application/json') {
-    if ($g->append('json', $_data) || 1)
-        $g->save();
+    }
 } else {
     httpStatusExit(406, 'Content-Type Not Acceptable');
 }

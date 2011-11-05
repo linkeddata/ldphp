@@ -21,6 +21,7 @@ $_content_type_map = array(
     '/xhtml' => 'rdfa',
     '/rss+xml' => 'rss-tag-soup',
     '/rss' => 'rss-tag-soup',
+    '/json' => 'json',
     '/json-ld' => 'json-ld',
 );
 
