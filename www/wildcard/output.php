@@ -34,7 +34,10 @@ $_accept_type_map = array(
     '/atom+xml' => 'atom',
     '/rss+xml' => 'rss-1.0',
     '/rss' => 'rss-1.0',
-    '/dot' => 'dot'
+    '/dot' => 'dot',
+    '/csv' => 'csv',
+    '/tsv' => 'tsv',
+    '/tab-separated-values' => 'tsv'
 );
 
 $_output = '';

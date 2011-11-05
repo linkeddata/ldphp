@@ -298,20 +298,26 @@ class Graph {
         //$p && librdf_free_node($p);
         return $r;
     }
-    function query($query, $base_uri=null) {
+    function query_to_string($query, $format, $base_uri=null) {
         timings($query);
         if (is_null($base_uri)) $base_uri = $this->_base_uri;
+        elseif (is_string($base_uri)) $base_uri = librdf_new_uri($this->_world, $base_uri);
         $q = librdf_new_query($this->_world, 'sparql', null, $query, $base_uri);
         $r = librdf_model_query_execute($this->_model, $q);
-        $json_uri = librdf_new_uri($this->_world, 'http://www.w3.org/2001/sw/DataAccess/json-sparql/');
-        $r = librdf_query_results_to_string($r, $json_uri, $base_uri);
+        if (in_array($format, array('csv', 'tsv')))
+            $format = 'http://www.w3.org/ns/formats/SPARQL_Results_'.strtoupper($format);
+        else
+            $format = 'http://www.w3.org/2001/sw/DataAccess/json-sparql/';
+        $format_uri = librdf_new_uri($this->_world, $format);
+        if ($r)
+            $r = librdf_query_results_to_string($r, $format_uri, $base_uri);
         librdf_free_query($q);
-        librdf_free_uri($json_uri);
+        librdf_free_uri($format_uri);
         timings();
         return $r;
     }
     function SELECT($query, $base_uri=null) {
-        return json_decode($this->query($query, $base_uri), 1);
+        return json_decode($this->query_to_string($query, 'json', $base_uri), 1);
     }
     function SELECT_p_o($uri, $base_uri=null) {
         $q = "SELECT * WHERE { <$uri> ?p ?o }";

@@ -129,7 +129,7 @@ if (in_array($_method, array('GET', 'POST')))
             isset($i_any['p']) ? $i_any['p'] : null
         ));
     } elseif (isset($i_query)) {
-        echo $g->query($i_query);
+        echo $g->query_to_string($i_query, $_output, $_base);
     } else {
         echo $g->to_string($_output);
     }
