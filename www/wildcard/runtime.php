@@ -29,7 +29,7 @@ if (!strlen($_filename) || $_filename[0] != '/')
     $_filename = "/$_filename";
 if (substr($_filename, 0, strlen($_filebase)) != $_filebase)
     $_filename = "$_filebase$_filename";
-$_request_url = substr($_filename, strlen($_filebase));
+$_request_path = substr($_filename, strlen($_filebase));
 
 if ($_options->debug) {
     header('X-Filename: '.$_filename);

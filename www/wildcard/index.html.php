@@ -7,7 +7,7 @@
 
 require_once('runtime.php');
 
-$TITLE = 'Index of '.$_request_url;
+$TITLE = 'Index of '.$_request_path;
 defined('HEADER') || include_once('header.php');
 if (!isset($_options->editui)) $_options->editui = true;
 if ($_options->editui) {
