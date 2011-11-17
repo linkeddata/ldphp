@@ -74,6 +74,7 @@ $_options->debug = true;
 $_options->editui = true;
 $_options->glob = false;
 $_options->sqlite = false;
+$_options->open = false;
 if (file_exists(dirname(__FILE__).'/config.inc.php')) {
     require_once(dirname(__FILE__).'/config.inc.php');
 }

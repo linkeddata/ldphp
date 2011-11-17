@@ -60,7 +60,7 @@ $_metabase = $_filebase.$_options->base_url;
 $_acl = new \RDF\Graph('', file_exists("$_metabase/.meta.sqlite")?"$_metabase/.meta":"$_metabase/.meta", '', REQUEST_BASE.'/.meta');
 function wac($method,$uri=null) {
     // method: Read/Write/Control
-    global $_acl, $_user, $_base;
+    global $_acl, $_user, $_base, $_options;
     $uri = is_null($uri) ? $_base : $uri;
     // strip trailing slash
     if (substr($uri, -1, 1) == '/')
@@ -82,7 +82,7 @@ function wac($method,$uri=null) {
             return true;
         $p = dirname($p);
     }
-    return false;
+    return $_options->open || false;
 }
 
 // HTTP Methods
