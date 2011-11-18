@@ -73,6 +73,7 @@ $_options->coderev = true;
 $_options->debug = true;
 $_options->editui = true;
 $_options->glob = false;
+$_options->recursive = false;
 $_options->sqlite = false;
 $_options->open = false;
 if (file_exists(dirname(__FILE__).'/config.inc.php')) {
