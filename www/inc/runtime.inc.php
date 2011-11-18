@@ -78,8 +78,9 @@ $_options->open = false;
 if (file_exists(dirname(__FILE__).'/config.inc.php')) {
     require_once(dirname(__FILE__).'/config.inc.php');
 }
-if (isset($_SERVER['HTTP_X_OPTIONS']))
-foreach (explode(',',$_SERVER['HTTP_X_OPTIONS']) as $elt) {
+foreach (array('HTTP_OPTIONS', 'HTTP_X_OPTIONS') as $k0)
+if (isset($_SERVER[$k0]))
+foreach (explode(',',$_SERVER[$k0]) as $elt) {
     $k = trim($elt);
     $v = true;
     if ($k[0] == 'n' && $k[1] == 'o') {
