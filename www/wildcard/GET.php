@@ -103,7 +103,7 @@ if ($etag)
 
 header('X-Triples: '.$g->size());
 if (isset($i_query))
-    header('X-Query: '.str_replace(array("\r","\n"), '', $i_query));
+    header('Query: '.str_replace(array("\r","\n"), '', $i_query));
 
 if (isset($i_callback)) {
     header('Content-Type: text/javascript');

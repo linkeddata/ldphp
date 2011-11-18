@@ -8,7 +8,7 @@
 require_once(dirname(__FILE__).'/../inc/runtime.inc.php');
 
 $_RAW_EXT = array('css', 'html', 'js');
-header("X-User: $_user");
+header("User: $_user");
 
 // Cloud
 if (!isset($_SERVER['SCRIPT_URL']))
@@ -32,7 +32,7 @@ if (substr($_filename, 0, strlen($_filebase)) != $_filebase)
 $_request_path = substr($_filename, strlen($_filebase));
 
 if ($_options->debug) {
-    header('X-Filename: '.$_filename);
+    header('Filename: '.$_filename);
 }
 
 // HTTP Access Control
