@@ -30,10 +30,15 @@ if (empty($_user))
 if (!\sites\is_owner($_domain, $_user) && !wac('Write'))
     httpStatusExit(403, 'Forbidden');
 
-$frag = strrchr($_SERVER['REQUEST_URI'], '#');
-if ($frag) {
+$any_s = null;
+if (strrchr($_SERVER['REQUEST_URI'], '#'))
+    $any_s = $_SERVER['REQUEST_URI'];
+elseif (isset($i_s))
+    $any_s = $i_s;
+
+if (!is_null($any_s)) {
     $g = new \RDF\Graph('', $_filename, '', $_SERVER['SCRIPT_URI']);
-    $r = $g->remove_any($_SERVER['REQUEST_URI']);
+    $r = strlen($any_s) ? $g->remove_any($any_s) : 0;
     header('X-Triples: '.$r);
     if ($r)
         $g->save();
