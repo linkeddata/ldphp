@@ -61,6 +61,8 @@ $_acl = new \RDF\Graph('', file_exists("$_metabase/.meta.sqlite")?"$_metabase/.m
 function wac($method,$uri=null) {
     // method: Read/Write/Control
     global $_acl, $_user, $_base, $_options;
+    if ($_options->open && !$_acl->size())
+        return true;
     $uri = is_null($uri) ? $_base : $uri;
     // strip trailing slash
     if (substr($uri, -1, 1) == '/')
@@ -82,7 +84,7 @@ function wac($method,$uri=null) {
             return true;
         $p = dirname($p);
     }
-    return ($_options->open && !$_acl->size()) || false;
+    return false;
 }
 
 // HTTP Methods
