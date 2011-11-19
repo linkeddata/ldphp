@@ -27,7 +27,7 @@ require_once('runtime.php');
 if (empty($_user))
     httpStatusExit(401, 'Unauthorized');
 
-if (!\sites\is_owner($_domain, $_user) && !wac('Write'))
+if (!wac('Write'))
     httpStatusExit(403, 'Forbidden');
 
 $any_s = null;

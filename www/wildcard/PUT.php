@@ -10,7 +10,7 @@ require_once('runtime.php');
 // permissions
 if (empty($_user)) {
     httpStatusExit(401, 'Unauthorized');
-} elseif (!\sites\is_owner($_domain, $_user) && !wac('Write')) {
+} elseif (!wac('Write')) {
     httpStatusExit(403, 'Forbidden');
 }
 
