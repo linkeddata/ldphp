@@ -33,6 +33,8 @@ if (!\sites\is_owner($_domain, $_user) && !wac('Write'))
 $any_s = null;
 if (strrchr($_SERVER['REQUEST_URI'], '#'))
     $any_s = $_SERVER['REQUEST_URI'];
+elseif (isset($i_any) && isset($i_any['s']))
+    $any_s = $i_any['s'];
 elseif (isset($i_s))
     $any_s = $i_s;
 
