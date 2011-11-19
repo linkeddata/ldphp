@@ -82,7 +82,7 @@ function wac($method,$uri=null) {
             return true;
         $p = dirname($p);
     }
-    return $_options->open || false;
+    return ($_options->open && !$_acl->size()) || false;
 }
 
 // HTTP Methods
