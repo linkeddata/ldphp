@@ -180,7 +180,8 @@ class Graph {
         return $r;
     }
     function size() {
-        return librdf_model_size($this->_model);
+        if ($this->_model)
+            return librdf_model_size($this->_model);
     }
     function to_stream() {
         if ($this->_stream)
