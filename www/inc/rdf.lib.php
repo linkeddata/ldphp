@@ -169,6 +169,7 @@ class Graph {
         return $this->to_string('turtle');
     }
     function to_string($name) {
+        if (!$this->_model) return;
         if ($name == 'json-ld') return $this->to_jsonld_string();
         $s = librdf_new_serializer($this->_world, $name, null, null);
         if ($name == 'json')
