@@ -73,21 +73,22 @@ $_options->coderev = true;
 $_options->debug = true;
 $_options->editui = true;
 $_options->glob = false;
+$_options->open = false;
 $_options->recursive = false;
 $_options->sqlite = false;
-$_options->open = false;
 if (file_exists(dirname(__FILE__).'/config.inc.php')) {
     require_once(dirname(__FILE__).'/config.inc.php');
 }
 foreach (array('HTTP_OPTIONS', 'HTTP_X_OPTIONS') as $k0)
 if (isset($_SERVER[$k0]))
 foreach (explode(',',$_SERVER[$k0]) as $elt) {
-    $k = trim($elt);
+    $k = strtolower(trim($elt));
     $v = true;
     if ($k[0] == 'n' && $k[1] == 'o') {
         $k = substr($k, 2);
         $v = false;
     }
+    if (in_array($k, array('open'))) continue;
     if (isset($_options->$k))
         $_options->$k = $v;
 }
