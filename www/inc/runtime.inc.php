@@ -34,16 +34,14 @@ define('REQUEST_URI', $BASE.$URI);
 session_set_cookie_params(157680000, '/', $_ENV['CLOUD_BASE']);
 session_start();
 
+// init RDF
 if (function_exists('librdf_php_free_last_log'))
     librdf_php_free_last_log();
 else {
     function librdf_php_last_log_level(){}
     function librdf_php_last_log_message(){}
 }
-
-// application dependencies
 require_once('rdf.lib.php');
-require_once('app.lib.php');
 
 date_default_timezone_set('America/New_York');
 import_request_variables('gp', 'i_');
