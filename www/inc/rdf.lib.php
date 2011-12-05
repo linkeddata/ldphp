@@ -403,6 +403,7 @@ class Graph {
         $r = 0;
         librdf_model_transaction_start($this->_model);
         foreach ($data as $s=>$s_data) {
+            $s = absolutize($this->_base, $s);
             foreach ($s_data as $p=>$p_data) {
                 $r += $this->remove_any($s, $p);
                 $r += $this->append_objects($s, $p, $p_data);
@@ -418,6 +419,7 @@ class Graph {
         librdf_model_transaction_start($this->_model);
         $data = json_decode($json, 1);
         foreach ($data as $s=>$s_data) {
+            $s = absolutize($this->_base, $s);
             foreach ($s_data as $p=>$p_data) {
                 $r += $this->remove_any($s, $p);
             }
