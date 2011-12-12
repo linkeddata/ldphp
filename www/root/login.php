@@ -7,6 +7,9 @@
 
 require_once('runtime.php');
 
+if (isset($i_next))
+    sess('next', $i_next);
+
 if (isset($i_display) && $i_display == 'popup') {
     $next = newQSA(array('display'=>NULL));
     echo "<script>opener.document.location = '$next';window.close();</script>";
@@ -29,8 +32,11 @@ if (isset($i_display) && $i_display == 'popup') {
     header('Location: '.REQUEST_BASE.'/login');
 } elseif (!$_user && !isHTTPS()) {
     header('Location: https://'.BASE_DOMAIN.$_options->base_url.'/login?'.newQSA());
-} elseif (!$_user) {
-    require_once('401.php');
-} else {
+} elseif (isSess('next')) {
+    $next = sess('next', null);
+    header('Location: '.$next);
+} elseif ($_user) {
     header('Location: '.REQUEST_BASE.'/manage');
+} else {
+    require_once('401.php');
 }
