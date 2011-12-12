@@ -15,7 +15,9 @@ function sess($id,$val=NULL) {
   if (func_num_args()==1) {
     return (isSess($id)?$_SESSION[$id]:NULL);
   } elseif (is_null($val)) {
-      unset($_SESSION[$id]);
+    $r = isset($_SESSION[$id]) ? $_SESSION[$id] : null;
+    unset($_SESSION[$id]);
+    return $r;
   } else {
     $prev = sess($id);
     $_SESSION[$id] = $val;
