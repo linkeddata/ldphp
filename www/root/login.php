@@ -11,6 +11,7 @@ if (isset($i_display) && $i_display == 'popup') {
     $next = newQSA(array('display'=>NULL));
     echo "<script>opener.document.location = '$next';window.close();</script>";
 } elseif (isset($i_id) && $i_id == 'facebook' && isset($i_session)) {
+    $i_session = str_replace('\\', '', $i_session);
     $session = json_decode($i_session, true);
     if (isset($session['access_token'])) {
         $q = json_decode(file_get_contents('https://graph.facebook.com/me?fields=id,name,picture,link,username,email&access_token='.$session['access_token']), true);
