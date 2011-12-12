@@ -37,7 +37,8 @@ $_accept_type_map = array(
     '/dot' => 'dot',
     '/csv' => 'csv',
     '/tsv' => 'tsv',
-    '/tab-separated-values' => 'tsv'
+    '/tab-separated-values' => 'tsv',
+    '/html' => 'html'
 );
 
 $_output = '';

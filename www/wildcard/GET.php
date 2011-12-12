@@ -43,11 +43,11 @@ elseif (!wac('Read'))
     httpStatusExit(403, 'Forbidden', '403-404.php');
 
 // directory indexing
-if (is_dir($_filename)) {
+if (is_dir($_filename) || substr($_filename,-1) == '/') {
     if (substr($_filename, -1) != '/') {
         header("Location: $_base/");
         exit;
-    } elseif (!isset($_output) || empty($_output)) {
+    } elseif (!isset($_output) || empty($_output) || $_output == 'html') {
         include_once('index.html.php');
         exit;
     } else {
@@ -69,6 +69,12 @@ if ($_output == 'raw') {
         httpStatusExit(404, 'Not Found', '403-404.php');
     if ($_method == 'GET')
         readfile($_filename);
+    exit;
+}
+
+// tabulator data skin
+if ($_output == 'html') {
+    include_once('contrib/skin.html.php');
     exit;
 }
 
