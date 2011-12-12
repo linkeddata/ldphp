@@ -213,7 +213,10 @@ class Graph {
         return $r == 0;
     }
     function load($uri) {
-        return librdf_model_load($this->_model, $uri, 'guess', null, null);
+        $uri = librdf_new_uri($this->_world, $uri);
+        $r = librdf_model_load($this->_model, $uri, 'guess', null, null);
+        librdf_free_uri($uri);
+        return $r;
     }
     function _node($node) {
         $r = array();
