@@ -174,7 +174,7 @@ Ajax.Responders.register({
 });
 
 cloud.facebookInit = function() {
-    FB.init({appId: '119467988130777', status: true, cookie: true, xfbml: true});
+    FB.init({appId: '119467988130777', status: false, cookie: false, xfbml: true});
     FB._login = FB.login;
     FB.login = function(cb, opts) {
         if (!opts) opts = {};
