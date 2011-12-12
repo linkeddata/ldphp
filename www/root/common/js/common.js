@@ -75,7 +75,7 @@ cloud.append = function(path, data) {
     }});
 }
 cloud.get = function(path) {
-    new HTTP(this.request_url+path, { method: 'get', evalJS: false, onSuccess: function(r) {
+    new HTTP(this.request_url+path, { method: 'get', evalJS: false, requestHeaders: {'Accept':'text/turtle'}, onSuccess: function(r) {
         $('editorpath').value = path;
         $('editorpath').enable();
         $('editorarea').value = r.responseText;
