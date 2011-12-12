@@ -49,7 +49,7 @@ import_request_variables('gp', 'i_');
 # init user ID
 $_user = '';
 if (!isset($_SERVER['REMOTE_USER'])) $_SERVER['REMOTE_USER'] = '';
-foreach (array($_SERVER['REMOTE_USER'], sess('u:id'), sess('f:id')) as $_user) {
+foreach (array($_SERVER['REMOTE_USER'], sess('u:id')) as $_user) {
     if (!is_null($_user) && strlen($_user))
         break;
 }
@@ -91,21 +91,17 @@ foreach (explode(',',$_SERVER[$k0]) as $elt) {
         $_options->$k = $v;
 }
 
-# init user props
-$_user_name = sess('f:name');
-if (!isSess('u:link')) sess('u:link', sess('f:link'));
-if (!isSess('u:link')) sess('u:link', $_user);
-
 # ensure user props
 if ($_user) {
-    if (!$_user_name) {
+    if (!isSess('u:id')) sess('u:id', $_user);
+    if (!isSess('u:link')) sess('u:link', $_user);
+    if (!isSess('u:name')) {
         $_user_name = basename($_user);
         $c = strpos($_user_name, ':');
         if ($c > 0)
             $_user_name = substr($_user_name, $c+1);
+        sess('u:name', $_user_name);
     }
-    if (!isSess('u:name')) sess('u:name', $_user_name);
-    if (!isSess('u:id')) sess('u:id', $_user);
 }
 
 TAG(__FILE__, __LINE__, '$Id$');
