@@ -28,12 +28,17 @@ if (strlen($email)) {
     sess('u:link', "mailto:$email");
     sess('u:name', strlen($name) ? $name : $email);
 }
+
+$next = sess('next', null);
+if (!is_string($next) || !strlen($next))
+    $next = '/login';
 ?>
 <script type="text/javascript">
+var next = <?=json_encode($next)?>;
 if (opener) {
-    opener.location = '/login';
+    opener.location = next;
     window.close();
 } else {
-    window.location = '/login';
+    window.location = next;
 }
 </script>
