@@ -10,6 +10,11 @@ require_once('runtime.php');
 if (isset($i_next))
     sess('next', $i_next);
 
+if (isset($i_provider)) {
+    header('Location: '.REQUEST_BASE.'/rp_auth'.newQSA());
+    exit;
+}
+
 if (isset($i_display) && $i_display == 'popup') {
     $next = newQSA(array('display'=>NULL));
     echo "<script>opener.document.location = '$next';window.close();</script>";
