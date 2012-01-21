@@ -19,7 +19,7 @@ if (!isset($TITLE)) {
     <script src="//<?=BASE_DOMAIN.$_options->base_url?>/common/js/prototype.js" type="text/javascript"></script>
     <script src="//<?=BASE_DOMAIN.$_options->base_url?>/common/js/common.js" type="text/javascript"></script>
     <script type="text/javascript">
-    cloud.init({request_base:'<?=REQUEST_BASE?>',request_url:'<?=$_SERVER['SCRIPT_URL']?>',user:'<?=sess('u:id')?>'});
+    cloud.init({request_base:'<?=REQUEST_BASE?>',request_url:'<?=$_SERVER['SCRIPT_URL']?>',user:'<?=$_user?>'});
     </script>
 </head>
 <body style="padding: 2em">
@@ -32,13 +32,12 @@ if (!isset($TITLE)) {
     </a></div>
     <div id="title"><h2><strong><?=$_SERVER['SERVER_NAME']?></strong>: <?=$TITLE?></h2></div>
     <div id="identity"><?php
-    $user_name = sess('u:name');
     $user_link = sess('u:link');
     if ($user_link) {
         if (stristr(sess('u:id'), 's://graph.facebook.com/'))
             echo '<div class="right"><img src="//', BASE_DOMAIN.$_options->base_url, '/common/images/facebiblio.png" /><a href="//', BASE_DOMAIN.$_options->base_url, '/logout">logout</a></div>';
         echo '<a target="_blank" href="', $user_link, '">';
-        echo '<h2 class="right">', $user_name, '</h2>';
+        echo '<h2 class="right">', sess('u:name'), '</h2>';
         echo '</a>';
     }
     ?></div>
