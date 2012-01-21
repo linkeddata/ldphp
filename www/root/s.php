@@ -27,8 +27,9 @@ function request_k(&$item, $key) {
     if (substr($key, 0, 7) == 'REMOTE_') return;
     if (substr($key, 0, 8) == 'REQUEST_') return;
     if (substr($key, 0, 7) == 'SCRIPT_') return;
+    if (substr($key, 0, 4) == 'SSL_') return;
     $item = '';
 }
-array_walk($_SERVER, request_k);
+array_walk($_SERVER, 'request_k');
 ksort($_SERVER);
 print_r(array_filter($_SERVER));
