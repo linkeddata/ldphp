@@ -47,11 +47,18 @@ date_default_timezone_set('America/New_York');
 import_request_variables('gp', 'i_');
 
 # init user ID
-$_user = '';
+$_user = $_user_name = '';
 if (!isset($_SERVER['REMOTE_USER'])) $_SERVER['REMOTE_USER'] = '';
 foreach (array($_SERVER['REMOTE_USER'], sess('u:id')) as $_user) {
     if (!is_null($_user) && strlen($_user))
         break;
+}
+
+if (!strlen($_user) && isset($_SERVER['SSL_CLIENT_CERT'])) {
+    require_once('webid.lib.php');
+    $_user = webid_verify();
+    if (strlen($_user) && isset($_SERVER['SSL_CLIENT_S_DN_CN']))
+        $_user_name = $_SERVER['SSL_CLIENT_S_DN_CN'];
 }
 
 # proper Emails
@@ -62,6 +69,8 @@ if (substr($_user, 0, 4) != 'http')
 # fallback to DNS
 if (empty($_user))
     $_user = 'dns:'.$_SERVER['REMOTE_ADDR'];
+elseif (sess('u:id') != $_user)
+    sess('u:id', $_user);
 
 # init options
 $_options = new stdClass();
@@ -92,8 +101,7 @@ foreach (explode(',',$_SERVER[$k0]) as $elt) {
 }
 
 # ensure user props
-if ($_user) {
-    if (!isSess('u:id')) sess('u:id', $_user);
+if (sess('u:id')) {
     if (!isSess('u:link')) sess('u:link', $_user);
     if (!isSess('u:name')) {
         $_user_name = basename($_user);
