@@ -24,16 +24,22 @@ function webid_claim() {
     return $r;
 }
 
+function webid_query($uri, $g=null) {
+    $r = array();
+    if (is_null($g))
+        $g = new \RDF\Graph('uri', $uri, '', $uri);
+    $q = $g->SELECT(sprintf("PREFIX : <http://www.w3.org/ns/auth/cert#> SELECT ?m ?e WHERE { <%s> :key [ :modulus ?m; :exponent ?e; ] . }", $uri));
+    if (isset($q['results']) && isset($q['results']['bindings']))
+        $r = $q['results']['bindings'];
+    return $r;
+}
+
 function webid_verify() {
     $q = webid_claim();
     if (isset($q['uri'])) {
-        $g = new \RDF\Graph('uri', $q['uri'], '', $q['uri']);
-        $d = $g->SELECT(sprintf("PREFIX : <http://www.w3.org/ns/auth/cert#> SELECT ?m ?e WHERE { <%s> :key [ :modulus ?m; :exponent ?e; ] . }", $q['uri']));
-        if (isset($d['results']) && isset($d['results']['bindings'])) {
-            foreach ($d['results']['bindings'] as $elt) {
-                if ($q['e'] == $elt['e']['value'] && $q['m'] == strtolower(preg_replace('/[^0-9a-fA-F]/', '', $elt['m']['value']))) {
-                    return $q['uri'];
-                }
+        foreach (webid_query($q['uri']) as $elt) {
+            if ($q['e'] == $elt['e']['value'] && $q['m'] == strtolower(preg_replace('/[^0-9a-fA-F]/', '', $elt['m']['value']))) {
+                return $q['uri'];
             }
         }
     }
