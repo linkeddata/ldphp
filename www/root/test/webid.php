@@ -5,21 +5,21 @@ require_once('webid.lib.php');
 header('Content-type: text/plain');
 
 $claim = webid_claim();
-if (!isset($i_uri) && isset($claim['uri']))
-    $i_uri = $claim['uri'];
-if (!isset($i_uri) || substr($i_uri, 0, 4) != 'http')
-    $i_uri = 'null:';
+if (isset($i_uri))
+    $claim['uri'][] = $i_uri;
 
-$g = new \RDF\Graph('uri', $i_uri, '', $i_uri);
-$query = webid_query($i_uri, $g);
+$query = array();
+foreach($claim['uri'] as $elt) {
+    $g = new \RDF\Graph('uri', $elt, '', $elt);
+    $query[$elt] = array(
+        'triples' => $g->size(),
+        'bindings' => webid_query($elt, $g)
+    );
+}
 
 $r = array(
     'claim' => $claim,
-    'lookup' => array(
-        'uri' => $i_uri,
-        'triples' => $g->size(),
-        'results' => $query
-    ),
+    'query' => $query,
     'verified' => webid_verify()
 );
 print_r($r);

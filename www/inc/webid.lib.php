@@ -1,7 +1,7 @@
 <?php
 
 function webid_claim() {
-    $r = array();
+    $r = array('uri'=>array());
     if (isset($_SERVER['SSL_CLIENT_CERT'])) {
         $pem = $_SERVER['SSL_CLIENT_CERT'];
         $x509 = openssl_x509_read($pem);
@@ -16,9 +16,11 @@ function webid_claim() {
 
         $d = openssl_x509_parse($x509);
         if (isset($d['extensions']) && isset($d['extensions']['subjectAltName'])) {
-            $subjectAltName = $d['extensions']['subjectAltName'];
-            if (substr($subjectAltName, 0, 4) == 'URI:')
-                $r['uri'] = substr($subjectAltName, 4);
+            foreach (explode(', ', $d['extensions']['subjectAltName']) as $elt) {
+                if (substr($elt, 0, 4) == 'URI:') {
+                    $r['uri'][] = substr($elt, 4);
+                }
+            }
         }
     }
     return $r;
@@ -37,9 +39,11 @@ function webid_query($uri, $g=null) {
 function webid_verify() {
     $q = webid_claim();
     if (isset($q['uri'])) {
-        foreach (webid_query($q['uri']) as $elt) {
-            if ($q['e'] == $elt['e']['value'] && $q['m'] == strtolower(preg_replace('/[^0-9a-fA-F]/', '', $elt['m']['value']))) {
-                return $q['uri'];
+        foreach ($q['uri'] as $uri) {
+            foreach (webid_query($uri) as $elt) {
+                if ($q['e'] == $elt['e']['value'] && $q['m'] == strtolower(preg_replace('/[^0-9a-fA-F]/', '', $elt['m']['value']))) {
+                    return $uri;
+                }
             }
         }
     }
