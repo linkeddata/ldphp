@@ -12,6 +12,14 @@
     echo '<script type="text/javascript" src="', $base, 'js/mashup/mashlib.js"></script>';
 ?>
 <script>
+
+/* http://api.jquery.com/extending-ajax/#Prefilters */
+jQuery.ajaxPrefilter(function(options) {
+    if (options.crossDomain) {
+        options.url = "https://data.fm/proxy?uri=" + encodeURIComponent(options.url);
+    }
+});
+
 jQuery(document).ready(function() {
     var uri = window.location.href;
     window.document.title = uri;
