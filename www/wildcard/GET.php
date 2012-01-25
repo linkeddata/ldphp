@@ -7,7 +7,7 @@
 
 require_once('runtime.php');
 
-if (basename($_filename) == 'favicon.ico') {
+if (False && basename($_filename) == 'favicon.ico') {
     header('Location: http'.(isHTTPS()?'s':'').'://'.BASE_DOMAIN.$_options->base_url.'/favicon.ico');
     exit;
 } 
