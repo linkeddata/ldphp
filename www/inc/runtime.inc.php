@@ -46,6 +46,21 @@ require_once('rdf.lib.php');
 date_default_timezone_set('America/New_York');
 import_request_variables('gp', 'i_');
 
+# init options
+$_options = new stdClass();
+$_options->base_url = '';
+$_options->clobber = false;
+$_options->coderev = true;
+$_options->debug = true;
+$_options->editui = true;
+$_options->glob = false;
+$_options->open = false;
+$_options->recursive = false;
+$_options->sqlite = false;
+if (file_exists(dirname(__FILE__).'/config.inc.php')) {
+    require_once(dirname(__FILE__).'/config.inc.php');
+}
+
 # init user ID
 $_user = $_user_name = '';
 if (!isset($_SERVER['REMOTE_USER'])) $_SERVER['REMOTE_USER'] = '';
@@ -72,20 +87,6 @@ if (empty($_user))
 elseif (sess('u:id') != $_user)
     sess('u:id', $_user);
 
-# init options
-$_options = new stdClass();
-$_options->base_url = '';
-$_options->clobber = false;
-$_options->coderev = true;
-$_options->debug = true;
-$_options->editui = true;
-$_options->glob = false;
-$_options->open = false;
-$_options->recursive = false;
-$_options->sqlite = false;
-if (file_exists(dirname(__FILE__).'/config.inc.php')) {
-    require_once(dirname(__FILE__).'/config.inc.php');
-}
 foreach (array('HTTP_OPTIONS', 'HTTP_X_OPTIONS') as $k0)
 if (isset($_SERVER[$k0]))
 foreach (explode(',',$_SERVER[$k0]) as $elt) {
