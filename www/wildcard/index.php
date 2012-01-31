@@ -11,7 +11,7 @@ header('Access-Control-Allow-Credentials: true');
 header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
 
 // WebDAV
-header('MS-Author-Via: SPARQL');
+header('MS-Author-Via: DAV');
 
 // REQUEST_METHOD dispatch
 if (in_array($_method, array('GET', 'HEAD', 'OPTIONS'))) {
