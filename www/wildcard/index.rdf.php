@@ -41,5 +41,5 @@ foreach($listing as $item) {
         $item_type = '<http://www.w3.org/2000/01/rdf-schema#Resource>';
     $mtime = filemtime("$_filename/$item");
     $size = filesize("$_filename/$item");
-    $g->append('turtle', "@prefix p: <http://www.w3.org/ns/posix#> . <$item_elt> a $item_type ; p:mtime $mtime ; p:size $size .");
+    $g->append('turtle', "@prefix p: <http://www.w3.org/ns/posix/stat#> . <$item_elt> a $item_type ; p:mtime $mtime ; p:size $size .");
 }
