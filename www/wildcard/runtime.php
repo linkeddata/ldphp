@@ -5,6 +5,8 @@
  * $Id$
  */
 
+define('METHODS_S', 'GET, PUT, POST, OPTIONS, HEAD, MKCOL, DELETE, PATCH');
+
 require_once(dirname(__FILE__).'/../inc/runtime.inc.php');
 
 $_RAW_EXT = array('css', 'html', 'js');
@@ -35,23 +37,23 @@ if ($_options->debug) {
     header('Filename: '.$_filename);
 }
 
+// WebDAV
+header('MS-Author-Via: DAV');
+
 // HTTP Access Control
-if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS'])) {
+if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS']))
     header('Access-Control-Allow-Headers: '.$_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS']);
-} else {
-    header('Access-Control-Allow-Headers: Content-Type, X-Prototype-Version, X-Requested-With');
-}
-if (!isHTTPS()) {
-    header('Access-Control-Allow-Origin: *');
-} else {
-    $_origin = isset($_SERVER['HTTP_ORIGIN']) ? $_SERVER['HTTP_ORIGIN'] : '';
-    $t = explode('/', $_origin);
+if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_METHOD']))
+    header('Access-Control-Allow-Methods: '.$_SERVER['HTTP_ACCESS_CONTROL_REQUEST_METHOD']);
+if (isset($_SERVER['HTTP_ORIGIN'])) {
+    $t = explode('/', $_SERVER['HTTP_ORIGIN']);
     if (count($t) > 2) {
-        $_origin = "{$t[0]}//{$t[2]}";
+        $n = "{$t[0]}//{$t[2]}";
     } else {
-        $_origin = '*';
+        $n = '*';
     }
-    header('Access-Control-Allow-Origin: '.$_origin);
+    header('Access-Control-Allow-Origin: '.$n);
+    header('Access-Control-Allow-Credentials: true');
 }
 
 // Web Access Control
@@ -96,9 +98,16 @@ foreach (array('REQUEST_METHOD', 'REDIRECT_REQUEST_METHOD') as $k) {
         break;
     }
 }
+
 if ($_method == 'OPTIONS') {
     header('HTTP/1.1 200 OK');
-    header('Allow: GET, PUT, POST, OPTIONS, HEAD, MKCOL, DELETE, PATCH');
+
+    if (!isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_METHOD']))
+        header('Access-Control-Allow-Methods: '.METHODS_S);
+    if (!isset($_SERVER['HTTP_ORIGIN']))
+        header('Access-Control-Allow-Origin: *');
+
+    header('Allow: '.METHODS_S);
     header('Accept-Patch: application/json');
     exit;
 }
