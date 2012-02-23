@@ -26,8 +26,6 @@ jQuery(document).ready(function() {
     var kb = tabulator.kb;
     var subject = kb.sym(uri);
     tabulator.outline.GotoSubject(subject, true, undefined, true, undefined);
-    if (window.history && window.history.pushState)
-        window.history.pushState({}, document.title, uri);
 });
 </script>
 </head>
