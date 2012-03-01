@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html id="docHTML">
 <head>
 <?php
     if (substr($_SERVER['SERVER_NAME'],0,4) == 'dev.') {
