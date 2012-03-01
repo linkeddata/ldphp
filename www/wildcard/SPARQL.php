@@ -43,5 +43,10 @@ foreach ($query['construct_triples'] as $elt)
         if (!in_array($elt["{$k}_type"], array('uri', 'literal')))
             queryError('unsupported node type: '.$elt[$k].' ('.$elt["{$k}_type"].')');
 
-header('HTTP/1.1 202 Accepted');
-print_r($query);
+$n = 0;
+foreach ($query['construct_triples'] as $elt) {
+    $g->append_objects($elt['s'], $elt['p'], array(array('type'=>$elt['o_type'], 'value'=>$elt['o'])));
+    $n += 1;
+}
+if ($n)
+    $g->save();
