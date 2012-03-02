@@ -31,7 +31,6 @@ if (isset($i_display) && $i_display == 'popup') {
             sess('u:link', $q['link']);
             $q['id'] = 'https://graph.facebook.com/'.$q['id'];
             sess('u:id', $q['id']);
-            $sites->append('turtle', "<{$q['id']}> <http://xmlns.com/foaf/0.1/mbox> <mailto:{$q['email']}>.");
         }
     }
     header('Location: '.REQUEST_BASE.'/login');
@@ -41,7 +40,7 @@ if (isset($i_display) && $i_display == 'popup') {
     $next = sess('next', null);
     header('Location: '.$next);
 } elseif ($_user) {
-    header('Location: '.REQUEST_BASE.'/manage');
+    header('Location: '.REQUEST_BASE.'/');
 } else {
     require_once('401.php');
 }
