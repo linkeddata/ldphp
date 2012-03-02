@@ -38,7 +38,7 @@ if ($_options->debug) {
 }
 
 // WebDAV
-header('MS-Author-Via: DAV');
+header('MS-Author-Via: DAV, SPARQL');
 
 // HTTP Access Control
 if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS']))
