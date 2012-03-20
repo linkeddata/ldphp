@@ -8,13 +8,8 @@
 require_once('runtime.php');
 
 defined('HEADER') || include_once('header.php');
-$open = substr($_SERVER['SERVER_ADDR'], 0, 3) == '18.';
 ?>
-<?php if ($open) { ?>
-<div id="welcome" class="box">
-<strong>Welcome!</strong> This <a target="_blank" href="http://www.w3.org/DesignIssues/ReadWriteLinkedData.html">Read/Write</a> <a target="_blank" href="http://www.w3.org/DesignIssues/LinkedData.html">Linked Data</a> service is free (and open-source) for educational and personal use.
-</div>
-<?php } ?>
+<a href="https://github.com/linkeddata/data.fm"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://a248.e.akamai.net/assets.github.com/img/71eeaab9d563c2b3c590319b398dd35683265e85/687474703a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f677261795f3664366436642e706e67" alt="Fork me on GitHub"></a>
 
 <p class="cleft left">This web data platform supports several generations of standards and recommendations:</p>
 <ul class="cleft left">
@@ -75,7 +70,7 @@ Specify your response type preference with an <code>Accept</code> HTTP header.</
 <p>Some query string options and response (HTTP Accept) media types are complementary.</p>
 </div>
 
-<?php if ($open) { ?>
+<?php if (substr($_SERVER['SERVER_ADDR'], 0, 3) == '18.') { ?>
 <p class="clear left">All uses of this service must comply with the <a target="_blank" href="http://ist.mit.edu/services/athena/olh/rules#mitnet">MITnet rules of use</a>.</p>
 <?php }
 TAG(__FILE__, __LINE__, '$Id$');
