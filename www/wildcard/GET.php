@@ -57,7 +57,16 @@ if (is_dir($_filename) || substr($_filename,-1) == '/') {
         include_once('index.html.php');
         exit;
     } else {
-        include_once('index.rdf.php');
+        $dirindex = true;
+        foreach (array('index') as $index) {
+            if (file_exists("$_filename/$index")) {
+                $_filename = "$_filename/$index";
+                $dirindex = false;
+                break;
+            }
+        }
+        if ($dirindex)
+            include_once('index.rdf.php');
     }
 }
 
