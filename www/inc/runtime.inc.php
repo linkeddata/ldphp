@@ -43,9 +43,8 @@ else {
 require_once('rdf.lib.php');
 
 date_default_timezone_set('America/New_York');
-extract($_GET, EXTR_OVERWRITE && EXTR_PREFIX_ALL, 'i_');
-extract($_POST, EXTR_OVERWRITE && EXTR_PREFIX_ALL, 'i_');
-//import_request_variables('gp', 'i_');
+extract($_GET, EXTR_PREFIX_ALL, 'i');
+extract($_POST, EXTR_PREFIX_ALL, 'i');
 
 # init options
 $_options = new stdClass();
