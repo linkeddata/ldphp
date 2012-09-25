@@ -44,7 +44,7 @@ if ($_method == 'PATCH') {
 } elseif ($_content_type == 'application/sparql-query') {
     require_once('SPARQL.php');
 } else {
-    httpStatusExit(406, 'Content-Type Not Acceptable');
+    httpStatusExit(406, 'Content-Type ('.$_content_type.') Not Acceptable');
 }
 
 @header('X-Triples: '.$g->size());
