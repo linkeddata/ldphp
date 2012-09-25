@@ -7,6 +7,8 @@
 require_once('runtime.php');
 
 $_content_type = isset($_SERVER['CONTENT_TYPE']) ? $_SERVER['CONTENT_TYPE'] : '';
+$_content_type_lst = explode(';', $_content_type); // ; charset=utf8
+$_content_type = $_content_type_lst[0];
 
 // negotiation: setup type maps
 $_content_type_map = array(
