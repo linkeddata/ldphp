@@ -10,3 +10,6 @@ callgraph: www/root/callgraph.png
 
 www/root/callgraph.png:
 	find -name '*.php' | grep -v arc2 | xargs phpcallgraph -f png -o $@
+
+check-syntax:
+	find -name '*.php' | xargs -n1 php -l
