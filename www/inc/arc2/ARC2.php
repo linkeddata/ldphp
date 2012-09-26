@@ -395,6 +395,10 @@ class ARC2 {
     return ARC2::getParser('SemHTML', $a);
   }
 
+  static function getMITSPARQLParser($a = '') {
+    return ARC2::getComponent('MITSPARQLParser', $a);
+  }
+
   static function getSPARQLParser($a = '') {
     return ARC2::getComponent('SPARQLParser', $a);
   }

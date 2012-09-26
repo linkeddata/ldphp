@@ -9,7 +9,7 @@ function queryError($msg) {
 require_once('arc2/ARC2.php');
 
 $query = $_data;
-$parser = ARC2::getSPARQLPlusParser();
+$parser = ARC2::getMITSPARQLParser();
 $parser->parse($query);
 if (isset($parser->errors) && count($parser->errors))
     queryError(implode("\n",$parser->errors));
@@ -33,10 +33,12 @@ foreach ($query as $k=>$v)
 if (!in_array($query['type'], array('insert')))
     queryError('valid query types: insert');
 
-if ($query['target_graph'] != $_base)
-    queryError('query must target request URI graph (only)');
-if (count($query['target_graphs']) && $query['target_graphs'][0] != $_base)
-    queryError('query must target request URI graph (only)');
+if (strlen($query['target_graph'])) {
+    if ($query['target_graph'] != $_base)
+        queryError('query must target request URI graph (only)');
+    if (count($query['target_graphs']) && $query['target_graphs'][0] != $_base)
+        queryError('query must target request URI graph (only)');
+}
 
 foreach ($query['construct_triples'] as $elt)
     foreach (array('s', 'p', 'o') as $k)
