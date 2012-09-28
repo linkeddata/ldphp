@@ -24,7 +24,7 @@ class ARC2_MITSPARQLParser extends ARC2_SPARQLParser {
   
   function xQuery($v) {
     list($r, $v) = $this->xPrologue($v);
-    foreach (array('Select', 'Construct', 'Describe', 'Ask', 'InsertData', 'Insert', 'Delete', 'Load') as $type) {
+    foreach (array('Select', 'Construct', 'Describe', 'Ask', 'InsertData', 'Insert', 'DeleteData', 'Delete', 'Load') as $type) {
       $m = 'x' . $type . 'Query';
       if ((list($r, $v) = $this->$m($v)) && $r) {
         return array($r, $v);
@@ -78,7 +78,7 @@ class ARC2_MITSPARQLParser extends ARC2_SPARQLParser {
   /* +5 */
   
   function xInsertDataQuery($v) {
-    if ($sub_r = $this->x('INSERT DATA\s+', $v)) {
+    if ($sub_r = $this->x('INSERT\s+DATA\s+', $v)) {
       $r = array(
         'type' => 'insert',
         'dataset' => array(),
@@ -161,6 +161,49 @@ class ARC2_MITSPARQLParser extends ARC2_SPARQLParser {
 
   /* +6 */
   
+  function xDeleteDataQuery($v) {
+    if ($sub_r = $this->x('DELETE\s+DATA\s+', $v)) {
+      $r = array(
+        'type' => 'delete',
+        'target_graphs' => array()
+      );
+      $sub_v = $sub_r[1];
+      /* target */
+      do {
+        $proceed = false;
+        if ($sub_r = $this->x('FROM\s+', $sub_v)) {
+          $sub_v = $sub_r[1];
+          if ((list($sub_r, $sub_v) = $this->xIRIref($sub_v)) && $sub_r) {
+            $r['target_graphs'][] = $sub_r;
+            $proceed = 1;
+          }
+        }
+      } while ($proceed);
+      /* CONSTRUCT keyword, optional */
+      if ($sub_r = $this->x('CONSTRUCT\s+', $sub_v)) {
+        $sub_v = $sub_r[1];
+      }
+      /* construct template */
+      if ((list($sub_r, $sub_v) = $this->xConstructTemplate($sub_v)) && is_array($sub_r)) {
+        $r['construct_triples'] = $sub_r;
+        /* dataset */
+        while ((list($sub_r, $sub_v) = $this->xDatasetClause($sub_v)) && $sub_r) {
+          $r['dataset'][] = $sub_r;
+        }
+        /* where */
+        if ((list($sub_r, $sub_v) = $this->xWhereClause($sub_v)) && $sub_r) {
+          $r['pattern'] = $sub_r;
+        }
+        /* solution modifier */
+        if ((list($sub_r, $sub_v) = $this->xSolutionModifier($sub_v)) && $sub_r) {
+          $r = array_merge($r, $sub_r);
+        }
+      }
+      return array($r, $sub_v);
+    }
+    return array(0, $v);
+  }
+
   function xDeleteQuery($v) {
     if ($sub_r = $this->x('DELETE\s+', $v)) {
       $r = array(
