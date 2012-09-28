@@ -303,6 +303,34 @@ class Graph {
         //$p && librdf_free_node($p);
         return $r;
     }
+    function remove_triple($triple) {
+        if (!isset($triple['type']) || $triple['type'] != 'triple')
+            return 0;
+        $r = 0;
+        $s = $triple['s'];
+        $p = $triple['p'];
+        $o = $triple['o'];
+        if (!is_null($s)) $s = $this->_uriNode($s);
+        if (!is_null($p)) $p = $this->_uriNode($p);
+        if (!is_null($o)) {
+            if ($triple['o_type'] == 'uri')
+                $o = $this->_uriNode($o);
+            elseif ($triple['o_type'] == 'literal')
+                $o = $this->_literalNode($o);
+        }
+        $pattern = librdf_new_statement_from_nodes($this->_world, $s, $p, $o);
+        $stream = librdf_model_find_statements($this->_model, $pattern);
+        while (!librdf_stream_end($stream)) {
+            $elt = librdf_stream_get_object($stream);
+            $r += librdf_model_remove_statement($this->_model, $elt) ? 0 : 1;
+            librdf_stream_next($stream);
+        }
+        librdf_free_stream($stream);
+        //librdf_free_statement($pattern);
+        //$s && librdf_free_node($s);
+        //$p && librdf_free_node($p);
+        return $r;
+    }
     function query_to_string($query, $format, $base_uri=null) {
         timings($query);
         if (is_null($base_uri)) $base_uri = $this->_base_uri;
