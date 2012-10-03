@@ -90,7 +90,7 @@ function queryExecute($query, $g) {
     if (!in_array($query['type'], array('insert', 'delete')))
         queryError('valid query types: insert');
 
-    if (strlen($query['target_graph'])) {
+    if (strlen($_base) && strlen($query['target_graph'])) {
         if ($query['target_graph'] != $_base)
             queryError('query must target request URI graph (only)');
         if (count($query['target_graphs']) && $query['target_graphs'][0] != $_base)
