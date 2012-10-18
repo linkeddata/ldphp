@@ -9,12 +9,12 @@ require_once('runtime.php');
 
 defined('HEADER') || include_once('header.php');
 ?>
-<a href="https://github.com/linkeddata/data.fm"><img style="position: absolute; top: 0; right: 0; border: 0;" src="http://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub" /></a>
+<a href="https://github.com/linkeddata/data.fm"><img style="position: absolute; top: 0; right: 0; border: 0;" src="//s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub" /></a>
 
-<p class="cleft left">This web data platform supports several generations of standards and recommendations:</p>
+<p class="cleft left">This web data platform supports the latest standards and recommendations:</p>
 <ul class="cleft left">
-<li>Web 1 and 2: DAV, AJAX, <a target="_blank" href="http://en.wikipedia.org/wiki/JSONP">JSONP</a>, <a target="_blank" href="http://enable-cors.org/">CORS</a></li>
-<li>Read/Write Linked Data, RDF/XML/JSON content negotiation, <a target="_blank" href="http://www.w3.org/TR/sparql11-query/">SPARQL 1.1</a>, and <a target="_blank" href="http://www.w3.org/wiki/WebID">WebID</a></li>
+<li>Read/Write Web: DAV, AJAX, <a target="_blank" href="http://en.wikipedia.org/wiki/JSONP">JSONP</a>, <a target="_blank" href="http://enable-cors.org/">CORS</a></li>
+<li>Linked Data: RDF, JSON-LD, <a target="_blank" href="http://www.w3.org/TR/sparql11-query/">SPARQL 1.1</a> <a target="_blank" href="http://www.w3.org/TR/sparql11-update/">Update</a>, <a target="_blank" href="http://www.w3.org/wiki/WebID">WebID</a></li>
 </ul>
 
 <p class="cleft left">All endpoints interpret the HTTP request URI as the base URI for RDF operations and the default-graph URI for SPARQL operations.</p>
