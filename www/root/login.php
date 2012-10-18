@@ -15,9 +15,15 @@ if (isset($i_provider)) {
     exit;
 }
 
+if (isset($i_auth) && $i_auth == 'WebID' && !isHTTPS()) {
+    header('Location: https://'.BASE_DOMAIN.$_options->base_url.'/login?'.newQSA());
+    exit;
+}
+
 if (isset($i_display) && $i_display == 'popup') {
     $next = newQSA(array('display'=>NULL));
     echo "<script>opener.document.location = '$next';window.close();</script>";
+
 } elseif (isset($i_id) && $i_id == 'facebook' && isset($i_session)) {
     $i_session = str_replace('\\', '', $i_session);
     $session = json_decode($i_session, true);
@@ -34,13 +40,14 @@ if (isset($i_display) && $i_display == 'popup') {
         }
     }
     header('Location: '.REQUEST_BASE.'/login');
-} elseif (!$_user && !isHTTPS()) {
-    header('Location: https://'.BASE_DOMAIN.$_options->base_url.'/login?'.newQSA());
+
 } elseif (isSess('next')) {
     $next = sess('next', null);
     header('Location: '.$next);
+
 } elseif ($_user) {
     header('Location: '.REQUEST_BASE.'/');
+
 } else {
     require_once('401.php');
 }
