@@ -70,16 +70,25 @@ newJS = function(url, callback){
 cloud = {};
 cloud.append = function(path, data) {
     data = data || ''
-    new HTTP(this.request_url+path, { method: 'post', body: data, requestHeaders: {'Content-Type':'text/turtle'}, onSuccess: function() {
+    new HTTP(this.request_url+path, { method: 'post', body: data, contentType: 'text/turtle', onSuccess: function() {
         window.location.reload();
     }});
 }
 cloud.get = function(path) {
-    new HTTP(this.request_url+path, { method: 'get', evalJS: false, requestHeaders: {'Accept':'text/turtle'}, onSuccess: function(r) {
+    var lastContentType = $F('editorType');
+    new HTTP(this.request_url+path, { method: 'get', evalJS: false, requestHeaders: {'Accept': lastContentType}, onSuccess: function(r) {
         $('editorpath').value = path;
         $('editorpath').enable();
         $('editorarea').value = r.responseText;
         $('editorarea').enable();
+        var contentType = r.getResponseHeader('Content-Type');
+        var editorTypes = $$('#editorType > option');
+        for (var i = 0; i < editorTypes.length; i++) {
+            var oneContentType = editorTypes[i].value;
+            if (oneContentType == contentType || oneContentType == '') {
+                editorTypes[i].selected = true;
+            }
+        }
         $('editor').show();
     }});
 }
@@ -88,8 +97,9 @@ cloud.mkdir = function(path) {
         window.location.reload();
     }});
 }
-cloud.put = function(path, data) {
-    new HTTP(this.request_url+path, { method: 'put', body: data, requestHeaders: {'Content-Type':'text/turtle', 'X-Options': 'clobber'}, onSuccess: function() {
+cloud.put = function(path, data, type) {
+    if (!type) type = 'text/turtle';
+    new HTTP(this.request_url+path, { method: 'put', body: data, requestHeaders: {'Content-Type': type, 'X-Options': 'clobber'}, onSuccess: function() {
         //window.location.reload();
     }});
 }
@@ -108,7 +118,8 @@ cloud.edit = function(path) {
 cloud.save = function(elt) {
     var path = $('editorpath').value;
     var data = $('editorarea').value;
-    cloud.put(path, data);
+    var type = $F('editorType');
+    cloud.put(path, data, type);
 }
 
 cloud.init = function(data) {

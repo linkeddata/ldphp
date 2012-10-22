@@ -15,6 +15,18 @@ if ($_options->editui) {
 <div id="editor" class="notice" style="position: fixed; top: 5%; left: 20%; display: none;">
     <img class="clear right" src="//<?=BASE_DOMAIN.$_options->base_url?>/common/images/cancel.gif" onclick="$(this).up().hide()" />
     <input class="cleft left" style="margin: 0;" type="text" id="editorpath" placeholder="loading..." />
+    <select id="editorType" class="left" style="margin: 0;" onchange="cloud.edit($F('editorpath'))">
+        <option disabled="disabled"></option>
+        <option>text/turtle</option>
+        <option>text/rdf+xml</option>
+        <option>text/rdf+nt</option>
+        <option>application/json</option>
+        <option>application/json-ld</option>
+        <option disabled="disabled">----</option>
+        <option>text/css</option>
+        <option>text/html</option>
+        <option>text/javascript</option>
+    </select>
     <textarea class="clear left" id="editorarea" style="width: 50em; bottom: 2em" disabled="disabled"></textarea>
     <input class="clear right" type="button" value="Save" onclick="cloud.save();" />
 </div>
