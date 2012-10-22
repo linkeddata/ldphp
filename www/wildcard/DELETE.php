@@ -41,7 +41,7 @@ elseif (isset($i_s))
 if (!is_null($any_s)) {
     $g = new \RDF\Graph('', $_filename, '', $_SERVER['SCRIPT_URI']);
     $r = strlen($any_s) ? $g->remove_any($any_s) : 0;
-    header('X-Triples: '.$r);
+    header('Triples: '.$r);
     if ($r)
         $g->save();
     exit;

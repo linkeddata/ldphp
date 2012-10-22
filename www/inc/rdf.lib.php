@@ -104,11 +104,11 @@ class Graph {
         }
     }
     function sendHeaders() {
-        header('X-Base: '.$this->_base);
-        header('X-Filename: '.$this->_name);
-        header('X-Size: '.$this->size());
-        header('X-Storage: '.$this->_storage);
-        header('X-Options: '.$this->_options);
+        header('Base: '.$this->_base);
+        header('Filename: '.$this->_name);
+        header('Size: '.$this->size());
+        header('Storage: '.$this->_storage);
+        header('Options: '.$this->_options);
     }
     function base() { return $this->_base; }
     function exists() { return $this->_exists; }

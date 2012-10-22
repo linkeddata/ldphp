@@ -99,7 +99,7 @@ cloud.mkdir = function(path) {
 }
 cloud.put = function(path, data, type) {
     if (!type) type = 'text/turtle';
-    new HTTP(this.request_url+path, { method: 'put', body: data, requestHeaders: {'Content-Type': type, 'X-Options': 'clobber'}, onSuccess: function() {
+    new HTTP(this.request_url+path, { method: 'put', body: data, requestHeaders: {'Content-Type': type, 'Options': 'clobber'}, onSuccess: function() {
         //window.location.reload();
     }});
 }
@@ -169,7 +169,7 @@ Ajax.Responders.register({
             msg += r.status.toString()+' '+r.statusText;
         }
         var method = q.method.toUpperCase();
-        var triples = r.getHeader('X-Triples');
+        var triples = r.getHeader('Triples');
         if (triples != null) {
             msg = triples.toString()+' triple(s): '+msg;
         } else {

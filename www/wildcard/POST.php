@@ -47,4 +47,4 @@ if ($_method == 'PATCH') {
     httpStatusExit(406, 'Content-Type ('.$_content_type.') Not Acceptable');
 }
 
-@header('X-Triples: '.$g->size());
+@header('Triples: '.$g->size());

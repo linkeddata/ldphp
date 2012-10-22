@@ -130,7 +130,7 @@ $updatesVia .= '//'.$_domain.':'. (1+$_SERVER['SERVER_PORT']);
 header('Updates-Via: '.$updatesVia);
 
 // RDF details
-header('X-Triples: '.$g->size());
+header('Triples: '.$g->size());
 if (isset($i_query))
     header('Query: '.str_replace(array("\r","\n"), '', $i_query));
 

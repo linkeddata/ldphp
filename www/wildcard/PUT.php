@@ -28,7 +28,7 @@ if ($_input == 'raw') {
 
 $g = new \RDF\Graph('', $_filename, '', $_base);
 if (!$_options->clobber && $g->exists())
-    httpStatusExit(409, 'Resource Exists', null, 'First DELETE the resource or set X-Options: clobber');
+    httpStatusExit(409, 'Resource Exists', null, 'First DELETE the resource or XHR.setRequestHeader("Options", "clobber")');
 $g->truncate();
 if (!empty($_input) && $g->append($_input, $_data)) {
     librdf_php_last_log_level() && httpStatusExit(400, 'Bad Request', null, librdf_php_last_log_message());
@@ -37,4 +37,4 @@ if (!empty($_input) && $g->append($_input, $_data)) {
     httpStatusExit(406, 'Content-Type ('.$_content_type.') Not Acceptable');
 }
 
-@header('X-Triples: '.$g->size());
+@header('Triples: '.$g->size());
