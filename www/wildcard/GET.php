@@ -93,7 +93,7 @@ if ($_output == 'html') {
     exit;
 }
 
-// output RDF
+// allocate RDF
 if (!isset($g))
     $g = new \RDF\Graph('', $_filename, '', $_base);
 
@@ -109,6 +109,7 @@ if ($_options->glob && (strpos($_filename, '*') !== false || strpos($_filename, 
 } elseif (!empty($_filename) && !$g->exists() && !$g->size())
     header('HTTP/1.1 404 Not Found');
 
+// offer ?wait updates (polling)
 if (isset($i_wait)) {
     $etag = (is_array($i_wait) && isset($i_wait['etag'])) ? $i_wait['etag'] : $g->etag();
     while ($etag == $g->etag()) {
@@ -118,14 +119,22 @@ if (isset($i_wait)) {
     $g->reload();
 }
 
+// ETag
 $etag = $g->etag();
 if ($etag)
     header('ETag: '.$etag);
 
+// offer WebSocket updates
+$updatesVia = isHTTPS() ? 'wss:' : 'ws:';
+$updatesVia .= '//'.$_domain.':'. (1+$_SERVER['SERVER_PORT']);
+header('Updates-Via: '.$updatesVia);
+
+// RDF details
 header('X-Triples: '.$g->size());
 if (isset($i_query))
     header('Query: '.str_replace(array("\r","\n"), '', $i_query));
 
+// support JSON-P
 if (isset($i_callback)) {
     header('Content-Type: text/javascript');
     if ($_method == 'GET') {
@@ -143,6 +152,7 @@ if (isset($i_callback)) {
     header("Content-Type: $_output_type");
 }
 
+// eg. method != OPTIONS
 if (in_array($_method, array('GET', 'POST')))
     if (isset($i_any)) {
         echo json_encode($g->any(
