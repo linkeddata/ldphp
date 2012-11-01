@@ -58,6 +58,7 @@ $_options->open = false;
 $_options->recursive = false;
 $_options->sqlite = false;
 $_options->linkmeta = true;
+$_options->wiki = false;
 if (file_exists(dirname(__FILE__).'/config.inc.php')) {
     require_once(dirname(__FILE__).'/config.inc.php');
 }

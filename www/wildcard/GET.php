@@ -107,7 +107,8 @@ if ($_options->glob && (strpos($_filename, '*') !== false || strpos($_filename, 
         $g->append_file('turtle', "file://$item", $item_uri);
     }
 } elseif (!empty($_filename) && !$g->exists() && !$g->size())
-    header('HTTP/1.1 404 Not Found');
+    if (!$_options->wiki)
+        header('HTTP/1.1 404 Not Found');
 
 // offer ?wait updates (polling)
 if (isset($i_wait)) {
