@@ -99,7 +99,7 @@ cloud.mkdir = function(path) {
 }
 cloud.put = function(path, data, type) {
     if (!type) type = 'text/turtle';
-    new HTTP(this.request_url+path, { method: 'put', body: data, requestHeaders: {'Content-Type': type, 'Options': 'clobber'}, onSuccess: function() {
+    new HTTP(this.request_url+path, { method: 'put', body: data, requestHeaders: {'Content-Type': type}, onSuccess: function() {
         //window.location.reload();
     }});
 }

@@ -30,9 +30,6 @@ if ($_input == 'raw') {
 $g = new \RDF\Graph('', $_filename, '', $_base);
 require_once('if-match.php');
 
-if (!$_options->clobber && $g->exists())
-    httpStatusExit(409, 'Resource Exists', null, 'First DELETE the resource or XHR.setRequestHeader("Options", "clobber")');
-
 $g->truncate();
 if (!empty($_input) && $g->append($_input, $_data)) {
     librdf_php_last_log_level() && httpStatusExit(400, 'Bad Request', null, librdf_php_last_log_message());

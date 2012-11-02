@@ -49,7 +49,6 @@ extract($_POST, EXTR_PREFIX_ALL, 'i');
 # init options
 $_options = new stdClass();
 $_options->base_url = '';
-$_options->clobber = false;
 $_options->coderev = true;
 $_options->debug = true;
 $_options->editui = true;
