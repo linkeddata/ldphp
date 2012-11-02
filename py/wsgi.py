@@ -4,17 +4,25 @@
 listeners = {}
 subscriptions = {}
 
+def cmd_pub(uri, data):
+    uris = [uri]
+    if uri[:5] == 'http:': uris.append('https:'+uri[5:])
+    elif uri[:6] == 'https:': uris.append('http:'+uri[6:])
+    for uri in uris:
+        msg = ' '.join(('pub', uri, data))
+        for k in subscriptions.get(uri, {}).keys():
+            if k in listeners:
+                listeners[k].put_nowait(msg)
+            else:
+                del subscriptions[uri][k]
+
 def proc(msg, sock=None):
     if not msg or not ' ' in msg or msg.find(' ', 1+msg.find(' ')) < 0:
         return
     cmd, uri, data = msg.split(' ', 2)
     cmd = cmd.lower()
     if cmd == 'pub':
-        for k in subscriptions.get(uri, {}).keys():
-            if k in listeners:
-                listeners[k].put_nowait(msg)
-            else:
-                del subscriptions[uri][k]
+        cmd_pub(uri, data)
     elif cmd == 'sub':
         if not uri in subscriptions:
             subscriptions[uri] = {}
