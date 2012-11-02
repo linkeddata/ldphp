@@ -28,11 +28,14 @@ if (!file_exists($d))
 $_data = file_get_contents('php://input');
 
 if ($_input == 'raw') {
+    require_once('if-match.php');
     file_put_contents($_filename, $_data, FILE_APPEND | LOCK_EX);
     exit;
 }
 
 $g = new \RDF\Graph('', $_filename, '', $_base);
+require_once('if-match.php');
+
 if ($_method == 'PATCH') {
     if ($_input == 'json' && ($g->patch_json($_data) || 1)) {
         librdf_php_last_log_level() && httpStatusExit(400, 'Bad Request', null, librdf_php_last_log_message());
