@@ -82,6 +82,12 @@ if ($_output == 'raw') {
         header("Content-Type: $_output_type");
     if (!file_exists($_filename))
         httpStatusExit(404, 'Not Found', '403-404.php');
+
+    $etag = `md5sum $_filename`;
+    if (strlen($etag))
+        $etag = trim(array_shift(explode(' ', $etag)));
+    header('ETag: '.$etag);
+
     if ($_method == 'GET')
         readfile($_filename);
     exit;
