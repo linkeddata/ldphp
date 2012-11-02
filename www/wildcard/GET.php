@@ -86,7 +86,7 @@ if ($_output == 'raw') {
     $etag = `md5sum $_filename`;
     if (strlen($etag))
         $etag = trim(array_shift(explode(' ', $etag)));
-    header('ETag: '.$etag);
+    header('ETag: "'.$etag.'"');
 
     if ($_method == 'GET')
         readfile($_filename);
@@ -129,7 +129,7 @@ if (isset($i_wait)) {
 // ETag
 $etag = $g->etag();
 if ($etag)
-    header('ETag: '.$etag);
+    header('ETag: "'.$etag.'"');
 
 // offer WebSocket updates
 $updatesVia = isHTTPS() ? 'wss:' : 'ws:';
