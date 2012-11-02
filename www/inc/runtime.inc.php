@@ -30,6 +30,7 @@ define('REQUEST_URL', $URI);
 define('REQUEST_URI', $BASE.$URI);
 
 // session startup
+session_name('SID');
 session_set_cookie_params(157680000, '/', '.'.preg_replace('/.+\.([^.]+\.[^.]+)$/', '\1', $_SERVER['SERVER_NAME']));
 session_start();
 
