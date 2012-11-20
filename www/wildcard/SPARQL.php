@@ -127,4 +127,4 @@ foreach (querySplit($_data) as $i=>$query) {
 }
 
 if ($n)
-    $g->save();
+    $g->save($_data);

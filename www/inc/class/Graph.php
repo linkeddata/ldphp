@@ -110,11 +110,28 @@ class Graph {
             return filemtime($this->_name).'-'.strtolower(md5(file_get_contents($this->_name, false, null, -1, 1024000)));
         }
     }
-    function save() {
+    function save($query=null) {
+        $etag0 = $this->etag();
         if ($this->_storage == 'memory' && !empty($this->_name)) {
             file_put_contents($this->_name, $this->__toString());
         }
-        return librdf_model_sync($this->_model);
+        $r = librdf_model_sync($this->_model);
+        clearstatcache();
+        $etag1 = $this->etag();
+
+        $ctx = stream_context_create(array('http'=>array(
+            'method' => 'POST',
+            'content' => 'pub ' . $this->_base . ' ' . http_build_query(array(
+                'etag0' => $etag0,
+                'etag1' => $etag1,
+                'query' => $query,
+            )),
+            'timeout' => 1,
+            'ignore_errors' => true,
+        )));
+        @file_get_contents('http://localhost:8081/', false, $ctx);
+
+        return $r;
     }
     function truncate() {
         librdf_free_model($this->_model);
