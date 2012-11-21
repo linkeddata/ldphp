@@ -9,7 +9,12 @@ define('METHODS_S', 'GET, PUT, POST, OPTIONS, HEAD, MKCOL, DELETE, PATCH');
 
 require_once(dirname(__FILE__).'/../inc/runtime.inc.php');
 
-$_RAW_EXT = array('css', 'html', 'js');
+$_RAW_EXT = array(
+    'css'=>'text',
+    'html'=>'text',
+    'js'=>'text',
+    'jpg'=>'image');
+
 header("User: $_user");
 
 // Cloud
@@ -115,8 +120,8 @@ if ($_method == 'OPTIONS') {
 // HTTP Content Negotiation
 require_once('input.php');
 require_once('output.php');
-if (in_array($_filename_ext, $_RAW_EXT)) {
+if (isset($_RAW_EXT[$_filename_ext])) {
     $_input = 'raw';
     $_output = 'raw';
-    $_output_type = 'text/'.($_filename_ext=='js'?'javascript':$_filename_ext);
+    $_output_type = $_RAW_EXT[$_filename_ext].'/'.($_filename_ext=='js'?'javascript':$_filename_ext);
 }
