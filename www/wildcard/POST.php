@@ -34,6 +34,7 @@ if ($_input == 'raw') {
 }
 
 $g = new \RDF\Graph('', $_filename, '', $_base);
+
 require_once('if-match.php');
 
 if ($_method == 'PATCH') {
@@ -43,7 +44,16 @@ if ($_method == 'PATCH') {
     }
 } elseif (!empty($_input) && ($g->append($_input, $_data) || 1)) {
     librdf_php_last_log_level() && httpStatusExit(400, 'Bad Request', null, librdf_php_last_log_message());
+
+    // Check to see if we have an LDP element in the request
+    require_once('LDP.php');
+    $ldp = new LDP($_filename, $_base, $_input, $_data);
+    
+    // finally save
     $g->save();
+
+    // and exit
+    httpStatusExit(201, 'Created');  
 } elseif ($_content_type == 'application/sparql-query') {
     require_once('SPARQL.php');
 } else {

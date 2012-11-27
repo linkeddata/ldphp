@@ -16,3 +16,4 @@ if (empty($_user)) {
 
 // action
 @mkdir($_filename, 0777, true);
+httpStatusExit(201, 'Created');
