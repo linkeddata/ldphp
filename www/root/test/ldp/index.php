@@ -53,8 +53,11 @@ if (isset($_REQUEST['uri'])) {
     echo "<strong>POST data:</strong>";
     echo "<pre>".htmlentities($postData)."</pre>";
 
+    // add a slash if the requested URI container doesn't have one yet
+    $resource = (substr($container, -1) != '/')?$container.'/res1':$container.'res1';
+
     $test = new TestRequest();
-    $test->setUri($container.'/res1');
+    $test->setUri($resource);
     $test->setMethod('POST');
     $test->setPostData($postData);
     $test->setAccept('text/turtle');
