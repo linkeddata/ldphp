@@ -101,7 +101,7 @@ if ($_output == 'html') {
 
 // allocate RDF
 if (!isset($g))
-    $g = new \RDF\Graph('', $_filename, '', $_base);
+    $g = new Graph('', $_filename, '', $_base);
 
 // *: glob
 if ($_options->glob && (strpos($_filename, '*') !== false || strpos($_filename, '{') !== false)) {

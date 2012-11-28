@@ -7,7 +7,7 @@ $_options->linkmeta = false;
 require_once('../wildcard/runtime.php');
 
 if (isset($i_uri)) {
-    $g = new \RDF\Graph('memory', '', '');
+    $g = new Graph('memory', '', '');
     $g->load($i_uri);
 }
 

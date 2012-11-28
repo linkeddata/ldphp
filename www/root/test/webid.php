@@ -10,7 +10,7 @@ if (isset($i_uri))
 
 $query = array();
 foreach($claim['uri'] as $elt) {
-    $g = new \RDF\Graph('uri', $elt, '', $elt);
+    $g = new Graph('uri', $elt, '', $elt);
     $query[$elt] = array(
         'triples' => $g->size(),
         'bindings' => webid_query($elt, $g)

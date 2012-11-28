@@ -27,7 +27,7 @@ if ($_input == 'raw') {
     exit;
 }
 
-$g = new \RDF\Graph('', $_filename, '', $_base);
+$g = new Graph('', $_filename, '', $_base);
 require_once('if-match.php');
 
 $g->truncate();
