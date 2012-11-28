@@ -18,7 +18,7 @@ class LDP {
             $this->_filename = $filename;
         else
             return false;
-
+        
         if ($base)
             $this->_base = $base;
         else
@@ -58,12 +58,15 @@ class LDP {
         if (!file_exists($this->_filename))
             mkdir($this->_filename, 0777, true);
         
+        $filename = (substr($this->_filename, -1) != '/')?$this->_filename.'/':$this->_filename;
+        $base = (substr($this->_base, -1) != '/')?$this->_base.'/':$this->_base;
+        
         // add the .meta file with LDP data
-        $c = new \RDF\Graph('', $this->_filename.'.meta', '', $this->_base.'.meta');
+        $c = new \RDF\Graph('', $filename.'.meta', '', $base.'.meta');
         if (!$c) { return false; }
 
         // add container data to the .meta file
-        $c->append($input, $data, $this->_base);
+        $c->append($input, $data, $base);
         $c->save();
         
         //TODO: add a memberOf relation to the parent dir
@@ -74,7 +77,7 @@ class LDP {
     // add the new resource (also add a relation to the parent container)
     function addResource() {
         // load the container .meta information
-        $r = new \RDF\Graph('', dirname($this->_filename).'/.meta', '', dirname($this->_base).'/');
+        $r = new \RDF\Graph('', dirname($this->_filename).'/.meta', '', dirname($this->_base).'/.meta');
         if (!$r) { return false; }
         
         $r->load(dirname($this->_base).'/.meta');
@@ -82,7 +85,7 @@ class LDP {
         $r->append_objects(dirname($this->_base).'/', 
                             'http://www.w3.org/2000/01/rdf-schema#member', 
                             array(array('type'=>'uri', 'value'=>$this->_base)));
-        $r->save(dirname($this->_filename).'/.meta');
+        $r->save();
         
         // TODO: make sure to recursively update the .meta files in parent dirs!
 
