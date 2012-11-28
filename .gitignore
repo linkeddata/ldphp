@@ -1,4 +1,3 @@
 *.pyc
-cert/
 data/
 py/gevent*
