@@ -193,13 +193,15 @@ class Graph {
     function add_stream($stream) {
         return librdf_model_add_statements($this->_model, $stream) == 0;
     }
-    function append($content_type, $content) {
+    function append($content_type, $content, $base=null) {
         if ($content_type == 'json-ld') return $this->append_jsonld($content);
         elseif ($content_type == 'json' && raptor_version_decimal_get()<20004)
             return $this->append_array(json_decode($content,1));
+        $base_uri = librdf_new_uri($this->_world, is_null($base)?$this->_base:$base);
         $p = librdf_new_parser($this->_world, $content_type, null, null);
-        $r = librdf_parser_parse_string_into_model($p, $content, $this->_base_uri, $this->_model);
+        $r = librdf_parser_parse_string_into_model($p, $content, $base_uri, $this->_model);
         librdf_free_parser($p);
+        librdf_free_uri($base_uri);
         return $r == 0;
     }
     function append_file($content_type, $file, $base=null) {
