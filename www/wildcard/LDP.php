@@ -59,12 +59,12 @@ class LDP {
             mkdir($this->_filename, 0777, true);
         
         // add the .meta file with LDP data
-        $c = new \RDF\Graph('', $this->_filename, '', $this->_base);
+        $c = new \RDF\Graph('', $this->_filename.'.meta', '', $this->_base.'.meta');
         if (!$c) { return false; }
 
         // add container data to the .meta file
-        $c->append($input, $data);
-        $c->save($this->_filename.'/.meta');
+        $c->append($input, $data, $this->_base);
+        $c->save();
         
         //TODO: add a memberOf relation to the parent dir
         
