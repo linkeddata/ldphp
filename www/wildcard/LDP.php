@@ -58,6 +58,7 @@ class LDP {
         if (!file_exists($this->_filename))
             mkdir($this->_filename, 0777, true);
         
+        // add a trailing slash if missing 
         $filename = (substr($this->_filename, -1) != '/')?$this->_filename.'/':$this->_filename;
         $base = (substr($this->_base, -1) != '/')?$this->_base.'/':$this->_base;
         
@@ -76,6 +77,7 @@ class LDP {
     
     // add the new resource (also add a relation to the parent container)
     function addResource() {
+
         // load the container .meta information
         $r = new \RDF\Graph('', dirname($this->_filename).'/.meta', '', dirname($this->_base).'/.meta');
         if (!$r) { return false; }
