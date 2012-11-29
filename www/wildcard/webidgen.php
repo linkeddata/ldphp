@@ -1,4 +1,5 @@
 <?php
+//TODO: replace all die() with proper error messages
 
 /* OpenSSL conf */
 // This is the CA password you supplied when you created the CA 
@@ -10,7 +11,6 @@ $conf = $_SERVER["DOCUMENT_ROOT"].'/CA/openssl.cnf';
 $name = (isset($_POST['name']))?$_POST['name']:'Anonymous';
 if (isset($_POST['path'])) {
     $path = $_POST['path'];
-
     // Exit if we don't have a #
     if (strpos($path, '#') === false) // missing # 
         die("You must at least provide a # fragment. For example: #me or #public.");
@@ -19,6 +19,10 @@ if (isset($_POST['path'])) {
     $path_frag = explode('#', $path);
     $profile = $path_frag[0];
     $hash = $path_frag[1];
+    
+    if (file_exists($_filename.'/'.$profile) === true)
+        die('You must pick a different identifier. <strong>'.
+            $path.'</strong> already exists in the current directory!');
 } else {
     die('You need to provide a preferred identifier.');
 }
@@ -103,9 +107,17 @@ $r->append_objects($_base.'/'.$profile,
 $r->append_objects($_base.'/'.$path,
         'http://www.w3.org/1999/02/22-rdf-syntax-ns#type',                    
         array(array('type'=>'uri', 'value'=>'http://xmlns.com/foaf/0.1/Person')));
+// add name
 $r->append_objects($_base.'/'.$path,
         'http://xmlns.com/foaf/0.1/name',
         array(array('type'=>'literal', 'value'=>$name)));
+// add mbox if we have one
+if (strlen($email) > 0) {
+    $r->append_objects($_base.'/'.$path,
+            'http://xmlns.com/foaf/0.1/mbox',
+            array(array('type'=>'uri', 'value'=>'mailto:'.$email)));
+}
+// add modulus and exponent as bnode
 $r->append_objects($_base.'/'.$path,
         'http://www.w3.org/ns/auth/cert#key',
         array(array('type'=>'bnode', 'value'=>'_:bnode1')));
