@@ -102,18 +102,53 @@ foreach($listing as $item) {
             <input id="create-name" name="create[name]" type="text" value="" placeholder="Create new..." />
             <input id="create-type-file" name="create[type]" type="button" value="File" onclick="cloud.append($F($(this.parentNode).down()));" />
             <input id="create-type-directory" name="create[type]" type="button" value="Dir" onclick="cloud.mkdir($F($(this.parentNode).down()));" />
+            <input id="create-webid" name="create[webid]" type="button" value="Issue a WebID" />
         </td>
     </tr>
 </tfoot>
 <?php } ?>
 </table>
+<div id="webid-form" style="display:none; width:30%;"><!-- TODO: remove style from here -->
+    <form method="POST" action="">
+        <table id="webid-table">
+        <tr><td>Your name: </td><td><input type="text" name="name" size="40" style="border-color: red;"></td></tr>
+        <tr><td>Preferred identifier: </td><td><input type="text" name="path" size="40" value="card#me" style="border-color: red;"></td></tr>
+        <tr><td>Email (recovery): </td><td><input type="text" name="email" size="40"></td></tr>
+        <tr><td colspan="2"><keygen name="SPKAC" challenge="randomchars" keytype="rsa" hidden></td></tr>
+        <tr><td colspan="2"><input type="submit" value="Generate" onclick="hideWebID()"> <input type="button" value="Cancel" onclick="hideWebID()"></td></tr>
+        </table>
+    </form>
+</div>
 <?php if ($_options->editui) { ?>
+<!-- <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script> -->
+<script>
+$("create-webid").observe('click', function(e) {
+  $("webid-form").setStyle({
+    top: e.pageY,
+    left: e.pageX
+  });
+  $("webid-form").show();
+});
+
+function hideWebID() {
+    $("webid-form").hide();
+}
+</script>
+
 <script type="text/javascript">
+/*
+$(document).keypress(function(e) {
+    if (e.which == 27) { // ESC
+        $('editor').hide();
+    }
+});
+*/
 $(document).observe('keydown', function(e) {
     if (e.keyCode == 27) { // ESC
         $('editor').hide();
     }
 });
+
 </script>
 <?php
 }
