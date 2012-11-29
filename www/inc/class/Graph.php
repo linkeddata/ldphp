@@ -1,11 +1,4 @@
 <?php
-/* rdf.lib.php
- * RDF API
- *
- * $Id$
- */
-
-namespace RDF;
 
 require_once('contrib/jsonld.php');
 

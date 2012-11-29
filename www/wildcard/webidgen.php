@@ -92,7 +92,7 @@ readfile($tmpCERTfname);
 unlink($tmpCERTfname);
 
 // Write the new profile to disk
-$r = new \RDF\Graph('', $_filename.'/'.$profile, '', $_base.'/'.$profile);
+$r = new Graph('', $_filename.'/'.$profile, '', $_base.'/'.$profile);
 if (!$r) { return false; }
 
 // add a PrimaryTopic

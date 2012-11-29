@@ -9,6 +9,10 @@
 require_once('util.lib.php');
 set_include_path(dirname(__FILE__).PATH_SEPARATOR.get_include_path());
 
+spl_autoload_register(function ($class) {
+    require_once(dirname(__FILE__).'/class/'.$class.'.php');
+});
+
 // base constants
 if (!isset($_ENV['CLOUD_NAME'])) $_ENV['CLOUD_NAME'] = $_SERVER['SERVER_NAME'];
 if (!isset($_ENV['CLOUD_HOME'])) $_ENV['CLOUD_HOME'] = realpath(dirname(__FILE__).'/../../');
@@ -41,7 +45,6 @@ else {
     function librdf_php_last_log_level(){}
     function librdf_php_last_log_message(){}
 }
-require_once('rdf.lib.php');
 
 date_default_timezone_set('America/New_York');
 extract($_GET, EXTR_PREFIX_ALL, 'i');

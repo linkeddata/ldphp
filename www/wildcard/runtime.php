@@ -63,7 +63,7 @@ if (isset($_SERVER['HTTP_ORIGIN'])) {
 
 // Web Access Control
 $_aclbase = $_filebase.$_options->base_url;
-$_acl = new \RDF\Graph('', "$_aclbase/.meta", '', REQUEST_BASE.'/.meta');
+$_acl = new Graph('', "$_aclbase/.meta", '', REQUEST_BASE.'/.meta');
 if ($_options->linkmeta || $_acl->exists())
     header('Link: <'.$_options->base_url.'/.meta>; rel=meta');
 function wac($method,$uri=null) {

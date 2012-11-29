@@ -29,7 +29,7 @@ function webid_claim() {
 function webid_query($uri, $g=null) {
     $r = array();
     if (is_null($g))
-        $g = new \RDF\Graph('uri', $uri, '', $uri);
+        $g = new Graph('uri', $uri, '', $uri);
     $q = $g->SELECT(sprintf("PREFIX : <http://www.w3.org/ns/auth/cert#> SELECT ?m ?e WHERE { <%s> :key [ :modulus ?m; :exponent ?e; ] . }", $uri));
     if (isset($q['results']) && isset($q['results']['bindings']))
         $r = $q['results']['bindings'];

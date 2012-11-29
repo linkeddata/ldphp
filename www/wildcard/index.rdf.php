@@ -7,7 +7,7 @@
 
 require_once('runtime.php');
 
-$g = new \RDF\Graph('memory', '', '', $_base);
+$g = new Graph('memory', '', '', $_base);
 
 $listing = array();
 if (is_dir($_filename))

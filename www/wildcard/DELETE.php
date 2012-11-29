@@ -39,7 +39,7 @@ elseif (isset($i_s))
     $any_s = $i_s;
 
 if (!is_null($any_s)) {
-    $g = new \RDF\Graph('', $_filename, '', $_SERVER['SCRIPT_URI']);
+    $g = new Graph('', $_filename, '', $_SERVER['SCRIPT_URI']);
     $r = strlen($any_s) ? $g->remove_any($any_s) : 0;
     header('Triples: '.$r);
     if ($r)
@@ -55,7 +55,7 @@ if (is_dir($_filename)) {
 } elseif (file_exists($_filename)) {
     unlink($_filename);
 } else {
-    $g = new \RDF\Graph('', $_filename, '', '');
+    $g = new Graph('', $_filename, '', '');
     if ($g->exists()) {
         $g->delete();
     } else {
