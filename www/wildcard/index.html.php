@@ -108,30 +108,28 @@ foreach($listing as $item) {
 </tfoot>
 <?php } ?>
 </table>
-<div id="webid-form" style="display:none; width:30%;"><!-- TODO: remove style from here -->
+<table id="webid-gen" style="display:none;">
     <form method="POST" action="">
-        <table id="webid-table">
-        <tr><td>Your name: </td><td><input type="text" name="name" size="40" style="border-color: red;"></td></tr>
-        <tr><td>Preferred identifier: </td><td><input type="text" name="path" size="40" value="card#me" style="border-color: red;"></td></tr>
+        <tr><td>Your name: </td><td><input type="text" name="name" size="40" class="required"></td></tr>
+        <tr><td>Preferred identifier: </td><td><input type="text" name="path" size="40" value="card#me" class="required"></td></tr>
         <tr><td>Email (recovery): </td><td><input type="text" name="email" size="40"></td></tr>
         <tr><td colspan="2"><keygen name="SPKAC" challenge="randomchars" keytype="rsa" hidden></td></tr>
         <tr><td colspan="2"><input type="submit" value="Generate" onclick="hideWebID()"> <input type="button" value="Cancel" onclick="hideWebID()"></td></tr>
-        </table>
     </form>
-</div>
+</table>
 <?php if ($_options->editui) { ?>
 <!-- <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script> -->
 <script>
-$("create-webid").observe('click', function(e) {
-  $("webid-form").setStyle({
+$('create-webid').observe('click', function(e) {
+  $('webid-gen').setStyle({
     top: e.pageY,
     left: e.pageX
   });
-  $("webid-form").show();
+  $('webid-gen').show();
 });
 
 function hideWebID() {
-    $("webid-form").hide();
+    $('webid-gen').hide();
 }
 </script>
 
@@ -146,6 +144,7 @@ $(document).keypress(function(e) {
 $(document).observe('keydown', function(e) {
     if (e.keyCode == 27) { // ESC
         $('editor').hide();
+        $('webid-gen').hide();
     }
 });
 

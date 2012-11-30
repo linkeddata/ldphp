@@ -32,6 +32,8 @@ $spkac = $_POST['SPKAC'];
 // the full WebID URI
 $webid = $_base.$path;
 
+/* --- Certificate --- */
+
 // Remove any whitespace in teh supplied SPKAC and prepare the cert request
 $req = "SPKAC=".str_replace(str_split(" \t\n\r\0\x0B"), '', $spkac);
 $req .= "\nCN=".$name;
@@ -88,8 +90,11 @@ header('Content-Length: ' . $length);
 header('Content-Type: application/x-x509-user-cert');
 readfile($tmpCERTfname);
 
-// finally delete the temporary CRT file
+// delete the temporary CRT file
 unlink($tmpCERTfname);
+// clear certificate history from CA
+
+/* --- Profile --- */
 
 // Write the new profile to disk
 $r = new \RDF\Graph('', $_filename.'/'.$profile, '', $_base.'/'.$profile);
