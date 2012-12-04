@@ -27,7 +27,7 @@ require_once('runtime.php');
 if (empty($_user))
     httpStatusExit(401, 'Unauthorized');
 
-if (!wac('Write'))
+if (!$_wac->can('Write'))
     httpStatusExit(403, 'Forbidden');
 
 $any_s = null;

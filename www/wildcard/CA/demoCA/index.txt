@@ -1,0 +1,2 @@
+V	131203170046Z		DA9DD07A4B8F00AF	unknown	/C=US/ST=Some-State/O=Example/CN=*
+V	131203173434Z		DA9DD07A4B8F00B0	unknown	/C=US/ST=MA/L=Cambridge/O=Example/CN=*.example.com

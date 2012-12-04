@@ -16,7 +16,11 @@ if (isset($i_query)) {
 // permissions
 if (empty($_user)) {
     httpStatusExit(401, 'Unauthorized');
-} elseif (!wac('Write')) {
+} elseif ($_wac->can('Write') == false) {
+    openlog('data.fm', LOG_PID | LOG_ODELAY,LOG_LOCAL4);
+    syslog(LOG_INFO, $_wac->getReason());
+    closelog();
+
     httpStatusExit(403, 'Forbidden');
 }
 

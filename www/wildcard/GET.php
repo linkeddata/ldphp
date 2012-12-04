@@ -39,7 +39,7 @@ if (!file_exists($_filename) && in_array($_filename_ext, array('turtle','n3','js
 // permissions
 if (empty($_user))
     httpStatusExit(401, 'Unauthorized', '401.php');
-elseif (!wac('Read'))
+elseif ($_wac->can('Read') == false)
     httpStatusExit(403, 'Forbidden', '403-404.php');
 
 // directory indexing

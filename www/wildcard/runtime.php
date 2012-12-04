@@ -62,38 +62,9 @@ if (isset($_SERVER['HTTP_ORIGIN'])) {
 }
 
 // Web Access Control
-$_aclbase = $_filebase.$_options->base_url;
-$_acl = new Graph('', "$_aclbase/.meta", '', REQUEST_BASE.'/.meta');
-if ($_options->linkmeta || $_acl->exists())
-    header('Link: <'.$_options->base_url.'/.meta>; rel=meta');
-function wac($method,$uri=null) {
-    // method: Read/Write/Control
-    global $_acl, $_user, $_base, $_options;
-    if ($_options->open && !$_acl->size())
-        return true;
-    $uri = is_null($uri) ? $_base : $uri;
-    // strip trailing slash
-    if (substr($uri, -1, 1) == '/')
-        $uri = substr($uri, 0, -1);
-    $p = $uri;
-    // walk path
-    while (true) {
-        if (!strpos($p, '/')) break;
-        $verb = $p == $uri ? 'accessTo' : 'defaultForNew';
-        // specific authorization
-        $q = "PREFIX acl: <http://www.w3.org/ns/auth/acl#> SELECT * WHERE { ?z acl:agent <$_user>; acl:mode acl:$method; acl:$verb <$p> . }";
-        $r = $_acl->SELECT($q);
-        if (isset($r['results']['bindings']) && count($r['results']['bindings']) > 0)
-            return true;
-        // public authorization
-        $q = "PREFIX acl: <http://www.w3.org/ns/auth/acl#> SELECT * WHERE { ?z acl:agentClass <http://xmlns.com/foaf/0.1/Agent>; acl:mode acl:$method; acl:$verb <$p> . }";
-        $r = $_acl->SELECT($q);
-        if (isset($r['results']['bindings']) && count($r['results']['bindings']) > 0)
-            return true;
-        $p = dirname($p);
-    }
-    return false;
-}
+//echo "<p>Base=". $_filename.$_options->base_url ."</p>\n";
+$_aclbase = $_filename.$_options->base_url;
+$_wac = new WAC($_user, dirname($_aclbase).'/.meta', REQUEST_BASE.'/.meta', $_options);
 
 // HTTP Methods
 $_method = '';
