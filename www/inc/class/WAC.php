@@ -19,17 +19,15 @@ class WAC {
      * @param string $base_meta the .meta file we're reading from
      * @param string $base_uri  the base URI of the HTTP request
      * @param array $options    local configuration options
-     * @param string $uri       the URI of the resource we're working with
      *
      * @return boolean (always true for now)
      */
-    function __construct($req_user, $base_meta, $base_uri, $options, $uri=null) {
+    function __construct($req_user, $base_meta, $base_uri, $options) {
         // methods: Read/Write/Control
         $this->_req_user = $req_user;
         $this->_base_meta = $base_meta;
         $this->_base_uri = $base_uri;
         $this->_options = $options;
-        
         
         $this->_graph = new Graph('', $base_meta, '', REQUEST_BASE.'/.meta');
         if ($options->linkmeta || $this->_graph->exists())
