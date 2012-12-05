@@ -62,8 +62,7 @@ if (isset($_SERVER['HTTP_ORIGIN'])) {
 }
 
 // Web Access Control
-//echo "<p>Base=". $_filename.$_options->base_url ."</p>\n";
-$_aclbase = $_filename.$_options->base_url;
+$_aclbase = $_filebase.$_options->base_url;
 $_wac = new WAC($_user, dirname($_aclbase).'/.meta', REQUEST_BASE.'/.meta', $_options);
 
 // HTTP Methods
