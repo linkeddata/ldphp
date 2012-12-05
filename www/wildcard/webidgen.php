@@ -97,7 +97,7 @@ unlink($tmpCERTfname);
 /* --- Profile --- */
 
 // Write the new profile to disk
-$r = new \RDF\Graph('', $_filename.'/'.$profile, '', $_base.'/'.$profile);
+$r = new Graph('', $_filename.'/'.$profile, '', $_base.'/'.$profile);
 if (!$r) { return false; }
 
 // add a PrimaryTopic
@@ -139,7 +139,4 @@ $r->append_objects('_:bnode1',
 $r->save();
 
 //TODO: Write a .meta file with basic ACL
-
-
-exit;
 
