@@ -10,7 +10,7 @@ require_once('runtime.php');
 
 if (isset($i_query)) {
     require_once('GET.php');
-    exit;
+    //exit;
 }
 
 // permissions
@@ -27,7 +27,7 @@ if (empty($_user)) {
 // intercept requests for WebID generator
 if (isset($_POST['SPKAC'])) {
     require_once 'webidgen.php';
-    // requires exit so it can successfully send the certificate
+    // exit required so it can successfully send the certificate
     exit;
 }
 
