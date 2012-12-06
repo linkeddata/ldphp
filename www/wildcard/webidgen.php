@@ -83,6 +83,7 @@ $modulus = preg_replace('/\s+/', '', strtolower($output[1]));
 // TODO: make sure the user got the cert somehow
 // Everything is done, now send the p12 encoded SSL certificate back to the user
 // notice: it is IMPERATIVE that no html data gets transmitted to the user before the header is sent!
+
 $length = filesize($tmpCERTfname);	
 header('Last-Modified: ' . date('r+b'));
 header('Accept-Ranges: bytes');
@@ -97,46 +98,101 @@ unlink($tmpCERTfname);
 /* --- Profile --- */
 
 // Write the new profile to disk
-$r = new Graph('', $_filename.'/'.$profile, '', $_base.'/'.$profile);
-if (!$r) { return false; }
+$profile = new Graph('', $_filename.'/'.$profile, '', $_base.'/'.$profile);
+if (!$profile) { return false; }
 
 // add a PrimaryTopic
-$r->append_objects($_base.'/'.$profile,
+$profile->append_objects($_base.'/'.$profile,
         'http://www.w3.org/1999/02/22-rdf-syntax-ns#type',
          array(array('type'=>'uri', 'value'=>'http://xmlns.com/foaf/0.1/PersonalProfileDocument')));
-$r->append_objects($_base.'/'.$profile,
+$profile->append_objects($_base.'/'.$profile,
         'http://xmlns.com/foaf/0.1/primaryTopic',
          array(array('type'=>'uri', 'value'=>$_base.'/'.$path)));
          
 // add a foaf:Person
-$r->append_objects($_base.'/'.$path,
+$profile->append_objects($_base.'/'.$path,
         'http://www.w3.org/1999/02/22-rdf-syntax-ns#type',                    
         array(array('type'=>'uri', 'value'=>'http://xmlns.com/foaf/0.1/Person')));
 // add name
-$r->append_objects($_base.'/'.$path,
+$profile->append_objects($_base.'/'.$path,
         'http://xmlns.com/foaf/0.1/name',
         array(array('type'=>'literal', 'value'=>$name)));
 // add mbox if we have one
 if (strlen($email) > 0) {
-    $r->append_objects($_base.'/'.$path,
+    $profile->append_objects($_base.'/'.$path,
             'http://xmlns.com/foaf/0.1/mbox',
             array(array('type'=>'uri', 'value'=>'mailto:'.$email)));
 }
 // add modulus and exponent as bnode
-$r->append_objects($_base.'/'.$path,
+$profile->append_objects($_base.'/'.$path,
         'http://www.w3.org/ns/auth/cert#key',
         array(array('type'=>'bnode', 'value'=>'_:bnode1')));
-$r->append_objects('_:bnode1',
+$profile->append_objects('_:bnode1',
         'http://www.w3.org/1999/02/22-rdf-syntax-ns#type',
         array(array('type'=>'uri', 'value'=>'http://www.w3.org/ns/auth/cert#RSAPublicKey')));         
-$r->append_objects('_:bnode1',
+$profile->append_objects('_:bnode1',
         'http://www.w3.org/ns/auth/cert#modulus',
         array(array('type'=>'literal', 'value'=>$modulus, 'datatype'=>'http://www.w3.org/2001/XMLSchema#hexBinary')));
-$r->append_objects('_:bnode1',
+$profile->append_objects('_:bnode1',
         'http://www.w3.org/ns/auth/cert#exponent',
         array(array('type'=>'literal', 'value'=>'65537', 'datatype'=>'http://www.w3.org/2001/XMLSchema#int')));
+// Write graph to disk
+$profile->save();
 
-$r->save();
+/* --- WAC (.meta) --- */
 
-//TODO: Write a .meta file with basic ACL
+$meta = new Graph('', $_aclbase.'/.meta', '', $_base.'.meta');
+if (!$meta) { return false; }
+
+// Read the .meta file if we already had one
+$meta->load($_base.'/.meta');
+/*
+<#Default>
+    <http://www.w3.org/ns/auth/acl#accessTo> <http://presbrey.data.fm>, <>, <Public> ;
+    <http://www.w3.org/ns/auth/acl#agentClass> <http://xmlns.com/foaf/0.1/Agent> ;
+    <http://www.w3.org/ns/auth/acl#defaultForNew> <Public> ;
+    <http://www.w3.org/ns/auth/acl#mode> <http://www.w3.org/ns/auth/acl#Read> .
+*/    
+if (substr($_base, -1, 1) == '/')
+    $_base = substr($_base, 0, -1);
+// Add the default entry
+$meta->append_objects('#Default',
+    'http://www.w3.org/ns/auth/acl#accessTo',                    
+    array(array('type'=>'uri', 'value'=>$_base)));
+$meta->append_objects('#Default',
+    'http://www.w3.org/ns/auth/acl#accessTo', 
+    array(array('type'=>'uri', 'value'=>$profile)));
+$meta->append_objects('#Default',
+    'http://www.w3.org/ns/auth/acl#accessTo', 
+    array(array('type'=>'uri', 'value'=>'')));
+    
+$meta->append_objects('#Default',
+    'http://www.w3.org/ns/auth/acl#agentClass',                    
+    array(array('type'=>'uri', 'value'=>'http://xmlns.com/foaf/0.1/Agent')));
+
+$meta->append_objects('#Default',
+    'http://www.w3.org/ns/auth/acl#defaultForNew',                    
+    array(array('type'=>'uri', 'value'=>$profile)));
+
+$meta->append_objects('#Default',
+    'http://www.w3.org/ns/auth/acl#mode',                    
+    array(array('type'=>'uri', 'value'=>'http://www.w3.org/ns/auth/acl#Read')));
+
+// Add the profile rules
+$meta->append_objects('#'.$profile,
+    'http://www.w3.org/ns/auth/acl#accessTo',                    
+    array(array('type'=>'uri', 'value'=>$profile)));
+    
+$meta->append_objects('#'.$profile,
+    'http://www.w3.org/ns/auth/acl#agent',                    
+    array(array('type'=>'uri', 'value'=>$webid)));
+
+$meta->append_objects('#'.$profile,
+    'http://www.w3.org/ns/auth/acl#mode',    
+    array(array('type'=>'uri', 'value'=>'http://www.w3.org/ns/auth/acl#Write')));
+
+//echo $meta->to_string('turtle');
+// Write graph to disk
+$meta->save();    
+
 
