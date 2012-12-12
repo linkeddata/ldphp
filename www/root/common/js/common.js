@@ -69,7 +69,7 @@ newJS = function(url, callback){
 
 wac = {};
 wac.get = function(path) {
-  
+    // TODO: handle defaultForNew!
     var metaURI = window.location.protocol+'//'+window.location.host+'/.meta';
     var metaHash = metaURI+'#'+path;
     // For quick access to those namespaces:
@@ -83,6 +83,20 @@ wac.get = function(path) {
     //document.write("<p><pre>Size: "+graph.statements+"</pre></p>")
 
     fetch.nowOrWhenFetched(metaURI,undefined,function(){
+        var perms = graph.each(resource, WAC('mode'));
+
+        // reset the checkboxes
+        $('wac-read').checked = false;
+        $('wac-write').checked = false;
+        
+        var i, n = perms.length, mode;
+        for (i=0;i<n;i++) {
+            var mode = perms[i];
+            if (mode == '<http://www.w3.org/ns/auth/acl#Read>')
+                $('wac-read').checked = true;               
+            if (mode == '<http://www.w3.org/ns/auth/acl#Write>')
+                $('wac-write').checked = true;            
+        }
         var users = graph.each(resource, WAC('agent'));
         $('wac-users').value=users;
     });
