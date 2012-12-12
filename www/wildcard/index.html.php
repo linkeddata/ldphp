@@ -30,6 +30,18 @@ if ($_options->editui) {
     <textarea class="clear left" id="editorarea" style="width: 50em; bottom: 2em" disabled="disabled"></textarea>
     <input class="clear right" type="button" value="Save" onclick="cloud.save();" />
 </div>
+
+<div id="wac-editor" class="notice" style="position: fixed; top: 10%; left: 10%; display: none;">
+    <h3>Permissions for <b id="wac-path"></b></h3>
+    <p><input type="checkbox" name="Read"> Read
+    <input type="checkbox" name="Write"> Write</p>
+    <p>Allowed identities:<br/>
+    <small>(comma separated WebIDs)</small></p>
+    <textarea id="wac-users" name="users" cols="5" rows="5"></textarea>
+    <br/>
+    <input type="submit" name="wac-save" value="Save" onclick="wac.save()">    
+    <input type="button" value="Cancel" onclick="wac.hide()">
+</div>
 <?php } ?>
 <table id="index" class="cleft left" style="width: auto; min-width: 50%;">
 <thead>
@@ -62,6 +74,7 @@ foreach($listing as $item) {
         $item_elt = "$item_elt$_ext";
 
     echo '<tr><td>';
+    echo '<a href="javascript:wac.edit(\''.$item_elt.'\');"><img src="//'.BASE_DOMAIN.$_options->base_url.'/common/images/wac.png" /></a> ';
     if ($_options->editui && !$is_dir) {
         echo '<a href="javascript:cloud.edit(\''.$item_elt.'\');"><img src="//'.BASE_DOMAIN.$_options->base_url.'/common/images/pencil.gif" /></a> ';
     }
@@ -120,6 +133,7 @@ foreach($listing as $item) {
 <?php if ($_options->editui) { ?>
 <!-- <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script> -->
 <script>
+// Open WebID dialog
 $('create-webid').observe('click', function(e) {
   $('webid-gen').setStyle({
     top: e.pageY,
@@ -127,24 +141,18 @@ $('create-webid').observe('click', function(e) {
   });
   $('webid-gen').show();
 });
-
+// Hide WebID dialog
 function hideWebID() {
     $('webid-gen').hide();
 }
 </script>
 
 <script type="text/javascript">
-/*
-$(document).keypress(function(e) {
-    if (e.which == 27) { // ESC
-        $('editor').hide();
-    }
-});
-*/
 $(document).observe('keydown', function(e) {
     if (e.keyCode == 27) { // ESC
         $('editor').hide();
         $('webid-gen').hide();
+        $('wac-editor').hide();
     }
 });
 
