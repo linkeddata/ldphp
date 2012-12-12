@@ -15,7 +15,7 @@ address { color: gray; }
 
 /* Style for WebID generator form (popup) */
 #webid-gen {
-    background: white;
+    background: #FFF6BF;
     position: absolute;
     left: 20%;        /* Start with top left in the center */
     top: 20%;
@@ -25,11 +25,16 @@ address { color: gray; }
     -moz-box-shadow: 0px 8px 8px #000; width: 200px;
     -webkit-box-shadow: 0px 8px 8px #000; width: 200px;
     box-shadow: 0px 8px 8px #000; width: 200px;
+    
+    border-radius: 10px;
+    -moz-border-radius: 10px;
+    -webkit-border-radius:10px;
 }
 
-
 /* Overwriting previous table style */
-#webid-gen tbody tr:nth-child(even) td, tbody tr.even td {background:white;}
+#webid-gen tbody tr:nth-child(even) td, tbody tr.even td {
+    background:#FFF6BF;
+}
 
 input[type=submit], input[type=button] {
     border: 1px solid black;

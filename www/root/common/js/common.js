@@ -67,6 +67,42 @@ newJS = function(url, callback){
     return script;
 }
 
+wac = {};
+wac.get = function(path) {
+  
+    var metaURI = window.location.protocol+'//'+window.location.host+'/.meta';
+    var metaHash = metaURI+'#'+path;
+    // For quick access to those namespaces:
+    var RDF = $rdf.Namespace("http://www.w3.org/1999/02/22-rdf-syntax-ns#");
+    var WAC = $rdf.Namespace("http://www.w3.org/ns/auth/acl#");
+    
+    var graph = $rdf.graph();
+
+    var resource = $rdf.sym(metaHash);
+    var fetch = $rdf.fetcher(graph);
+    //document.write("<p><pre>Size: "+graph.statements+"</pre></p>")
+
+    fetch.nowOrWhenFetched(metaURI,undefined,function(){
+        var users = graph.each(resource, WAC('agent'));
+        $('wac-users').value=users;
+    });
+
+    // set path value in the title
+    $('wac-path').innerHTML=path;
+ 
+    // finally display the editor
+    $('wac-editor').show();
+}
+wac.edit = function(path) {
+    wac.get(path);
+}
+wac.hide = function() {
+    $('wac-editor').hide();
+}
+wac.save = function(path) {
+    $('wac-editor').hide();
+}
+
 cloud = {};
 cloud.append = function(path, data) {
     data = data || ''
