@@ -32,11 +32,14 @@ if ($_options->editui) {
 </div>
 
 <div id="wac-editor" class="notice" style="position: fixed; top: 10%; left: 10%; display: none;">
-    <h3>Permissions for <b id="wac-path"></b></h3>
-    <p><input type="checkbox" name="Read"> Read
-    <input type="checkbox" name="Write"> Write</p>
-    <p>Allowed identities:<br/>
-    <small>(comma separated WebIDs)</small></p>
+    <h3>Permissions for <b><span id="wac-path" name="wac-path"></span></b><br/><small><span id="wac-reqpath" name="wac-reqpath"></span></small></h3>
+    <p><input type="checkbox" id="wac-read" name="Read"> Read
+       <input type="checkbox" id="wac-write" name="Write"> Write
+    </p>
+    Allowed identities:
+    <br/>
+    <small>(comma separated mailto: or http:// addresses)</small>
+    <br/>
     <textarea id="wac-users" name="users" cols="5" rows="5"></textarea>
     <br/>
     <input type="submit" name="wac-save" value="Save" onclick="wac.save()">    
@@ -74,7 +77,7 @@ foreach($listing as $item) {
         $item_elt = "$item_elt$_ext";
 
     echo '<tr><td>';
-    echo '<a href="javascript:wac.edit(\''.$item_elt.'\');"><img src="//'.BASE_DOMAIN.$_options->base_url.'/common/images/wac.png" /></a> ';
+    echo '<a href="javascript:wac.edit(\''.$_request_path.'\', \''.$item_elt.'\');"><img src="//'.BASE_DOMAIN.$_options->base_url.'/common/images/wac.png" /></a> ';
     if ($_options->editui && !$is_dir) {
         echo '<a href="javascript:cloud.edit(\''.$item_elt.'\');"><img src="//'.BASE_DOMAIN.$_options->base_url.'/common/images/pencil.gif" /></a> ';
     }
