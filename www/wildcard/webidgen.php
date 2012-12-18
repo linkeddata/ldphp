@@ -19,7 +19,7 @@ if (isset($_POST['path'])) {
     $path_frag = explode('#', $path);
     $profile = $path_frag[0];
     $hash = $path_frag[1];
-    
+
     if (file_exists($_filename.$profile) === true)
         die('You must pick a different identifier. <strong>'.
             $path.'</strong> already exists in <strong>'.$_base.'</strong>.');
@@ -27,15 +27,15 @@ if (isset($_POST['path'])) {
     die('You need to provide a preferred identifier.');
 }
 $email = $_POST['email'];
-$spkac = $_POST['SPKAC'];
-
+$spkac = str_replace(str_split("\n\r"), '', $_POST['SPKAC']);
+//$spkac = $_POST['SPKAC'];
 // the full WebID URI
-$webid = $_base.$_request_path.$path;
+$webid = $_base.$path;
 
 /* --- Certificate --- */
-
+/*
 // Remove any whitespace in teh supplied SPKAC and prepare the cert request
-$req = "SPKAC=".str_replace(str_split(" \t\n\r\0\x0B"), '', $spkac);
+$req = "SPKAC=".$spkac;
 $req .= "\nCN=".$name;
 
 // Export the subjectAltName to be picked up by the openssl.cnf file
@@ -83,22 +83,35 @@ $modulus = preg_replace('/\s+/', '', strtolower($output[1]));
 // TODO: make sure the user got the cert somehow
 // Everything is done, now send the p12 encoded SSL certificate back to the user
 // notice: it is IMPERATIVE that no html data gets transmitted to the user before the header is sent!
+$length = filesize($tmpCERTfname);
+*/
 
-$length = filesize($tmpCERTfname);	
-header('Last-Modified: ' . date('r+b'));
-header('Accept-Ranges: bytes');
-header('Content-Length: ' . $length);
+$cert_cmd = 'python ../../py/pki.py '.
+                " -s '$spkac'" .
+                " -n '$name'" .
+                " -w '$webid'";
+/*
+$cert = shell_exec($cert_cmd);
+$tmpCERTfname  = "/tmp/CRT";
+// Write the SPKAC and DN into the temporary file
+$f = fopen($tmpCERTfname, "w");
+fwrite($f, $cert);
+fclose($f);
+*/
+// Send the certificate back to the user
 header('Content-Type: application/x-x509-user-cert');
-readfile($tmpCERTfname);
+passthru($cert_cmd);
 
+//readfile($tmpCERTfname);
 // delete the temporary CRT file
-unlink($tmpCERTfname);
-// clear certificate history from CA
+//unlink($tmpCERTfname);
+
+exit();
 
 /* --- Profile --- */
 
 // Write the new profile to disk
-$document = new Graph('', $_filename.'/'.$profile, '', $_base.'/'.$profile);
+$document = new Graph('', $_filename.$profile, '', $_base.$profile);
 if (!$document) { return false; }
 
 // add a PrimaryTopic
@@ -137,15 +150,13 @@ $document->append_objects('_:bnode1',
         'http://www.w3.org/ns/auth/cert#exponent',
         array(array('type'=>'literal', 'value'=>'65537', 'datatype'=>'http://www.w3.org/2001/XMLSchema#int')));
 // Write graph to disk
+//exit('Exit');
 $document->save();
 
 /* --- WAC (.meta) --- */
-
 $meta = new Graph('', $_aclbase.'/.meta', '', $_base.'.meta');
 if (!$meta) { return false; }
-
-// Read the .meta file if we already had one
-//$meta->load($_base.'/.meta');
+//echo "<pre>G=".htmlentities($meta->to_string('turtle'))."</pre>";
 
 // look for an existing default rule and add it if necessary
 $default_query = 'PREFIX acl: <http://www.w3.org/ns/auth/acl#>
@@ -182,7 +193,7 @@ if (isset($default_res['results']['bindings']) && count($default_res['results'][
 // Add the Read/Write for user over whole domain if it doesn't exist
 $frag_query = 'PREFIX acl: <http://www.w3.org/ns/auth/acl#>
       SELECT ?s WHERE {?s ?p ?o .
-        FILTER (regex(?s, "#me", "i"))
+        FILTER (regex(?s, "#'.$hash.'", "i"))
     }';
 $frag_res = $meta->SELECT($frag_query);
 if (isset($frag_res['results']['bindings']) && count($frag_res['results']['bindings']) == 0) {
