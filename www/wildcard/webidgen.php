@@ -100,13 +100,11 @@ fclose($f);
 */
 // Send the certificate back to the user
 header('Content-Type: application/x-x509-user-cert');
-passthru($cert_cmd);
+echo shell_exec($cert_cmd);
 
 //readfile($tmpCERTfname);
 // delete the temporary CRT file
 //unlink($tmpCERTfname);
-
-exit();
 
 /* --- Profile --- */
 
