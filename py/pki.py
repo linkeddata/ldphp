@@ -207,5 +207,5 @@ if __name__ == '__main__':
     parser.add_argument('-d', '--days', help="Certificate validity (in days)", default=360)
 
     args = parser.parse_args()
-    print sign_spkac(args.spkac, args.name, args.days, altName=args.webid)
-    
+    print sign_spkac(args.spkac, args.name, args.days, altName=args.webid),
+
