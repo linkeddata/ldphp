@@ -5,7 +5,7 @@
     if (substr($_SERVER['SERVER_NAME'],0,4) == 'dev.') {
         $base = '/common/lib/tabulator/';
     } else {
-        $base = 'http://linkeddata.github.com/tabulator/';
+        $base = 'https://w3.scripts.mit.edu/tabulator/';
     }
     echo '<link type="text/css" rel="stylesheet" href="', $base, 'tabbedtab.css" />';
     echo '<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>';
@@ -16,7 +16,7 @@
 /* http://api.jquery.com/extending-ajax/#Prefilters */
 jQuery.ajaxPrefilter(function(options) {
     if (options.crossDomain) {
-        options.url = "https://data.fm/proxy?uri=" + encodeURIComponent(options.url);
+        options.url = "https://w3.scripts.mit.edu/proxy?uri=" + encodeURIComponent(options.url);
     }
 });
 
