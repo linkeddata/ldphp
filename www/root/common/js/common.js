@@ -98,7 +98,8 @@ wac.get = function(request_path, path) {
                 $('wac-write').checked = true;            
         }
         var users = graph.each(resource, WAC('agent'));
-        $('wac-users').value=users;
+        // remove the < > signs from URIs
+        $('wac-users').value=users.toString().replace(/\<(.*?)\>/g, "$1");
     });
 
     // set path value in the title
@@ -115,12 +116,12 @@ wac.hide = function() {
     $('wac-editor').hide();
 }
 wac.append = function(path, data) {    
-    new HTTP(this.request_url+path, {
+    new HTTP(path, {
         method: 'post',
         body: data,
         contentType: 'text/turtle',
         onSuccess: function() {
-            //window.location.reload();
+            window.location.reload();
     }});
 }
 wac.save = function(elt) {
@@ -139,50 +140,48 @@ wac.save = function(elt) {
     var metaHash = metaURI+'#'+path;
     
     // Create a new graph
-    var graph = $rdf.graph();
+    var graph = new $rdf.graph();
 
     // path
-    graph.add(metaURI+'#'+reqPath,
-                'http://www.w3.org/ns/auth/acl#accessTo',
-                window.location.protocol+'//'+window.location.host+'/'+reqPath);
+    graph.add(graph.sym(metaURI+'#'+reqPath),
+                graph.sym('http://www.w3.org/ns/auth/acl#accessTo'),
+                graph.sym(window.location.protocol+'//'+window.location.host+'/'+reqPath));
                 
     // who can access
     if (users.length > 0) {
         var i, n = users.length, user;
         for (i=0;i<n;i++) {
             var user = users[i].replace(/\s+|\n|\r/g,'');
-            graph.add(metaURI+'#'+reqPath,
-                'http://www.w3.org/ns/auth/acl#agent',
-                user);
+            graph.add(graph.sym(metaURI+'#'+reqPath),
+                graph.sym('http://www.w3.org/ns/auth/acl#agent'),
+                graph.sym(user));
         }
     } else {
-        graph.add(metaURI+'#'+reqPath,
-                'http://www.w3.org/ns/auth/acl#agentClass',
-                'http://xmlns.com/foaf/0.1/Agent');
+        graph.add(graph.sym(metaURI+'#'+reqPath),
+                graph.sym('http://www.w3.org/ns/auth/acl#agentClass'),
+                graph.sym('http://xmlns.com/foaf/0.1/Agent'));
     }
     
     // add access modes
     if (read == true) {
-        graph.add(metaURI+'#'+reqPath,
-            'http://www.w3.org/ns/auth/acl#mode',
-            'http://www.w3.org/ns/auth/acl#Read');
+        graph.add(graph.sym(metaURI+'#'+reqPath),
+            graph.sym('http://www.w3.org/ns/auth/acl#mode'),
+            graph.sym('http://www.w3.org/ns/auth/acl#Read'));
     }
     if (write == true) {
-        graph.add(metaURI+'#'+reqPath,
-            'http://www.w3.org/ns/auth/acl#mode',
-            'http://www.w3.org/ns/auth/acl#Write');
+        graph.add(graph.sym(metaURI+'#'+reqPath),
+            graph.sym('http://www.w3.org/ns/auth/acl#mode'),
+            graph.sym('http://www.w3.org/ns/auth/acl#Write'));
     }
-    
-    // debug
-    document.write("<p>Statements: "+graph.statements+"</p>")
-    var s = $rdf.Serializer(graph);
-    s.suggestNamespaces(graph);
-    s.setBase(metaURI+'#'+reqPath);
-    var data = s.toN3(graph.statementsMatching(undefined, undefined, undefined, metaURI+'#'+reqPath).slice());
-    
-    document.write("<p>N3: "+data+"</p>")
 
-    //wac.append(path, data);
+    // debug
+    //document.write("<p>Statements: "+graph.statements+"</p>")
+    var s = new $rdf.Serializer(graph);
+    //s.suggestNamespaces(graph);
+    //s.setBase(metaURI+'#'+reqPath);
+    var data = s.toN3(graph);
+
+    wac.append(metaURI, data);
     $('wac-editor').hide();
 }
 
