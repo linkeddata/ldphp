@@ -167,7 +167,7 @@ def sign(pkey, p_ca_pem, p_ca_key, commonName, days, emailAddress=None, altName=
 def sign_spkac(spki, commonName, days, emailAddress=None, altName=None, userid=None):
     spki = crypto.NetscapeSPKI(spki)
     x509 = sign(spki.get_pubkey(), None, None, commonName, days, emailAddress, altName, userid)
-    return crypto.dump_certificate(crypto.FILETYPE_ASN1, x509)
+    return crypto.dump_certificate(crypto.FILETYPE_PEM, x509)
 
 def sign_req(pem, p_ca_pem, p_ca_key, commonName, days, emailAddress=None, altName=None, userid=None):
     x509 = crypto.load_certificate_request(crypto.FILETYPE_PEM, pem)
