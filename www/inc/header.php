@@ -16,9 +16,9 @@ if (!isset($TITLE)) {
     <title><?=$_SERVER['SERVER_NAME']?>: <?=$TITLE?></title>
     <link rel="stylesheet" href="//<?=BASE_DOMAIN.$_options->base_url?>/common/css/blueprint.css" type="text/css" media="screen, projection" />
     <link rel="stylesheet" href="//<?=BASE_DOMAIN.$_options->base_url?>/common/css/common.css" type="text/css" media="screen, projection" />
+    <script src="https://raw.github.com/linkeddata/rdflib.js/gh-pages/dist/rdflib.js" type="text/javascript"></script>
     <script src="//<?=BASE_DOMAIN.$_options->base_url?>/common/js/prototype.js" type="text/javascript"></script>
     <script src="//<?=BASE_DOMAIN.$_options->base_url?>/common/js/common.js" type="text/javascript"></script>
-    <script src="//<?=BASE_DOMAIN.$_options->base_url?>/common/js/rdflib.js" type="text/javascript"></script>
     <script type="text/javascript">
     cloud.init({request_base:'<?=REQUEST_BASE?>',request_url:'<?=REQUEST_URL?>',user:'<?=$_user?>'});
     </script>
