@@ -121,7 +121,7 @@ wac.append = function(path, data) {
         body: data,
         contentType: 'text/turtle',
         onSuccess: function() {
-            window.location.reload();
+            //window.location.reload();
     }});
 }
 wac.save = function(elt) {
