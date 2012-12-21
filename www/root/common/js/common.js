@@ -89,6 +89,11 @@ wac.get = function(request_path, path) {
         $('wac-read').checked = false;
         $('wac-write').checked = false;
         
+        // we need to know if the .meta file doesn't exist or it's empty (to add default rules)
+        if (graph.statements.length > 0)
+            $('wac-exists').value = '1';
+        
+        
         var i, n = perms.length, mode;
         for (i=0;i<n;i++) {
             var mode = perms[i];
@@ -119,10 +124,8 @@ wac.append = function(path, data) {
     new HTTP(path, {
         method: 'post',
         body: data,
-        contentType: 'text/turtle',
-        onSuccess: function() {
-            //window.location.reload();
-    }});
+        contentType: 'text/turtle'
+        });
 }
 wac.save = function(elt) {
     var path = $('wac-path').innerHTML;
@@ -130,7 +133,9 @@ wac.save = function(elt) {
     var users = $('wac-users').value.split(",");
     var read = $('wac-read').checked;
     var write = $('wac-write').checked;
-
+    var exists = $('wac-exists').value;
+    var owner = $('wac-owner').value;
+    
     // Remove preceeding / from path
     if (reqPath.substr(0, 1) == '/')
         reqPath = reqPath.substring(1);
@@ -147,7 +152,7 @@ wac.save = function(elt) {
                 graph.sym('http://www.w3.org/ns/auth/acl#accessTo'),
                 graph.sym(window.location.protocol+'//'+window.location.host+'/'+reqPath));
                 
-    // who can access
+    // add allowed users
     if (users.length > 0) {
         var i, n = users.length, user;
         for (i=0;i<n;i++) {
@@ -174,14 +179,40 @@ wac.save = function(elt) {
             graph.sym('http://www.w3.org/ns/auth/acl#Write'));
     }
 
-    // debug
-    //document.write("<p>Statements: "+graph.statements+"</p>")
-    var s = new $rdf.Serializer(graph);
-    //s.suggestNamespaces(graph);
-    //s.setBase(metaURI+'#'+reqPath);
-    var data = s.toN3(graph);
+    if (exists == '0') {
+        graph.add(graph.sym(metaURI+'#owner'),
+            graph.sym('http://www.w3.org/ns/auth/acl#accessTo'),
+            graph.sym('http://'+window.location.host));
+        graph.add(graph.sym(metaURI+'#owner'),
+            graph.sym('http://www.w3.org/ns/auth/acl#accessTo'),
+            graph.sym('https://'+window.location.host));
+        
+        graph.add(graph.sym(metaURI+'#owner'),
+                graph.sym('http://www.w3.org/ns/auth/acl#agent'),
+                graph.sym(owner));
+                
+        graph.add(graph.sym(metaURI+'#owner'),
+                graph.sym('http://www.w3.org/ns/auth/acl#defaultForNew'),
+                graph.sym('http://'+window.location.host));
+        graph.add(graph.sym(metaURI+'#owner'),
+                graph.sym('http://www.w3.org/ns/auth/acl#defaultForNew'),
+                graph.sym('https://'+window.location.host));
+    
+        graph.add(graph.sym(metaURI+'#owner'),
+            graph.sym('http://www.w3.org/ns/auth/acl#mode'),
+            graph.sym('http://www.w3.org/ns/auth/acl#Read'));
 
+        graph.add(graph.sym(metaURI+'#owner'),
+            graph.sym('http://www.w3.org/ns/auth/acl#mode'),
+            graph.sym('http://www.w3.org/ns/auth/acl#Write'));
+    }
+    
+    // serialize
+    var s = new $rdf.Serializer(graph);
+    var data = s.toN3(graph);
+    // POST the new rules to the server .meta file
     wac.append(metaURI, data);
+    // hide the editor
     $('wac-editor').hide();
 }
 
