@@ -33,6 +33,8 @@ if ($_options->editui) {
 
 <div id="wac-editor" class="notice" style="position: fixed; top: 10%; left: 10%; display: none;">
     <h3>Permissions for <b><span id="wac-path" name="wac-path"></span></b><br/><small><span id="wac-reqpath" name="wac-reqpath"></span></small></h3>
+    <input type="hidden" id="wac-exists" value="0" />
+    <input type="hidden" id="wac-owner" value="<?=$_user?>" />
     <p><input type="checkbox" id="wac-read" name="Read"> Read
        <input type="checkbox" id="wac-write" name="Write"> Write
     </p>
@@ -78,14 +80,14 @@ foreach($listing as $item) {
         $item_elt = "$item_elt$_ext";
 
     echo '<tr><td class="options">';
-    echo '<a href="javascript:wac.edit(\''.$_request_path.'\', \''.$item_elt.'\');"><img src="//'.BASE_DOMAIN.$_options->base_url.'/common/images/wac.png" /></a> ';
+    if ($_options->editui)
+        echo '<a href="javascript:cloud.rm(\''.$item_elt.'\');"><img src="//'.BASE_DOMAIN.$_options->base_url.'/common/images/cancel.gif" title="Delete" /></a>';
+    echo '</td><td class="options">';
+    echo '<a href="javascript:wac.edit(\''.$_request_path.'\', \''.$item_elt.'\');"><img src="//'.BASE_DOMAIN.$_options->base_url.'/common/images/wac.png" title="Edit access control rules" /></a> ';
     echo '</td><td class="options">';
     if ($_options->editui && !$is_dir) {
-        echo '<a href="javascript:cloud.edit(\''.$item_elt.'\');"><img src="//'.BASE_DOMAIN.$_options->base_url.'/common/images/pencil.gif" /></a> ';
+        echo '<a href="javascript:cloud.edit(\''.$item_elt.'\');"><img src="//'.BASE_DOMAIN.$_options->base_url.'/common/images/pencil.gif" title="Edit contents" /></a> ';
     }
-    echo '</td><td class="options">';
-    if ($_options->editui)
-        echo '<a href="javascript:cloud.rm(\''.$item_elt.'\');"><img src="//'.BASE_DOMAIN.$_options->base_url.'/common/images/cancel.gif" /></a>';
     echo '</td><td><a href="', $item_elt, '">', $item_elt, '</a>';
     if ($item_ext == 'sqlite')
         echo ' (sqlite)';
