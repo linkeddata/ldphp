@@ -15,7 +15,7 @@ if (isset($_POST['path'])) {
 
     if (file_exists($_filename.'/'.$profile) === true)
         die('You must pick a different identifier. <strong>'.
-            $path.'</strong> already exists in the current directory!');
+           $path.'</strong> already exists in the current directory!');
 } else {
     die('You need to provide a preferred identifier.');
 }
@@ -80,92 +80,3 @@ $document->append_objects('_:bnode1',
 
 $document->save();
 
-exit;
-
-/* --- WAC (.meta) --- */
-$meta = new Graph('', $_aclbase.'/.meta', '', $_base.'.meta');
-if (!$meta) { return false; }
-
-// look for an existing default rule and add it if necessary
-$default_query = 'PREFIX acl: <http://www.w3.org/ns/auth/acl#>
-      SELECT ?s WHERE {?s ?p ?o .
-        FILTER (regex(?s, "#Default", "i"))
-    }';
-
-$default_res = $meta->SELECT($default_query);
-if (isset($default_res['results']['bindings']) && count($default_res['results']['bindings']) == 0) {
-    // Add the default entry if we don't have one
-    // TODO what do we do with existing files/dirs in the root dir? (add rules for them?)
-    $meta->append_objects($_base.'.meta#Default',
-        'http://www.w3.org/ns/auth/acl#accessTo',
-        array(array('type'=>'uri', 'value'=>'http://'.$_domain)));
-    $meta->append_objects($_base.'.meta#Default',
-        'http://www.w3.org/ns/auth/acl#accessTo',
-        array(array('type'=>'uri', 'value'=>'https://'.$_domain)));
-    $meta->append_objects($_base.'.meta#Default',
-        'http://www.w3.org/ns/auth/acl#accessTo',
-        array(array('type'=>'uri', 'value'=>$_request_path)));
-    $meta->append_objects($_base.'.meta#Default',
-        'http://www.w3.org/ns/auth/acl#accessTo', 
-        array(array('type'=>'uri', 'value'=>'')));
-    $meta->append_objects($_base.'.meta#Default',
-        'http://www.w3.org/ns/auth/acl#agentClass',
-        array(array('type'=>'uri', 'value'=>'http://xmlns.com/foaf/0.1/Agent')));
-    $meta->append_objects($_base.'.meta#Default',
-        'http://www.w3.org/ns/auth/acl#defaultForNew',
-        array(array('type'=>'uri', 'value'=>$_request_path)));
-    $meta->append_objects($_base.'.meta#Default',
-        'http://www.w3.org/ns/auth/acl#mode',
-        array(array('type'=>'uri', 'value'=>'http://www.w3.org/ns/auth/acl#Read'))); 
-}
-
-// Add the Read/Write for user over whole domain if it doesn't exist
-$frag_query = 'PREFIX acl: <http://www.w3.org/ns/auth/acl#>
-      SELECT ?s WHERE {?s ?p ?o .
-        FILTER (regex(?s, "#'.$hash.'", "i"))
-    }';
-$frag_res = $meta->SELECT($frag_query);
-if (isset($frag_res['results']['bindings']) && count($frag_res['results']['bindings']) == 0) {
-    $meta->append_objects($_base.'.meta#'.$hash,
-        'http://www.w3.org/ns/auth/acl#accessTo',
-        array(array('type'=>'uri', 'value'=>'http://'.$_domain)));
-    $meta->append_objects($_base.'.meta#'.$hash,
-        'http://www.w3.org/ns/auth/acl#accessTo',
-        array(array('type'=>'uri', 'value'=>'https://'.$_domain)));
-    $meta->append_objects($_base.'.meta#'.$hash,
-        'http://www.w3.org/ns/auth/acl#agent',
-        array(array('type'=>'uri', 'value'=>$webid)));
-    $meta->append_objects($_base.'.meta#'.$hash,
-        'http://www.w3.org/ns/auth/acl#defaultForNew',
-        array(array('type'=>'uri', 'value'=>'http://'.$_domain)));
-    $meta->append_objects($_base.'.meta#'.$hash,
-        'http://www.w3.org/ns/auth/acl#defaultForNew',
-        array(array('type'=>'uri', 'value'=>'https://'.$_domain)));
-    $meta->append_objects($_base.'.meta#'.$hash,
-        'http://www.w3.org/ns/auth/acl#mode',
-        array(array('type'=>'uri', 'value'=>'http://www.w3.org/ns/auth/acl#Read')));
-    $meta->append_objects($_base.'.meta#'.$hash,
-        'http://www.w3.org/ns/auth/acl#mode',
-        array(array('type'=>'uri', 'value'=>'http://www.w3.org/ns/auth/acl#Write')));
-}
-
-// remove the prefixing / from rule name
-if (substr($_request_path, 0, 1) == '/')
-    $_request_path = substr($_request_path, 1, strlen($_request_path));
-
-// Add the profile rules
-$meta->append_objects($_base.'.meta#'.$_request_path,
-    'http://www.w3.org/ns/auth/acl#accessTo',
-    array(array('type'=>'uri', 'value'=>$_request_path)));
-$meta->append_objects($_base.'.meta#'.$_request_path,
-    'http://www.w3.org/ns/auth/acl#agent',
-    array(array('type'=>'uri', 'value'=>$webid)));
-$meta->append_objects($_base.'.meta#'.$_request_path,
-    'http://www.w3.org/ns/auth/acl#defaultForNew',
-    array(array('type'=>'uri', 'value'=>$_request_path)));
-$meta->append_objects($_base.'.meta#'.$_request_path,
-    'http://www.w3.org/ns/auth/acl#mode',
-    array(array('type'=>'uri', 'value'=>'http://www.w3.org/ns/auth/acl#Write')));
-
-// Write graph to disk
-$meta->save();
