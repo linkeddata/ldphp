@@ -49,7 +49,8 @@ if ($_options->editui) {
 <table id="index" class="cleft left" style="width: auto; min-width: 50%;">
 <thead>
     <tr>
-        <th colspan=4>Name</th>
+        <th colspan="3">Options</th>
+        <th colspan="2">Name</th>
         <th>Last Modified</th>
         <th>Size</th>
     </tr>
@@ -76,13 +77,16 @@ foreach($listing as $item) {
     elseif (isset($_ext) && (!$item_ext || $item_ext == 'sqlite'))
         $item_elt = "$item_elt$_ext";
 
-    echo '<tr><td>';
+    echo '<tr><td class="options">';
     echo '<a href="javascript:wac.edit(\''.$_request_path.'\', \''.$item_elt.'\');"><img src="//'.BASE_DOMAIN.$_options->base_url.'/common/images/wac.png" /></a> ';
+    echo '</td><td class="options">';
     if ($_options->editui && !$is_dir) {
         echo '<a href="javascript:cloud.edit(\''.$item_elt.'\');"><img src="//'.BASE_DOMAIN.$_options->base_url.'/common/images/pencil.gif" /></a> ';
     }
-    echo '</td><td>';
-    echo '<a href="', $item_elt, '">', $item_elt, '</a>';
+    echo '</td><td class="options">';
+    if ($_options->editui)
+        echo '<a href="javascript:cloud.rm(\''.$item_elt.'\');"><img src="//'.BASE_DOMAIN.$_options->base_url.'/common/images/cancel.gif" /></a>';
+    echo '</td><td><a href="', $item_elt, '">', $item_elt, '</a>';
     if ($item_ext == 'sqlite')
         echo ' (sqlite)';
     echo '</td><td>';
@@ -102,9 +106,6 @@ foreach($listing as $item) {
             printf('<a href="%s%s">%s</a>', $item_elt, $ext, $label);
         }
     }
-    echo '</td><td>';
-    if ($_options->editui)
-        echo '<a href="javascript:cloud.rm(\''.$item_elt.'\');"><img src="//'.BASE_DOMAIN.$_options->base_url.'/common/images/cancel.gif" /></a>';
     echo '</td><td>'.strftime('%F %X %Z', filemtime("$_filename/$item")).'</td>';
     echo '<td>'.(!$is_dir?filesize("$_filename/$item"):'').'</td>';
     echo '</td></tr>';

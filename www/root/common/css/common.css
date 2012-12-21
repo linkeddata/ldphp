@@ -13,6 +13,10 @@ address { color: gray; }
 #codeID a { color: gray; }
 #codeTime { float: right; }
 
+.options {
+    padding: 0px;
+}
+
 /* Style for WebID generator form (popup) */
 #webid-gen {
     background: #FFF6BF;
