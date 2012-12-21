@@ -133,6 +133,7 @@ wac.save = function(elt) {
     var users = $('wac-users').value.split(",");
     var read = $('wac-read').checked;
     var write = $('wac-write').checked;
+    var recursive = $('wac-recursive').checked;
     var exists = $('wac-exists').value;
     var owner = $('wac-owner').value;
     
@@ -150,7 +151,7 @@ wac.save = function(elt) {
     // path
     graph.add(graph.sym(metaURI+'#'+reqPath),
                 graph.sym('http://www.w3.org/ns/auth/acl#accessTo'),
-                graph.sym(window.location.protocol+'//'+window.location.host+'/'+reqPath));
+                graph.sym(reqPath));
                 
     // add allowed users
     if (users.length > 0) {
@@ -178,33 +179,53 @@ wac.save = function(elt) {
             graph.sym('http://www.w3.org/ns/auth/acl#mode'),
             graph.sym('http://www.w3.org/ns/auth/acl#Write'));
     }
+    
+    if (recursive == true) {
+        graph.add(graph.sym(metaURI+'#'+reqPath),
+                graph.sym('http://www.w3.org/ns/auth/acl#defaultForNew'),
+                graph.sym(reqPath));
+    }
 
     if (exists == '0') {
+        // Add the #Default rule for this domain
+        graph.add(graph.sym(metaURI),
+                graph.sym('http://www.w3.org/ns/auth/acl#accessTo'),
+                graph.sym('http://'+window.location.host));
+        graph.add(graph.sym(metaURI),
+                graph.sym('http://www.w3.org/ns/auth/acl#accessTo'),
+                graph.sym('https://'+window.location.host));
+        graph.add(graph.sym(metaURI),
+                graph.sym('http://www.w3.org/ns/auth/acl#accessTo'),
+                graph.sym('https://'+window.location.host+'/.meta'));
+        graph.add(graph.sym(metaURI),
+                graph.sym('http://www.w3.org/ns/auth/acl#agentClass'),
+                graph.sym('http://xmlns.com/foaf/0.1/Agent'));
+        graph.add(graph.sym(metaURI),
+                graph.sym('http://www.w3.org/ns/auth/acl#mode'),
+                graph.sym('http://www.w3.org/ns/auth/acl#Read'));
+    
+        // Add the Read/Write rule for domain owner
         graph.add(graph.sym(metaURI+'#owner'),
-            graph.sym('http://www.w3.org/ns/auth/acl#accessTo'),
-            graph.sym('http://'+window.location.host));
+                graph.sym('http://www.w3.org/ns/auth/acl#accessTo'),
+                graph.sym('http://'+window.location.host));
         graph.add(graph.sym(metaURI+'#owner'),
-            graph.sym('http://www.w3.org/ns/auth/acl#accessTo'),
-            graph.sym('https://'+window.location.host));
-        
+                graph.sym('http://www.w3.org/ns/auth/acl#accessTo'),
+                graph.sym('https://'+window.location.host));
         graph.add(graph.sym(metaURI+'#owner'),
                 graph.sym('http://www.w3.org/ns/auth/acl#agent'),
                 graph.sym(owner));
-                
         graph.add(graph.sym(metaURI+'#owner'),
                 graph.sym('http://www.w3.org/ns/auth/acl#defaultForNew'),
                 graph.sym('http://'+window.location.host));
         graph.add(graph.sym(metaURI+'#owner'),
                 graph.sym('http://www.w3.org/ns/auth/acl#defaultForNew'),
                 graph.sym('https://'+window.location.host));
-    
         graph.add(graph.sym(metaURI+'#owner'),
-            graph.sym('http://www.w3.org/ns/auth/acl#mode'),
-            graph.sym('http://www.w3.org/ns/auth/acl#Read'));
-
+                graph.sym('http://www.w3.org/ns/auth/acl#mode'),
+                graph.sym('http://www.w3.org/ns/auth/acl#Read'));
         graph.add(graph.sym(metaURI+'#owner'),
-            graph.sym('http://www.w3.org/ns/auth/acl#mode'),
-            graph.sym('http://www.w3.org/ns/auth/acl#Write'));
+                graph.sym('http://www.w3.org/ns/auth/acl#mode'),
+                graph.sym('http://www.w3.org/ns/auth/acl#Write'));
     }
     
     // serialize
