@@ -14,7 +14,7 @@ address { color: gray; }
 #codeTime { float: right; }
 
 .options {
-    padding: 0px;
+    padding: 4px 0px 4px 0px;
 }
 
 /* Style for WebID generator form (popup) */
