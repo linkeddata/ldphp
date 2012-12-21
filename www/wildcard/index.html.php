@@ -35,12 +35,14 @@ if ($_options->editui) {
     <h3>Permissions for <b><span id="wac-path" name="wac-path"></span></b><br/><small><span id="wac-reqpath" name="wac-reqpath"></span></small></h3>
     <input type="hidden" id="wac-exists" value="0" />
     <input type="hidden" id="wac-owner" value="<?=$_user?>" />
-    <p><input type="checkbox" id="wac-read" name="Read"> Read
-       <input type="checkbox" id="wac-write" name="Write"> Write
+    <p>
+        <input type="checkbox" id="wac-read" name="Read"> Read
+        <input type="checkbox" id="wac-write" name="Write"> Write
+        <input type="checkbox" id="wac-recursive" name="Recursively"> Recursively
     </p>
     Allowed identities:
     <br/>
-    <small>(comma separated mailto: or http:// addresses)</small>
+    <small>(comma separated mailto: or http:// addresses OR leave blank for everyone)</small>
     <br/>
     <textarea id="wac-users" name="users" cols="5" rows="5"></textarea>
     <br/>
@@ -50,11 +52,12 @@ if ($_options->editui) {
 <?php } ?>
 <table id="index" class="cleft left" style="width: auto; min-width: 50%;">
 <thead>
-    <tr>
-        <th colspan="3">Options</th>
-        <th colspan="2">Name</th>
+    <tr>        
+        <th>Name</th>
+        <th>Type</th>
         <th>Last Modified</th>
         <th>Size</th>
+        <th colspan="3">Actions</th>
     </tr>
 </thead>
 <tbody>
@@ -79,16 +82,8 @@ foreach($listing as $item) {
     elseif (isset($_ext) && (!$item_ext || $item_ext == 'sqlite'))
         $item_elt = "$item_elt$_ext";
 
-    echo '<tr><td class="options">';
-    if ($_options->editui)
-        echo '<a href="javascript:cloud.rm(\''.$item_elt.'\');"><img src="//'.BASE_DOMAIN.$_options->base_url.'/common/images/cancel.gif" title="Delete" /></a>';
-    echo '</td><td class="options">';
-    echo '<a href="javascript:wac.edit(\''.$_request_path.'\', \''.$item_elt.'\');"><img src="//'.BASE_DOMAIN.$_options->base_url.'/common/images/wac.png" title="Edit access control rules" /></a> ';
-    echo '</td><td class="options">';
-    if ($_options->editui && !$is_dir) {
-        echo '<a href="javascript:cloud.edit(\''.$item_elt.'\');"><img src="//'.BASE_DOMAIN.$_options->base_url.'/common/images/pencil.gif" title="Edit contents" /></a> ';
-    }
-    echo '</td><td><a href="', $item_elt, '">', $item_elt, '</a>';
+    echo '<tr>';
+    echo '<td><a href="', $item_elt, '">', $item_elt, '</a>';
     if ($item_ext == 'sqlite')
         echo ' (sqlite)';
     echo '</td><td>';
@@ -98,19 +93,24 @@ foreach($listing as $item) {
         echo 'text/', $item_ext=='js'?'javascript':$item_ext;
     } elseif ($_options->editui) {
         echo 'text/turtle';
-        $i = 0;
-        foreach (array(
-            //'.json?callback=load'=>'JS',
-            '.json'=>'JSON',
-            '?query=SELECT+%2A+WHERE+%7B%3Fs+%3Fp+%3Fo%7D+LIMIT+10'=>'SPARQL',
-        ) as $ext=>$label) {
-            echo $i++ ? ', ' : ': ';
-            printf('<a href="%s%s">%s</a>', $item_elt, $ext, $label);
-        }
+        
     }
     echo '</td><td>'.strftime('%F %X %Z', filemtime("$_filename/$item")).'</td>';
-    echo '<td>'.(!$is_dir?filesize("$_filename/$item"):'').'</td>';
-    echo '</td></tr>';
+    echo '<td>'.(!$is_dir?filesize("$_filename/$item"):'-').'</td>';
+    echo '</td>';
+    echo '<td class="options">';
+    if ($_options->editui && !$is_dir) {
+        echo '<a href="javascript:cloud.edit(\''.$item_elt.'\');"><img src="//'.BASE_DOMAIN.$_options->base_url.'/common/images/pencil.gif" title="Edit contents" /></a>';
+    }
+    echo '</td>';
+    echo '<td class="options">';
+    echo '<a href="javascript:wac.edit(\''.$_request_path.'\', \''.$item_elt.'\');"><img src="//'.BASE_DOMAIN.$_options->base_url.'/common/images/wac.png" title="Edit access control rules" /></a> ';
+    echo '</td>';
+    echo '<td class="options">';
+    if ($_options->editui)
+        echo '<a href="javascript:cloud.rm(\''.$item_elt.'\');"><img src="//'.BASE_DOMAIN.$_options->base_url.'/common/images/cancel.gif" title="Delete" /></a>';
+    echo '</td>';
+    echo '</tr>';
 }
 ?>
 </tbody>
