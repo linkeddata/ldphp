@@ -71,6 +71,11 @@ wac = {};
 wac.get = function(request_path, path) {
     // TODO: handle defaultForNew and #Default
     var metaURI = window.location.protocol+'//'+window.location.host+'/.meta';
+    if (path == '.meta')
+        var innerref = '';
+    else
+        var innerref = '#'+path;
+    var metaHash = metaURI+innerref;
     var metaHash = metaURI+'#'+path;
     // For quick access to those namespaces:
     var RDF = $rdf.Namespace("http://www.w3.org/1999/02/22-rdf-syntax-ns#");
@@ -124,8 +129,11 @@ wac.append = function(path, data) {
     new HTTP(path, {
         method: 'post',
         body: data,
-        contentType: 'text/turtle'
-        });
+        contentType: 'text/turtle',
+        onSuccess: function() {
+            window.location.reload(true);
+        }
+    });
 }
 wac.save = function(elt) {
     var path = $('wac-path').innerHTML;
@@ -235,6 +243,10 @@ wac.save = function(elt) {
     wac.append(metaURI, data);
     // hide the editor
     $('wac-editor').hide();
+    /*
+    $('wac-editor').ajaxComplete(function() {
+        window.location.reload();
+    });*/
 }
 
 cloud = {};

@@ -161,8 +161,8 @@ $(document).observe('keydown', function(e) {
         $('wac-editor').hide();
     }
 });
-
 </script>
+
 <?php
 }
 TAG(__FILE__, __LINE__, '$Id$');
