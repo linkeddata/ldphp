@@ -76,7 +76,7 @@ wac.get = function(request_path, path) {
     else
         var innerref = '#'+path;
     var metaHash = metaURI+innerref;
-    var metaHash = metaURI+'#'+path;
+
     // For quick access to those namespaces:
     var RDF = $rdf.Namespace("http://www.w3.org/1999/02/22-rdf-syntax-ns#");
     var WAC = $rdf.Namespace("http://www.w3.org/ns/auth/acl#");
