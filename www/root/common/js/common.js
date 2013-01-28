@@ -198,10 +198,10 @@ wac.save = function(elt) {
         // Add the #Default rule for this domain
         graph.add(graph.sym(metaURI),
                 graph.sym('http://www.w3.org/ns/auth/acl#accessTo'),
-                graph.sym('http://'+window.location.host+'/'));
+                graph.sym('http://'+window.location.host));
         graph.add(graph.sym(metaURI),
                 graph.sym('http://www.w3.org/ns/auth/acl#accessTo'),
-                graph.sym('https://'+window.location.host+'/'));
+                graph.sym('https://'+window.location.host));
         graph.add(graph.sym(metaURI),
                 graph.sym('http://www.w3.org/ns/auth/acl#accessTo'),
                 graph.sym('https://'+window.location.host+'/.meta'));
@@ -215,19 +215,19 @@ wac.save = function(elt) {
         // Add the Read/Write rule for domain owner
         graph.add(graph.sym(metaURI+'#owner'),
                 graph.sym('http://www.w3.org/ns/auth/acl#accessTo'),
-                graph.sym('http://'+window.location.host+'/'));
+                graph.sym('http://'+window.location.host));
         graph.add(graph.sym(metaURI+'#owner'),
                 graph.sym('http://www.w3.org/ns/auth/acl#accessTo'),
-                graph.sym('https://'+window.location.host+'/'));
+                graph.sym('https://'+window.location.host));
         graph.add(graph.sym(metaURI+'#owner'),
                 graph.sym('http://www.w3.org/ns/auth/acl#agent'),
                 graph.sym(owner));
         graph.add(graph.sym(metaURI+'#owner'),
                 graph.sym('http://www.w3.org/ns/auth/acl#defaultForNew'),
-                graph.sym('http://'+window.location.host+'/'));
+                graph.sym('http://'+window.location.host));
         graph.add(graph.sym(metaURI+'#owner'),
                 graph.sym('http://www.w3.org/ns/auth/acl#defaultForNew'),
-                graph.sym('https://'+window.location.host+'/'));
+                graph.sym('https://'+window.location.host));
         graph.add(graph.sym(metaURI+'#owner'),
                 graph.sym('http://www.w3.org/ns/auth/acl#mode'),
                 graph.sym('http://www.w3.org/ns/auth/acl#Read'));
