@@ -162,7 +162,7 @@ wac.save = function(elt) {
                 graph.sym(reqPath));
                 
     // add allowed users
-    if (users.length > 0) {
+    if (users.length > 1) {
         var i, n = users.length, user;
         for (i=0;i<n;i++) {
             var user = users[i].replace(/\s+|\n|\r/g,'');
