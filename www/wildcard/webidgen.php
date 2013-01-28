@@ -30,7 +30,14 @@ $cert_cmd = 'python ../../py/pki.py '.
 
 // Send the certificate back to the user
 header('Content-Type: application/x-x509-user-cert');
-echo trim(shell_exec($cert_cmd));
+$cert = trim(shell_exec($cert_cmd));
+$ret_cmd = "echo '$cert' | openssl x509 -in /dev/stdin -outform der";
+echo trim(shell_exec($ret_cmd));
+
+$mod_cmd = "echo '$cert' | openssl x509 -in /dev/stdin -modulus -noout";
+// remove the Modulus= part
+$output = explode('=', trim(shell_exec($mod_cmd)));
+$modulus = $output[1];
 
 /* --- Profile --- */
 
