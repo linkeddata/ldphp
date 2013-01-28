@@ -51,14 +51,10 @@ class WAC {
     function can($method, $uri=null) {
         // there is no .meta file present
         if ($this->_options->open && !$this->_graph->size()) {
-            $this->_reason .= 'No .meta file found. in '.REQUEST_BASE;
+            $this->_reason .= 'No .meta file found. in '.REQUEST_BASE."\n";
             return true;
         }
-        $this->_reason .= 'BaseURI='.$this->_base_uri.'';
         $uri = is_null($uri) ? $this->_base_uri : $uri;
-        // strip trailing slash
-        if (substr($uri, -1, 1) == '/')
-            $uri = substr($uri, 0, -1);
         $p = $uri;
         // walk path
         while (true) {
@@ -73,7 +69,7 @@ class WAC {
                     }";
             $r = $this->_graph->SELECT($q);
             if (isset($r['results']['bindings']) && count($r['results']['bindings']) > 0) {
-                $this->_reason .= 'User '.$this->_req_user.' is allowed '.$method.' access to '.$p;
+                $this->_reason .= 'User '.$this->_req_user.' is allowed '.$method.' access to '.$uri."\n";
                 return true;
             }
             // public authorization
@@ -85,61 +81,13 @@ class WAC {
                     }";
             $r = $this->_graph->SELECT($q);
             if (isset($r['results']['bindings']) && count($r['results']['bindings']) > 0) {
-                $this->_reason .= 'Everyone is allowed '.$method.' access to '.$p;
+                $this->_reason .= 'Everyone is allowed '.$method.' access to '.$uri."\n";
                 return true;
             }
             $p = dirname($p);
         }
-        $this->_reason .= 'User '.$this->_req_user.' is NOT allowed '.$method.' access to '.$p;
+        $this->_reason .= 'User '.$this->_req_user.' is NOT allowed '.$method.' access to '.$uri."\n";
         return false;
-    }
-    /**
-     * Give a user a specific WAC rule
-     * @param string $method Read/Write/Append/Control
-     * @param string $user  a specific user or anyone (*)
-     * @param string $uri the URI of the resource
-     *
-     * @return boolean (true if everything is ok)
-     */
-    function give($method, $user, $uri=null) {
-        // check if we are allowed to write to .meta      
-        if ($this->can('Write', $this->_options, $uri) == false)
-            return false;
-        
-        $uri = is_null($uri) ? $this->_base_uri : $uri;
-        // strip trailing slash
-        if (substr($uri, -1, 1) == '/')
-            $uri = substr($uri, 0, -1);
-        
-        // load existing .meta contents
-        $this->_graph->load($this->_base_uri.'/.meta');
-
-        // TODO: do we need recursivity here as well?
-        // proceed to setting the WAC rule
-        // add the resource first
-        $this->_graph->append_objects($this->_base_uri,
-            'http://www.w3.org/ns/auth/acl#accessTo',
-            array(array('type'=>'uri', 'value'=>$uri)));
-        // check if we have a specific user or any agent (*)?
-        if ($user == '*') {            
-            $this->_graph->append_objects($this->_base_uri,
-                'http://www.w3.org/ns/auth/acl#agentClass',
-                array(array('type'=>'uri', 'value'=>'http://xmlns.com/foaf/0.1/Agent')));
-        } else {
-            $this->_graph->append_objects($this->_base_uri,
-                'http://www.w3.org/ns/auth/acl#agent',
-                array(array('type'=>'uri', 'value'=>$user)));
-        }
-        
-        // add access method
-        $this->_graph->append_objects($this->_base_uri,
-            'http://www.w3.org/ns/auth/acl#mode',
-            array(array('type'=>'uri', 'value'=>'http://www.w3.org/ns/auth/acl#'.$method)));
-        
-        // save the new .meta
-        $this->_graph->save();
-        
-        return true;
     }
 
 }
