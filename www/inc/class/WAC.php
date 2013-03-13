@@ -55,10 +55,10 @@ class WAC {
             return true;
         }
         $uri = is_null($uri) ? $this->_base_uri : $uri;
-        $p = $uri;
         // strip trailing slash (dirname trailing while will too)
-        if (substr($p, -1) == '/')
-            $p = substr($p, 0, -1);
+        if (substr($uri, -1) == '/')
+            $uri = substr($uri, 0, -1);
+        $p = $uri;
         // walk path
         while (true) {
             if (!strpos($p, '/')) break;
