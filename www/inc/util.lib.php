@@ -5,7 +5,8 @@
  * $Id$
  */
 
-function isPost() { return ($_SERVER['REQUEST_METHOD'] == 'POST'); }
+function isMethod($method) { return ($_SERVER['REQUEST_METHOD'] == $method); }
+function isPost() { return isMethod('POST'); }
 function isPostData() {
   return isset($_SERVER['REQUEST_METHOD']) && isset($_SERVER['HTTP_CONTENT_LENGTH'])
     && $_SERVER['REQUEST_METHOD'] == 'POST' && $_SERVER['HTTP_CONTENT_LENGTH'] > 0;

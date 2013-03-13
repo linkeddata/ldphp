@@ -7,16 +7,26 @@
 
 require_once('runtime.php');
 
-if (isset($i_next))
+if (isset($i_next)) {
     sess('next', $i_next);
+} elseif (isMethod('GET') && isset($_SERVER['HTTP_REFERER'])) {
+    if (sess('next0') != $_SERVER['HTTP_REFERER']) {
+        sess('next0', $_SERVER['HTTP_REFERER']);
+        sess('next', $_SERVER['HTTP_REFERER']);
+    }
+}
+
+if (isset($i_auth) && $i_auth == 'WebID') {
+    if (isSess('next'))
+        sess('next', str_replace('http://', 'https://', sess('next')));
+    if (!isHTTPS()) {
+        header('Location: https://'.BASE_DOMAIN.$_options->base_url.'/login'.newQSA());
+        exit;
+    }
+}
 
 if (isset($i_provider)) {
     header('Location: '.REQUEST_BASE.'/rp_auth'.newQSA());
-    exit;
-}
-
-if (isset($i_auth) && $i_auth == 'WebID' && !isHTTPS()) {
-    header('Location: https://'.BASE_DOMAIN.$_options->base_url.'/login?'.newQSA());
     exit;
 }
 

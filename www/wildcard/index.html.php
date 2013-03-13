@@ -50,10 +50,11 @@ if ($_options->editui) {
     <input type="button" value="Cancel" onclick="wac.hide()">
 </div>
 <?php } ?>
-<table id="index" class="cleft left" style="width: auto; min-width: 50%;">
+<div>
+<table id="index" class="cleft left" style="width: auto; min-width: 65%;">
 <thead>
     <tr>        
-        <th>Name</th>
+        <th></th>
         <th>Type</th>
         <th>Last Modified</th>
         <th>Size</th>
@@ -118,40 +119,18 @@ foreach($listing as $item) {
 <tfoot>
     <tr>
         <td colspan=7>
-            <input id="create-name" name="create[name]" type="text" value="" placeholder="Create new..." />
-            <input id="create-type-file" name="create[type]" type="button" value="File" onclick="cloud.append($F($(this.parentNode).down()));" />
-            <input id="create-type-directory" name="create[type]" type="button" value="Dir" onclick="cloud.mkdir($F($(this.parentNode).down()));" />
-            <input id="create-webid" name="create[webid]" type="button" value="Issue a WebID" />
+            <input id="create-name" name="create[name]" type="text" value="" placeholder="new..." />
+            <input id="create-type-file" name="create[type]" type="button" value="file" onclick="cloud.append($F($(this.parentNode).down()));" />
+            <input id="create-type-directory" name="create[type]" type="button" value="dir" onclick="cloud.mkdir($F($(this.parentNode).down()));" />
         </td>
     </tr>
 </tfoot>
 <?php } ?>
 </table>
-<table id="webid-gen" style="display:none;">
-    <form method="POST" action="">
-        <tr><td>Your name: </td><td><input type="text" name="name" size="40" class="required"></td></tr>
-        <tr><td>Preferred identifier: </td><td><input type="text" name="path" size="40" value="card#me" class="required"></td></tr>
-        <tr><td>Email (recovery): </td><td><input type="text" name="email" size="40"></td></tr>
-        <tr><td colspan="2"><keygen name="SPKAC" challenge="randomchars" keytype="rsa" hidden></td></tr>
-        <tr><td colspan="2"><input type="submit" value="Generate" onclick="hideWebID()"> <input type="button" value="Cancel" onclick="hideWebID()"></td></tr>
-    </form>
-</table>
+<div class="clear"></div>
+</div>
 <?php if ($_options->editui) { ?>
 <!-- <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script> -->
-<script>
-// Open WebID dialog
-$('create-webid').observe('click', function(e) {
-  $('webid-gen').setStyle({
-    top: e.pageY,
-    left: e.pageX
-  });
-  $('webid-gen').show();
-});
-// Hide WebID dialog
-function hideWebID() {
-    $('webid-gen').hide();
-}
-</script>
 
 <script type="text/javascript">
 $(document).observe('keydown', function(e) {

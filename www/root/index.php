@@ -14,20 +14,7 @@ defined('HEADER') || include_once('header.php');
 <div id="welcome" class="box" style="margin-right: 2em;">
 <strong>Welcome!</strong> This <a target="_blank" href="http://www.w3.org/DesignIssues/ReadWriteLinkedData.html">Read/Write</a> <a target="_blank" href="http://www.w3.org/DesignIssues/LinkedData.html">Linked Data</a> service is free (and open-source) for educational and personal use.
 </div>
-<?php } ?>
-<?php if ($_options->editui) { ?>
-<div id="login" class="notice" align="center">
-    <form action="login" style="float: left;">
-    <input type="submit" name="auth" value="WebID" />
-    <?php if (defined('GAPIKEY')) { ?>
-    <input type="submit" name="provider" value="Gmail" />
-    <input type="submit" name="provider" value="AOL" />
-    <input type="submit" name="provider" value="Yahoo" />
-    <?php } ?>
-    </form>
-</div>
-<?php
-}
+<?php }
 include('help.php');
 TAG(__FILE__, __LINE__, '$Id$');
 defined('FOOTER') || include_once('footer.php');
