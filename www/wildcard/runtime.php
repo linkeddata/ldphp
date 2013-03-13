@@ -11,9 +11,11 @@ require_once(dirname(__FILE__).'/../inc/runtime.inc.php');
 
 $_RAW_EXT = array(
     'css'=>'text',
+    'htm'=>'text',
     'html'=>'text',
     'js'=>'text',
-    'jpg'=>'image');
+    'jpg'=>'image',
+    'txt'=>'text');
 
 header("User: $_user");
 

@@ -90,11 +90,10 @@ foreach($listing as $item) {
     echo '</td><td>';
     if ($is_dir) {
         echo 'Directory';
-    } elseif (in_array($item_ext, $_RAW_EXT)) {
+    } elseif (isset($_RAW_EXT[$item_ext])) {
         echo 'text/', $item_ext=='js'?'javascript':$item_ext;
-    } elseif ($_options->editui) {
+    } elseif (!strlen($item_ext)) {
         echo 'text/turtle';
-        
     }
     echo '</td><td>'.strftime('%F %X %Z', filemtime("$_filename/$item")).'</td>';
     echo '<td>'.(!$is_dir?filesize("$_filename/$item"):'-').'</td>';
