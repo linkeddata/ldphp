@@ -56,7 +56,7 @@ if ($_method == 'PATCH') {
 } elseif (!empty($_input) && ($g->append($_input, $_data) || 1)) {
     librdf_php_last_log_level() && httpStatusExit(400, 'Bad Request', null, librdf_php_last_log_message());
     $g->save();
-} elseif ($_content_type == 'application/sparql-query') {
+} elseif ($_content_type == 'application/sparql-update') {
     require_once('SPARQL.php');
 } else {
     httpStatusExit(406, 'Content-Type ('.$_content_type.') Not Acceptable');
