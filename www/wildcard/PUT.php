@@ -44,6 +44,7 @@ if (!empty($_input) && $g->append($_input, $_data)) {
     librdf_php_last_log_level() && httpStatusExit(400, 'Bad Request', null, librdf_php_last_log_message());
     $g->save();
 } else {
+    librdf_php_last_log_level() && httpStatusExit(400, 'Bad Request', null, librdf_php_last_log_message());
     httpStatusExit(406, 'Content-Type ('.$_content_type.') Not Acceptable');
 }
 
