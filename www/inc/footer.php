@@ -3,6 +3,25 @@
  * page footer
  *
  * $Id$
+ *
+ *  Copyright (C) 2013 RWW.IO
+ *  
+ *  Permission is hereby granted, free of charge, to any person obtaining a copy
+ *  of this software and associated documentation files (the "Software"), to deal 
+ *  in the Software without restriction, including without limitation the rights 
+ *  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell 
+ *  copies of the Software, and to permit persons to whom the Software is furnished 
+ *  to do so, subject to the following conditions:
+
+ *  The above copyright notice and this permission notice shall be included in all 
+ *  copies or substantial portions of the Software.
+
+ *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, 
+ *  INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A 
+ *  PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT 
+ *  HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION 
+ *  OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
+ *  SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
 define('FOOTER', 1);
@@ -18,8 +37,8 @@ if (isset($timings)) {
     }
 }
 ?>
-<div>
-<hr />
+<hr class="center" />
+<div class="center align-right width-1024">
 <?php
 
     $user_link = sess('u:link');
@@ -27,68 +46,44 @@ if (isset($timings)) {
     if (is_null($user_name) || !strlen($user_name))
         $user_name = $_user;
 ?>
-<span style="float: left; clear: left">
-<?php
 
-if ($user_link) { ?>
-<a href="<?=$user_link?>" target="_blank"><?=$user_name?></a>
-&nbsp;&nbsp;&nbsp;<a href="https://data.fm/logout" />logout</a>
-
-<? } else { ?>
-<a href="#login" onclick="$('login').toggle()">login</a>
-<div id="login" style="display: none; position: absolute;" class="notice" align="center">
-    <form action="//data.fm/login" style="float: left;">
-    <input type="submit" name="auth" value="WebID" />
-    <?php if (defined('GAPIKEY')) { ?>
-    <input type="submit" name="provider" value="Gmail" />
-    <input type="submit" name="provider" value="AOL" />
-    <input type="submit" name="provider" value="Yahoo" />
-    <?php } ?>
-    </form>
-</div>
-&nbsp;&nbsp;&nbsp;<a id="create-webid" name="create[webid]" />create id</a>
-<table id="webid-gen" style="display:none;">
-    <form method="POST" action="">
-        <tr><td>Your name: </td><td><input type="text" name="name" size="40" class="required"></td></tr>
-        <tr><td>Preferred identifier: </td><td><input type="text" name="path" size="40" value="card#me" class="required"></td></tr>
-        <tr><td>Email (recovery): </td><td><input type="text" name="email" size="40"></td></tr>
-        <tr><td colspan="2"><keygen name="SPKAC" challenge="randomchars" keytype="rsa" hidden></td></tr>
-        <tr><td colspan="2"><input type="submit" value="Generate" onclick="hideWebID()"> <input type="button" value="Cancel" onclick="hideWebID()"></td></tr>
-    </form>
-</table>
-<script>
-$('create-webid').observe('click', function(e) {
-  $('webid-gen').setStyle({
-    top: e.pageY,
-    left: e.pageX
-  });
-  $('webid-gen').show();
-});
-function hideWebID() {
-    $('webid-gen').hide();
-}
-</script>
-<? }
-
-?>
-</span>
+<div onclick="$('codeID').toggle();">
 <?php
 
 if ($_options->coderev) {
 $src = explode('/', __FILE__);
 $src = array_slice($src, array_search('www', $src));
 $src = implode('/', $src);
-$src = "https://github.com/linkeddata/data.fm/tree/master/$src";
+$src = "https://github.com/deiu/rww.io/tree/master/$src";
 ?>
-<span id="codeID" style="display:none;">
-/ <?php echo implode(' / ', array(
+<div class="footer">
+<span class="left">
+    <a href="https://github.com/deiu/rww.io" target="_blank">GitHub</a> | <a href="http://<?=ROOT_DOMAIN?>/help">Help?</a> | Show your support
+</span> 
+<span class="left">
+    <a data-code="ed957952a941abf15d50696973fa4b92" href="https://coinbase.com/checkouts/ed957952a941abf15d50696973fa4b92" target="_blank"><img src="/common/images/bitcoin.png" alt="Bitcoin donation" title="Bitcoin donation" border="0" /></a>
+</span>
+<span class="left">
+    <a href="http://flattr.com/thing/1748916/" target="_blank"><img src="/common/images/flattr.png" alt="Flattr this project" title="Flattr this project" border="0" /></a>
+</span>
+<span class="left">
+    <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=YCG7HFRPTVD4A" target="_blank"><img src="/common/images/paypal.png" alt="Paypal donation" title="Paypal donation" border="0" /></a>
+</span>
+
+<span id="codeID" class="align-right" style="display:none;">
+ request completed in <?=substr($time, 0, 6)?>s
+<?=$sparql_n<1?'':sprintf('with %d quer%s in %ss', $sparql_n, $sparql_n>1?'ies':'y', substr($sparql_t, 0, 6))?> 
+ [ <?php echo implode(' / ', array(
     'librdf: '.array_shift(explode(' ',librdf_version_string_get())),
     'raptor: '.array_shift(explode(' ',raptor_version_string_get())),
     'rasqal: '.array_shift(explode(' ',rasqal_version_string_get()))
 )); ?>
+ ]
 </span>
-<span id="codeTime" onclick="$('codeID').toggle();"><?=substr($time, 0, 6)?>s
-<?=$sparql_n<1?'':sprintf('with %d quer%s in %ss', $sparql_n, $sparql_n>1?'ies':'y', substr($sparql_t, 0, 6))?></span>
+<span id="codeTime">Performance info...</span>
+</div>
+
+</div>
 </div>
 <?php
 }
@@ -96,5 +91,7 @@ $src = "https://github.com/linkeddata/data.fm/tree/master/$src";
 ?>
 <div class="clear"></div>
 </div>
+
+
 </body>
 </html>

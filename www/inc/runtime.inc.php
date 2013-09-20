@@ -3,7 +3,28 @@
  * application main runtime
  *
  * $Id$
+ *
+ *  Copyright (C) 2013 RWW.IO
+ *  
+ *  Permission is hereby granted, free of charge, to any person obtaining a copy
+ *  of this software and associated documentation files (the "Software"), to deal 
+ *  in the Software without restriction, including without limitation the rights 
+ *  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell 
+ *  copies of the Software, and to permit persons to whom the Software is furnished 
+ *  to do so, subject to the following conditions:
+
+ *  The above copyright notice and this permission notice shall be included in all 
+ *  copies or substantial portions of the Software.
+
+ *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, 
+ *  INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A 
+ *  PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT 
+ *  HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION 
+ *  OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
+ *  SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
+
+require_once('config.php');
 
 // base dependencies
 require_once('util.lib.php');
@@ -46,7 +67,7 @@ else {
     function librdf_php_last_log_message(){}
 }
 
-date_default_timezone_set('America/New_York');
+date_default_timezone_set('GMT');
 extract($_GET, EXTR_PREFIX_ALL, 'i');
 extract($_POST, EXTR_PREFIX_ALL, 'i');
 
@@ -77,6 +98,20 @@ foreach (array($_SERVER['REMOTE_USER'], sess('u:id')) as $_user) {
 if (!strlen($_user) && isset($_SERVER['SSL_CLIENT_CERT'])) {
     require_once('webid.lib.php');
     $_user = webid_verify();
+    
+    $_webid = webid_getinfo($_user);
+    
+    if (DEBUG) {
+        openlog('RWW.IO', LOG_PID | LOG_ODELAY,LOG_LOCAL4);
+        syslog(LOG_INFO, 'Authenticated: '.$_user.' / '.$_webid['name']);
+        closelog();
+    }
+
+    if (!isSess('u:name')) 
+        sess('u:name', $_webid['name']);
+    if (!isSess('u:pic'))
+        sess('u:pic', $_webid['pic']);
+
     if (strlen($_user) && isset($_SERVER['SSL_CLIENT_S_DN_CN']))
         $_user_name = $_SERVER['SSL_CLIENT_S_DN_CN'];
 }

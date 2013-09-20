@@ -3,18 +3,66 @@
  * service HTTP GET/HEAD controller
  *
  * $Id$
+ *
+ *  Copyright (C) 2013 RWW.IO
+ *  
+ *  Permission is hereby granted, free of charge, to any person obtaining a copy
+ *  of this software and associated documentation files (the "Software"), to deal 
+ *  in the Software without restriction, including without limitation the rights 
+ *  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell 
+ *  copies of the Software, and to permit persons to whom the Software is furnished 
+ *  to do so, subject to the following conditions:
+
+ *  The above copyright notice and this permission notice shall be included in all 
+ *  copies or substantial portions of the Software.
+
+ *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, 
+ *  INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A 
+ *  PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT 
+ *  HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION 
+ *  OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
+ *  SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
 require_once('runtime.php');
 
-if (False && basename($_filename) == 'favicon.ico') {
-    header('Location: http'.(isHTTPS()?'s':'').'://'.BASE_DOMAIN.$_options->base_url.'/favicon.ico');
+// serve the favicon
+if (basename($_filename) == 'favicon.ico') {
+    //header('Location: http'.(isHTTPS()?'s':'').'://'.BASE_DOMAIN.$_options->base_url.'/favicon.ico');
+    $length = filesize($_SERVER["DOCUMENT_ROOT"].'/favicon.ico');
+    header('Accept-Ranges: bytes');
+	header('Content-Length: ' . $length);
+	header('Content-Type: image/x-icon');
+    readfile($_SERVER["DOCUMENT_ROOT"].'/favicon.ico');
+
     exit;
 } 
+
+if ((basename($_filename) == 'logout') || (isset($_GET['logout']))) {
+    foreach ($_SESSION as $k=>$v) {
+        sess($k, null);
+    }
+
+    if (isset($i_next)) {
+        sess('next', $i_next);
+    } elseif (isMethod('GET') && isset($_SERVER['HTTP_REFERER'])) {
+        sess('next', $_SERVER['HTTP_REFERER']);
+    }
+
+    if (isSess('next')) {
+        $next = sess('next', null);
+        $next = str_replace('https://', 'http://', $next);
+        header('Location: '.$next);
+    } else {
+        header('Location: /');
+    }
+    exit;
+}
 
 if (!in_array($_method, array('GET', 'HEAD')) && !isset($i_query))
     httpStatusExit(501, 'Not Implemented');
 
+// on the fly output format conversions ?
 if (!file_exists($_filename) && in_array($_filename_ext, array('turtle','n3','json','rdf','nt','jsonld'))) {
     $_filename = substr($_filename, 0, -strlen($_filename_ext)-1);
     $_base = substr($_base, 0, -strlen($_filename_ext)-1);
@@ -37,10 +85,26 @@ if (!file_exists($_filename) && in_array($_filename_ext, array('turtle','n3','js
 }
 
 // permissions
-if (empty($_user))
+if (empty($_user)) {
     httpStatusExit(401, 'Unauthorized', '401.php');
-elseif ($_wac->can('Read') == false)
-    httpStatusExit(403, 'Forbidden', '403-404.php');
+} 
+
+// WebACL
+$can = false;
+$can = $_wac->can('Read');
+if (DEBUG) {
+    openlog('RWW.IO', LOG_PID | LOG_ODELAY,LOG_LOCAL4);
+    foreach($_wac->getDebug() as $line)
+        syslog(LOG_INFO, $line);
+    syslog(LOG_INFO, 'Verdict: '.$can.' / '.$_wac->getReason());
+    closelog();
+}
+if ($can == false)  {
+    if ($_output == 'html')
+        httpStatusExit(403, 'Forbidden', '403-404.php');
+    else
+        httpStatusExit(403, 'Forbidden');
+} 
 
 // directory indexing
 if (is_dir($_filename) || substr($_filename,-1) == '/') {
@@ -48,12 +112,9 @@ if (is_dir($_filename) || substr($_filename,-1) == '/') {
         header("Location: $_base/");
         exit;
     } elseif (!isset($_output) || empty($_output) || $_output == 'html') {
-        foreach (array('index.html') as $index) {
-            if (file_exists("$_filename/$index")) {
-                include_once("$_filename/$index");
-                exit;
-            }
-        }
+        if ($_options->linkmeta)
+            header('Link: <'.$_metabase.$_metaname.'>; rel=meta', false);
+
         include_once('index.html.php');
         exit;
     } else {
@@ -65,8 +126,10 @@ if (is_dir($_filename) || substr($_filename,-1) == '/') {
                 break;
             }
         }
-        if ($dirindex)
+        if ($dirindex) {
+        	header('Link: <?p=1>; rel="first"', false);
             include_once('index.rdf.php');
+  		}
     }
 }
 
@@ -87,6 +150,9 @@ if ($_output == 'raw') {
     if (strlen($etag))
         $etag = trim(array_shift(explode(' ', $etag)));
     header('ETag: "'.$etag.'"');
+
+    if ($_options->linkmeta)
+        header('Link: <'.$_metabase.'/'.$_metaname.'>; rel=meta', false);
 
     if ($_method == 'GET')
         readfile($_filename);

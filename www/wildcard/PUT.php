@@ -3,25 +3,45 @@
  * service HTTP PUT controller
  *
  * $Id$
+ *
+ *  Copyright (C) 2013 RWW.IO
+ *  
+ *  Permission is hereby granted, free of charge, to any person obtaining a copy
+ *  of this software and associated documentation files (the "Software"), to deal 
+ *  in the Software without restriction, including without limitation the rights 
+ *  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell 
+ *  copies of the Software, and to permit persons to whom the Software is furnished 
+ *  to do so, subject to the following conditions:
+
+ *  The above copyright notice and this permission notice shall be included in all 
+ *  copies or substantial portions of the Software.
+
+ *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, 
+ *  INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A 
+ *  PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT 
+ *  HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION 
+ *  OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
+ *  SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
 require_once('runtime.php');
 
 // permissions
-if (empty($_user)) {
+if (empty($_user))
     httpStatusExit(401, 'Unauthorized');
-} elseif ($_wac->can('Write') == false) {
-    // debug
-    openlog('data.fm', LOG_PID | LOG_ODELAY,LOG_LOCAL4);
-    syslog(LOG_INFO, $_wac->getReason());
-    closelog();
+
+// Web Access Control
+// - allow Append for PUT if the resource doesn't exist.
+if (!file_exists($_filename)) {
+    if ($_wac->can('Append') == false)
+        httpStatusExit(403, 'Forbidden');
+} else if ($_wac->can('Write') == false) {
     httpStatusExit(403, 'Forbidden');
-} else {
-    openlog('data.fm', LOG_PID | LOG_ODELAY,LOG_LOCAL4);
-    syslog(LOG_INFO, $_wac->getReason());
-    closelog();
 }
 
+// check quota
+if (check_quota($_root, $_SERVER["CONTENT_LENGTH"]) == false)
+    httpStatusExit(507, 'Insufficient Storage');
 
 // action
 $d = dirname($_filename);
@@ -45,6 +65,7 @@ if (!empty($_input) && $g->append($_input, $_data)) {
     $g->save();
 } else {
     librdf_php_last_log_level() && httpStatusExit(400, 'Bad Request', null, librdf_php_last_log_message());
+    header('Accept-Post: '.implode(',', $_content_types));
     httpStatusExit(406, 'Content-Type ('.$_content_type.') Not Acceptable');
 }
 
