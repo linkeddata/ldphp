@@ -1,5 +1,4 @@
 <?php
-
 require_once('../inc/runtime.php');
 
 $_options->linkmeta = false;

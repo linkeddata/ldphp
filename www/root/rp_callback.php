@@ -1,8 +1,6 @@
 <?php
 /* rp_callback.php
  * Verifies assertions returned by the IDP
- *
- * $Id$
  */
 
 require_once('runtime.php');

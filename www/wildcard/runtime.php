@@ -1,21 +1,52 @@
 <?php
 /* runtime.php
  * cloud common includes
- *
- * $Id$
  */
 
 define('METHODS_S', 'GET, PUT, POST, OPTIONS, HEAD, MKCOL, DELETE, PATCH');
 
 require_once(dirname(__FILE__).'/../inc/runtime.inc.php');
 
+// cookie for displaying hidden files in the list (one month cookie)
+if (!isset($_COOKIE['showMetaFiles'])) {
+    setcookie('showMetaFiles', true, time()+2592000);
+} 
+
+$_showMetaFiles = (isset($_COOKIE['showMetaFiles']))?$_COOKIE['showMetaFiles']:false;
+$_checkedShowMeta = ($_showMetaFiles == true)?'checked':'';
+
 $_RAW_EXT = array(
-    'css'=>'text',
-    'htm'=>'text',
-    'html'=>'text',
-    'js'=>'text',
-    'jpg'=>'image',
-    'txt'=>'text');
+    'otf'=>array('short'=>'font', 'type'=>'font/otf'),
+    'css'=>array('short'=>'text', 'type'=>'text/css'),
+    'htm'=>array('short'=>'text', 'type'=>'text/htm'),
+    'html'=>array('short'=>'text', 'type'=>'text/html'),
+    'js'=>array('short'=>'text', 'type'=>'text/javascript'),
+    'jpg'=>array('short'=>'image', 'type'=>'image/jpg'),
+    'jpeg'=>array('short'=>'image', 'type'=>'image/jpg'),
+    'png'=>array('short'=>'image', 'type'=>'image/png'),
+    'gif'=>array('short'=>'image',  'type'=>'image/gif'),
+    'txt'=>array('short'=>'text', 'type'=>'text/txt'),
+    'ttl'=>array('short'=>'turtle', 'type'=>'text/turtle'),
+    'n3'=>array('short'=>'n3', 'type'=>'text/n3'),
+    'nt'=>array('short'=>'nt', 'type'=>'text/nt'),
+    );
+
+$_content_types = array(
+    'text/turtle;charset=utf-8',
+    'text/n3;charset=utf-8',
+    'text/nt;charset=utf-8',
+    'text/css;charset=utf-8',
+    'text/html;charset=utf-8',
+    'text/javascript;charset=utf-8',
+    'text/plain;charset=utf-8',
+    'application/rdf+xml;charset=utf-8',
+    'application/json;charset=utf-8',
+    'image/jpeg',
+    'image/jpeg',
+    'image/png',
+    'image/gif',
+    'font/otf'
+    );  
 
 header("User: $_user");
 
@@ -28,6 +59,7 @@ if (!isset($_SERVER['SCRIPT_URI']))
     $_SERVER['SCRIPT_URI'] = REQUEST_BASE.$_SERVER['SCRIPT_URL'];
 $_base = $_SERVER['SCRIPT_URI'];
 $_domain = $_SERVER['SERVER_NAME'];
+$_root = $_ENV['CLOUD_DATA'].'/'.$_SERVER['SERVER_NAME'];
 
 // Graph
 $_filebase = $_ENV['CLOUD_DATA'].'/'.$_SERVER['SERVER_NAME'];
@@ -40,9 +72,16 @@ if (substr($_filename, 0, strlen($_filebase)) != $_filebase)
     $_filename = "$_filebase$_filename";
 $_request_path = substr($_filename, strlen($_filebase));
 
+// meta
+$_metabase = ($_SERVER['SCRIPT_URL'] != '/')?dirname($_base):$_base;
+$_metaname = ($_SERVER['SCRIPT_URL'] != '/')?'/.meta.'.basename($_SERVER['SCRIPT_URL']):'.meta';
+
 if ($_options->debug) {
     header('Filename: '.$_filename);
 }
+
+// Web Access Control
+$_wac = new WAC($_user, $_filename, $_filebase, $_base, $_options);
 
 // WebDAV
 header('MS-Author-Via: DAV, SPARQL');
@@ -63,10 +102,6 @@ if (isset($_SERVER['HTTP_ORIGIN'])) {
     header('Access-Control-Allow-Credentials: true');
 }
 
-// Web Access Control
-$_aclbase = $_filebase.$_options->base_url;
-$_wac = new WAC($_user, $_aclbase.'/.meta', $_base, $_options);
-
 // HTTP Methods
 $_method = '';
 foreach (array('REQUEST_METHOD', 'REDIRECT_REQUEST_METHOD') as $k) {
@@ -86,6 +121,7 @@ if ($_method == 'OPTIONS') {
 
     header('Allow: '.METHODS_S);
     header('Accept-Patch: application/json');
+    header('Accept-Post: '.implode(',', $_content_types));
     exit;
 }
 
@@ -93,7 +129,13 @@ if ($_method == 'OPTIONS') {
 require_once('input.php');
 require_once('output.php');
 if (isset($_RAW_EXT[$_filename_ext])) {
-    $_input = 'raw';
-    $_output = 'raw';
-    $_output_type = $_RAW_EXT[$_filename_ext].'/'.($_filename_ext=='js'?'javascript':$_filename_ext);
+    if ((substr(basename($_filename), 0, 5) == '.meta') ||
+         (substr(basename($_filename), 0, 4) == '.acl')) {
+        $_output = 'turtle';
+        $_output_type = 'text/turtle';
+    } else {   
+        $_input = 'raw';
+        $_output = 'raw';
+        $_output_type = $_RAW_EXT[$_filename_ext]['type'];
+    }
 }

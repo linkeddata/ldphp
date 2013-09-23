@@ -1,9 +1,7 @@
 <?php
-# output.php
-# HTTP output handler
-#
-# $Id$
-
+/* output.php
+ * HTTP output handler
+ */
 require_once('runtime.php');
 
 // negotiation: parse HTTP Accept

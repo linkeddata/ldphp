@@ -1,8 +1,6 @@
 <?php
 /* s.php
  * PHP session server controller, debugger
- *
- * $Id$
  */
 
 require_once('runtime.php');

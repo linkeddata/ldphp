@@ -1,5 +1,4 @@
 <?php
-
 require_once('contrib/jsonld.php');
 
 function absolutize($base, $url) {

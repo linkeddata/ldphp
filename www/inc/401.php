@@ -1,8 +1,6 @@
 <?php
 /* 401.php
  * application HTTP 401 page
- *
- * $Id$
  */
 
 defined('HEADER') || include_once('header.php');

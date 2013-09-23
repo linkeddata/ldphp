@@ -1,8 +1,6 @@
 <?php
 /* rp_auth.php
  * Creates the URL to authenticate the user via IDP
- *
- * $Id$
  */
 
 require_once('runtime.php');

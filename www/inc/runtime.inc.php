@@ -1,9 +1,9 @@
 <?php
 /* runtime.inc.php
  * application main runtime
- *
- * $Id$
  */
+
+require_once('config.php');
 
 // base dependencies
 require_once('util.lib.php');
@@ -46,7 +46,7 @@ else {
     function librdf_php_last_log_message(){}
 }
 
-date_default_timezone_set('America/New_York');
+date_default_timezone_set('GMT');
 extract($_GET, EXTR_PREFIX_ALL, 'i');
 extract($_POST, EXTR_PREFIX_ALL, 'i');
 
@@ -77,6 +77,20 @@ foreach (array($_SERVER['REMOTE_USER'], sess('u:id')) as $_user) {
 if (!strlen($_user) && isset($_SERVER['SSL_CLIENT_CERT'])) {
     require_once('webid.lib.php');
     $_user = webid_verify();
+    
+    $_webid = webid_getinfo($_user);
+    
+    if (DEBUG) {
+        openlog('RWW.IO', LOG_PID | LOG_ODELAY,LOG_LOCAL4);
+        syslog(LOG_INFO, 'Authenticated: '.$_user.' / '.$_webid['name']);
+        closelog();
+    }
+
+    if (!isSess('u:name')) 
+        sess('u:name', $_webid['name']);
+    if (!isSess('u:pic'))
+        sess('u:pic', $_webid['pic']);
+
     if (strlen($_user) && isset($_SERVER['SSL_CLIENT_S_DN_CN']))
         $_user_name = $_SERVER['SSL_CLIENT_S_DN_CN'];
 }

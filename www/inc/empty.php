@@ -1,8 +1,6 @@
 <?php
 /* empty.php
  * empty RDF container
- *
- * $Id$
  */
 
 // TODO: non-RDF/XML media types

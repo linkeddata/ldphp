@@ -1,9 +1,7 @@
 <?php
 /* index.php
  * wildcard/catch-all request handler
- *
- * $Id$ */
-
+ */
 require_once('runtime.php');
 
 // REQUEST_METHOD dispatch

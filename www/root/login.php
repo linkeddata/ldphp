@@ -1,8 +1,6 @@
 <?php
 /* login.php
  * application login redirector
- *
- * $Id$
  */
 
 require_once('runtime.php');

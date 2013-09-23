@@ -1,5 +1,4 @@
 <?php
-
 require_once('runtime.php');
 
 if (!isset($i_callback))

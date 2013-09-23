@@ -1,8 +1,6 @@
 <?php
 /* yadis.php
  * OpenID XRDS
- *
- * $Id$
  */
 
 require_once('runtime.php');
