@@ -1,10 +1,10 @@
-data.fm
-=======
+# ldphp
 
-Linked Data Store
+## About
 
-installation
-============
+Linked Data Store for PHP
+
+## Installation
 
 - Check the apache conf files and change paths to your own system
 
@@ -12,6 +12,8 @@ installation
 
 - Directories should automatically be generated in /data/ you may wish to check permissions
 
-- To enable WebID access install the webid apache mods authn_webid authz_webid 
+- To enable WebID authentication, install mod_authn_webid on your Apache2 server
 
+## License
 
+[MIT](http://joe.mit-license.org)
