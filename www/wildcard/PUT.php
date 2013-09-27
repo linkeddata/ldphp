@@ -11,7 +11,7 @@ if (empty($_user))
 // Web Access Control
 // - allow Append for PUT if the resource doesn't exist.
 if (!file_exists($_filename)) {
-    if ($_wac->can('Append') == false)
+    if (($_wac->can('Append') == false) && ($_wac->can('Write') == false))
         httpStatusExit(403, 'Forbidden');
 } else if ($_wac->can('Write') == false) {
     httpStatusExit(403, 'Forbidden');
