@@ -405,7 +405,7 @@ input.item {
 #webid-gen tbody tr:nth-child(even) td, tbody tr.even td {background:#fff;}
 #webid-gen tfoot tr:nth-child(odd) tr.odd {background:#fff;}
 
-#webid-gen input[type=submit], input[type=button] {
+#webid-gen input[type=submit], #webid-gen input[type=button] {
     background: #2582b1;
     color: #fff;
     height: 30px;
