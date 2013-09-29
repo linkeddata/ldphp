@@ -115,7 +115,7 @@ $quota = display_quota($_root);
 <table id="index" class="files center box-shadow">
 <thead>
     <tr>
-        <th> Name</th>
+        <th>Name</th>
         <th>Size</th>
         <th>Type</th>
         <th>Last Modified</th>
@@ -137,10 +137,9 @@ if (is_dir($_filename)) {
 }
 foreach($listing as $item) {
     $len = strlen($item);
-    
     if (!$len)
         continue;
-    if (($_request_path != '/' && $item == '.'))
+    if ($item == '.')
         continue;
     if (($_request_path == '/' && $item == '..'))
         continue;
@@ -198,7 +197,8 @@ foreach($listing as $item) {
     }
     echo '</td>';
     echo '<td class="options">';
-    echo '<a href="#" onclick="wac.edit(\''.$_request_path.'\', \''.$item_elt.'\');"><img class="actions" src="/common/images/22/acl.png" title="Access Control" /></a> ';
+    if ($item != '..')
+        echo '<a href="#" onclick="wac.edit(\''.$_request_path.'\', \''.$item_elt.'\');"><img class="actions" src="/common/images/22/acl.png" title="Access Control" /></a> ';
     echo '</td>';
     echo '<td class="options">';
     if ($_options->editui)
