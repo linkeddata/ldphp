@@ -1,7 +1,9 @@
 <?php
 
-if (isset($_POST['username']))
+if (isset($_POST['username'])) {
     $_POST['path'] = '/'.$_POST['username'].'#';
+    $_SERVER['SERVER_NAME'] = 'id.'.ROOT_DOMAIN;
+}
 
 // Prepare the request
 $name = (isset($_POST['name']))?$_POST['name']:'Anonymous';
@@ -21,8 +23,7 @@ if (isset($_POST['path'])) {
 
     // do not overwrite existing profile document
     if (file_exists($webid_file) === true) {
-        die('You must pick a different identifier. <strong>'.
-           $path.'</strong> already exists in the current directory!');
+        die('Error: <strong>'. $path.'</strong> already exists!');
     } else {           
        // check if the root dir exists and create it (recursively) if it doesn't
         if (strstr($webid_file,'/id.')===FALSE)

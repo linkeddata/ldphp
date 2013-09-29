@@ -41,7 +41,7 @@ defined('HEADER') || include_once('header.php');
   <div class="span-20 center">
     <div class="span-8">
       <h3>Create Account</h3>
-      <form method="POST" action="/api/spkac">
+      <form method="POST" action="/api/spkac" target="spkac">
         <keygen name="SPKAC" challenge="randomchars" keytype="rsa" style="display:none" />
         <div class="clear"> Name: <input type="text" name="name" ng-model="name" placeholder="Your Name" /> </div>
         <div class="clear"> E-mail: <input type="email" name="email" ng-model="email" placeholder="you@somewhere.com" /> </div>
@@ -56,6 +56,7 @@ defined('HEADER') || include_once('header.php');
       <input type="submit" ng-disabled="!storageStatusData.available" value="OK" />
       </form>
     </div>
+    <iframe name="spkac" style="height: 6em"></iframe>
   </div>
   <div class="clearfix"></div>
 </div>

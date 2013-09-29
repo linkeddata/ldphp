@@ -64,7 +64,7 @@ foreach ($paths as $k=>$v) {
             <div class="login">
                 <span class="login-links">
                     <a class="white" href="<?=$user_link?>" target="_blank"><?=$user_name?></a><br />
-                    <a class="white" href="?logout">Logout</a>
+                    <a class="white" href="/logout">Logout</a>
                 </span>
                 <a class="white" href="<?=$user_link?>" target="_blank">
                     <img class="login-photo img-border r3" src="<?=$user_pic?>" title="View profile" /></a>
@@ -73,7 +73,7 @@ foreach ($paths as $k=>$v) {
 <?php if ($_SERVER['SERVER_NAME'] != ROOT_DOMAIN) { ?>
             <div class="login"> 
                 <span class="login-links"><a class="white" href="https://<?=BASE_DOMAIN?>">WebID Login</a>
-                <br/><a class="white" href="#" onclick="showWebID(event)">Get a WebID</a></span>
+                <br/><a class="white" href="//<?=ROOT_DOMAIN?>">Signup</a></span>
                 <img class="login-photo" src="/common/images/nouser.png" />
             </div>
     <?php   }
