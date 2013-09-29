@@ -44,8 +44,8 @@ $quota = display_quota($_root);
         <option>text/javascript</option>
     </select>
     <textarea class="editor-content clear left" id="editorarea" disabled="disabled"></textarea><br/>
-    <div class="right actions"><a href="#" class="button button-rounded button-flat-caution" onclick="$('editor').hide();"><i class="icon-remove"></i> Cancel</a></div>
     <div class="right"><a href="#" class="button button-rounded button-flat-primary" onclick="cloud.save();"><i class="icon-save"></i> Save</a></div>
+    <div class="right actions"><a href="#" class="button button-rounded button-flat-caution" onclick="$('editor').hide();"><i class="icon-remove"></i> Cancel</a></div>
 </div>
 
 <div id="wac-editor" class="wac-editor" style="display: none;">
@@ -70,8 +70,8 @@ $quota = display_quota($_root);
     </div>
     <textarea id="wac-users" name="users" cols="5" rows="5"></textarea>
     <br/>
-    <div class="right actions"><a href="#" class="button button-rounded button-flat-caution" onclick="wac.hide()"><i class="icon-remove"></i> Cancel</a></div>
     <div class="right"><a href="#" class="button button-rounded button-flat-primary" onclick="wac.save()"><i class="icon-save"></i> Save</a></div>
+    <div class="right actions"><a href="#" class="button button-rounded button-flat-caution" onclick="wac.hide()"><i class="icon-remove"></i> Cancel</a></div>
 </div>
 <?php } ?>
 
