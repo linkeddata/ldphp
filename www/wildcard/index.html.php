@@ -30,7 +30,7 @@ $quota = display_quota($_root);
 
 <div id="editor" class="editor" style="display:none">
     <input class="cleft left" style="margin: 0;" type="text" id="editorpath" placeholder="loading..." />
-    <select id="editorType" class="left" style="margin: 0;" onchange="cloud.edit($F('editorpath'))">
+    <select id="editorType" class="left" onchange="cloud.edit($F('editorpath'))">
         <option disabled="disabled"></option>
         <option>text/turtle</option>
         <option>text/rdf+xml</option>
