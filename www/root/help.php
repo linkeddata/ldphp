@@ -8,7 +8,7 @@ require_once('runtime.php');
 defined('HEADER') || include_once('header.php');
 ?>
 
-<div class="prepend-2 center width-1024">
+<div class="prepend-5 center width-1024">
 
 <a href="https://github.com/linkeddata/ldphp" target="_blank"><img style="position: fixed; top: 0; right: 0; border: 0;" src="//s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub" /></a>
 <br/>

@@ -39,24 +39,24 @@ defined('HEADER') || include_once('header.php');
 
 <div class="box center width-1024" ng-controller="Example">
   <div class="span-20 center">
-    <div class="span-8">
+    <div class="span-7">
       <h3>Create Account</h3>
       <form method="POST" action="/api/spkac" target="spkac">
         <keygen name="SPKAC" challenge="randomchars" keytype="rsa" style="display:none" />
-        <div class="clear"> Name: <input type="text" name="name" ng-model="name" placeholder="Your Name" /> </div>
-        <div class="clear"> E-mail: <input type="email" name="email" ng-model="email" placeholder="you@somewhere.com" /> </div>
+          <input type="text" name="name" ng-model="name" placeholder="Your Name" class="clear" />
+          <input type="email" name="email" ng-model="email" placeholder="you@somewhere.com" class="clear" />
         <em>https://id.<?=ROOT_DOMAIN?>/</em><input type="text" name="username" ng-model="accountName" ng-change="accountStatus()" placeholder="your-username" />
         <button type="submit" ng-disabled="!accountStatusData.available">OK</button>
       </form>
     </div>
-    <div class="span-8">
+    <div class="span-8 push-2">
       <h3>Create Storage</h3>
       <form ng-submit="storageCreate()">
       <em>https://<input type="text" ng-model="storageName" ng-change="storageStatus()" placeholder="your-storage-name" />.<?=ROOT_DOMAIN?></em>
       <button type="submit" ng-disabled="!storageStatusData.available">OK</button>
       </form>
     </div>
-    <iframe name="spkac" style="height: 6em"></iframe>
+    <iframe class="push-2" name="spkac" style="height: 5em"></iframe>
   </div>
   <div class="clearfix"></div>
 </div>
