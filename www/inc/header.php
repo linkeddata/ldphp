@@ -44,7 +44,14 @@ if (substr($_user, 0, 4) == 'dns:') {
     <div id="title" style="display: none;"><?=$TITLE?></div>
     
     <div id="topnav" class="topnav center">
-    <img src="/common/images/logo.svg" class="logo-icon left" /><span class="title" title="Home"><a href="http://<?=ROOT_DOMAIN?>"><?=ROOT_DOMAIN?></a></span>
+    <img src="/common/images/logo.svg" class="logo-icon left" /><span class="title" title="Home"><a href="<?=REQUEST_BASE?>"><?=BASE_DOMAIN?></a>
+<?php $paths = explode('/', REQUEST_URL); array_pop($paths);
+foreach ($paths as $k=>$v) {
+    if ($k > 0)
+        echo '<a href="', REQUEST_BASE, implode('/', array_slice($paths, 0, $k+1)), '">', $v, '</a>';
+    echo ' / ';
+} ?>
+    </span>
     <?php
     if ($_SERVER['SERVER_NAME'] != ROOT_DOMAIN) {
         if ($user_link) { ?>
