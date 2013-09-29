@@ -7,8 +7,8 @@ require_once('runtime.php');
 
 header('X-XRDS-Location: '.REQUEST_BASE.'/yadis');
 defined('HEADER') || include_once('header.php');
-?>
 
+?>
 <div class="box welcome center width-1024">
  <strong> Welcome!</strong> This <a class="white link" target="_blank" href="http://www.w3.org/DesignIssues/ReadWriteLinkedData.html">Read/Write</a> <a class="white link" target="_blank" href="http://www.w3.org/DesignIssues/LinkedData.html">Linked Data</a> service is free (and open-source) for educational and personal use.
 </div>
@@ -34,9 +34,6 @@ defined('HEADER') || include_once('header.php');
     $scope.storageCreate = function() {
         window.location='https://'+$scope.storageName+'.<?=ROOT_DOMAIN?>';
     }
-    $scope.accountCreate = function() {
-        console.log($scope.accountName);
-    }
   }
 </script>
 
@@ -44,19 +41,19 @@ defined('HEADER') || include_once('header.php');
   <div class="span-20 center">
     <div class="span-8">
       <h3>Create Account</h3>
-      <form ng-submit="accountCreate()">
-        <div class="clear">
-      email: <input type="email" ng-model="email" />
-        </div>
-      <em>https://id.<?=ROOT_DOMAIN?>/</em><input type="text" ng-model="accountName" ng-change="accountStatus()" placeholder="your-username" />
-      <input type="button" ng-disabled="!accountStatusData.available" value="OK" />
+      <form method="POST" action="/api/spkac">
+        <keygen name="SPKAC" challenge="randomchars" keytype="rsa" style="display:none" />
+        <div class="clear"> Name: <input type="text" name="name" ng-model="name" placeholder="Your Name" /> </div>
+        <div class="clear"> E-mail: <input type="email" name="email" ng-model="email" placeholder="you@somewhere.com" /> </div>
+        <em>https://id.<?=ROOT_DOMAIN?>/</em><input type="text" name="username" ng-model="accountName" ng-change="accountStatus()" placeholder="your-username" />
+        <button type="submit" ng-disabled="!accountStatusData.available">OK</button>
       </form>
     </div>
     <div class="span-8">
       <h3>Create Storage</h3>
       <form ng-submit="storageCreate()">
       <em>https://<input type="text" ng-model="storageName" ng-change="storageStatus()" placeholder="your-storage-name" />.<?=ROOT_DOMAIN?></em>
-      <input type="button" ng-disabled="!storageStatusData.available" value="OK" />
+      <input type="submit" ng-disabled="!storageStatusData.available" value="OK" />
       </form>
     </div>
   </div>

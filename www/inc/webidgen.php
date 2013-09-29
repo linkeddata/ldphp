@@ -1,5 +1,8 @@
 <?php
 
+if (isset($_POST['username']))
+    $_POST['path'] = '/'.$_POST['username'].'#';
+
 // Prepare the request
 $name = (isset($_POST['name']))?$_POST['name']:'Anonymous';
 if (isset($_POST['path'])) {
@@ -22,6 +25,7 @@ if (isset($_POST['path'])) {
            $path.'</strong> already exists in the current directory!');
     } else {           
        // check if the root dir exists and create it (recursively) if it doesn't
+        if (strstr($webid_file,'/id.')===FALSE)
         if (!mkdir(dirname($webid_file), 0755, true))
             die('Cannot create directory, please check permissions.');
     }
@@ -34,7 +38,7 @@ $email = $_POST['email'];
 $spkac = str_replace(str_split("\n\r"), '', $_POST['SPKAC']);
 $webid = 'http://'.$_SERVER['SERVER_NAME'].'/'.$path;
 
-$cert_cmd = 'python ../../py/pki.py '.
+$cert_cmd = 'python '.$_ENV['CLOUD_HOME'].'/py/pki.py '.
                 " -s '$spkac'" .
                 " -n '$name'" .
                 " -w '$webid'";
