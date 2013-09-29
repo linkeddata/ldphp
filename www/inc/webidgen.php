@@ -34,10 +34,10 @@ if (isset($_POST['path'])) {
     die('You need to provide a preferred identifier.');
 }
 
-$BASE = 'http://'.$_SERVER['SERVER_NAME']; // force http
+$BASE = 'https://'.$_SERVER['SERVER_NAME']; // force https
 $email = $_POST['email'];
 $spkac = str_replace(str_split("\n\r"), '', $_POST['SPKAC']);
-$webid = 'http://'.$_SERVER['SERVER_NAME'].'/'.$path;
+$webid = 'https://'.$_SERVER['SERVER_NAME'].'/'.$path;
 
 $cert_cmd = 'python '.$_ENV['CLOUD_HOME'].'/py/pki.py '.
                 " -s '$spkac'" .
