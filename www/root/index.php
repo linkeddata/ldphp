@@ -53,7 +53,7 @@ defined('HEADER') || include_once('header.php');
       <h3>Create Storage</h3>
       <form ng-submit="storageCreate()">
       <em>https://<input type="text" ng-model="storageName" ng-change="storageStatus()" placeholder="your-storage-name" />.<?=ROOT_DOMAIN?></em>
-      <input type="submit" ng-disabled="!storageStatusData.available" value="OK" />
+      <button type="submit" ng-disabled="!storageStatusData.available">OK</button>
       </form>
     </div>
     <iframe name="spkac" style="height: 6em"></iframe>
