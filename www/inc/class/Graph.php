@@ -77,7 +77,6 @@ class Graph {
 
         $this->reload();
         //$this->sendHeaders();
-        librdf_php_last_log_level() && httpStatusExit(400, 'Bad Request', null, librdf_php_last_log_message());
     }
     function reload() {
         if ($this->_model)

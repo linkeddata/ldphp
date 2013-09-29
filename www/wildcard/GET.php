@@ -170,6 +170,8 @@ if (isset($i_wait)) {
     $g->reload();
 }
 
+librdf_php_last_log_level() && httpStatusExit(400, 'Bad Request', null, librdf_php_last_log_message());
+
 // ETag
 $etag = $g->etag();
 if ($etag)
