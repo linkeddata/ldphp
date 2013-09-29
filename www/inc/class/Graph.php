@@ -77,6 +77,7 @@ class Graph {
 
         $this->reload();
         //$this->sendHeaders();
+        librdf_php_last_log_level() && httpStatusExit(400, 'Bad Request', null, librdf_php_last_log_message());
     }
     function reload() {
         if ($this->_model)
@@ -91,8 +92,9 @@ class Graph {
         $this->_model = librdf_new_model($this->_world, $this->_store, null);
         $this->_exists = ($this->_name && file_exists($this->_name)) ? true : false;
         if ($this->_storage == 'memory') {
-            if ($this->exists())
+            if ($this->exists()) {
                 $this->append_file('turtle', "file://{$this->_name}", $this->_base);
+            }
         }
     }
     function sendHeaders() {
