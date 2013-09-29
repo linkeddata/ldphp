@@ -24,41 +24,29 @@ if (isset($timings)) {
     $user_name = sess('u:name');
     if (is_null($user_name) || !strlen($user_name))
         $user_name = $_user;
-?>
-
-<div onclick="$('codeID').toggle();">
-<?php
 
 if ($_options->coderev) {
 $src = explode('/', __FILE__);
 $src = array_slice($src, array_search('www', $src));
 $src = implode('/', $src);
 $src = "https://github.com/linkeddata/data.fm/tree/master/$src";
-?>
-<div class="footer">
 
-<span id="codeID" class="align-right" style="display:none;">
- request completed in <?=substr($time, 0, 6)?>s
-<?=$sparql_n<1?'':sprintf('with %d quer%s in %ss', $sparql_n, $sparql_n>1?'ies':'y', substr($sparql_t, 0, 6))?> 
- [ <?php echo implode(' / ', array(
+$queryFoot = $sparql_n<1?'':sprintf('with %d quer%s in %ss', $sparql_n, $sparql_n>1?'ies':'y', substr($sparql_t, 0, 6));
+$versionFoot = implode(' / ', array(
     'librdf: '.array_shift(explode(' ',librdf_version_string_get())),
     'raptor: '.array_shift(explode(' ',raptor_version_string_get())),
     'rasqal: '.array_shift(explode(' ',rasqal_version_string_get()))
-)); ?>
- ]
-</span>
-<span id="codeTime">Performance info...</span>
-</div>
-
-</div>
-</div>
+));
+?>
+    <div class="footer">
+        <span id="codeTime" ng-mouseenter="runtime=1" ng-mouseleave="runtime=0">
+        <em ng-if="runtime"><?=$versionFoot?></em></br /><?=substr($time, 0, 6)?>s
+        </span>
+    </div>
 <?php
 }
-
 ?>
-<div class="clear"></div>
+    <div class="clear"></div>
 </div>
-
-
 </body>
 </html>
