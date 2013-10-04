@@ -51,12 +51,21 @@ if (substr($_user, 0, 4) == 'dns:') {
     <div id="topnav" class="topnav center">
     <a href="//<?=ROOT_DOMAIN?>"?><img src="/common/images/logo.svg" class="logo-icon left" /></a>
     <span class="title" title="Home"><a href="<?=REQUEST_BASE?>"><?=BASE_DOMAIN?></a>
-<?php $paths = explode('/', REQUEST_URL); array_pop($paths);
-foreach ($paths as $k=>$v) {
-    if ($k > 0)
-        echo '<a href="', REQUEST_BASE, implode('/', array_slice($paths, 0, $k+1)), '/">', $v, '</a>';
-    echo ' / ';
-} ?>
+    <?php $paths = explode('/', REQUEST_URL); array_pop($paths);
+    $plen = '';
+    foreach ($paths as $k=>$v) {
+        if ($k > 0) {
+            $plen .= $v;
+            // Don't overflow
+            if (strlen($plen) < 45) {
+                echo '<a href="', REQUEST_BASE, implode('/', array_slice($paths, 0, $k+1)), '">', urldecode($v), '</a>';
+            } else {
+                echo '...';
+                break;
+            }   
+        }   
+        echo ' / ';
+    } ?>
     </span>
     <?php
         if ($user_link) { ?>
