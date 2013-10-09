@@ -49,7 +49,7 @@ defined('HEADER') || include_once('header.php');
         <button type="submit" ng-disabled="!accountStatusData.available">OK</button>
       </form>
       <br />see also <a href="https://webid.mit.edu/">MIT WebID Service</a>
-      <br />or login with a <a href="login?provider=Gmail">Google Account</a>
+      <br />or login with <a href="login?provider=Gmail">Google</a>, <a href="login?provider=AOL">AOL</a>, <a href="login?provider=Yahoo">Yahoo</a>
     </div>
     <div class="span-8 push-2">
       <h3>Create Storage</h3>
