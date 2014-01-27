@@ -53,6 +53,9 @@ if (isset($_GET['p'])) {
 	$complement = '?p='. (string) $p;
 }
 
+
+// TODO: below use append_objects, NOT append(parser)
+
 if ($p > 0) { 
 	$contents_chunks = array_chunk($contents, $pl);
 	$contents = $contents_chunks[$p-1];
@@ -64,7 +67,6 @@ if ($p > 0) {
 	}
 	$g->append('turtle', "@prefix ldp: <http://www.w3.org/ns/ldp#> . <". $_request_path . $complement ."> a ldp:Page . <". $_request_path . $complement ."> ldp:pageOf <". $_request_path ."> ." );
 }
-
 
 $ldprs = array();
 foreach ($contents as $item) {
@@ -80,8 +82,7 @@ foreach($contents as $properties) {
         $properties['mtime'] ." ; p:size ".
         $properties['size'] ." .");
 
-    // LDP resoures
-    if ($properties['resource'] == "./") {
+    if (count($ldprs) && $properties['resource'] == "./") {
         $g->append('turtle', "@prefix ldp: <http://www.w3.org/ns/ldp#> . @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>. ".
             "<".$properties['resource']."> a ldp:Container ; " .
             "ldp:membershipSubject <> ; ".
@@ -89,8 +90,4 @@ foreach($contents as $properties) {
             "ldp:membershipObject ldp:MemberSubject ; ".
             "rdfs:member ".implode(",", $ldprs)." .");
     }
-
 }
-
-
-
