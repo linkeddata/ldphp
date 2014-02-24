@@ -74,14 +74,11 @@ $_request_path = substr($_filename, strlen($_filebase));
 
 // meta
 $_metabase = ($_SERVER['SCRIPT_URL'] != '/')?dirname($_base):$_base;
+$_metafile = ($_SERVER['SCRIPT_URL'] != '/')?dirname($_filename).'/.meta.'.basename($_SERVER['SCRIPT_URL']):$_filename.'.meta.'.basename($_SERVER['SCRIPT_URL']);
 $_metaname = ($_SERVER['SCRIPT_URL'] != '/')?'/.meta.'.basename($_SERVER['SCRIPT_URL']):'.meta';
 
-if ($_options->debug) {
-    header('Filename: '.$_filename);
-}
-
 // Web Access Control
-$_wac = new WAC($_user, $_filename, $_filebase, $_base, $_options);
+$_wac = new WAC($_user, $_filename, $_filebase, $_base, $_SERVER['SCRIPT_URL'], $_options->linkmeta);
 
 // WebDAV
 header('MS-Author-Via: DAV, SPARQL');
@@ -99,6 +96,7 @@ if (isset($_SERVER['HTTP_ORIGIN'])) {
         $n = '*';
     }
     header('Access-Control-Allow-Origin: '.$n);
+    header('Access-Control-Expose-Headers: User');
     header('Access-Control-Allow-Credentials: true');
 }
 
@@ -121,6 +119,7 @@ if ($_method == 'OPTIONS') {
 
     header('Allow: '.METHODS_S);
     header('Accept-Patch: application/json');
+    header('Access-Control-Expose-Headers: User');
     header('Accept-Post: '.implode(',', $_content_types));
     exit;
 }
