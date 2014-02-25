@@ -2,7 +2,11 @@
 /* POST.php
  * service HTTP POST controller
  * (PATCH is a variant of POST)
+ *
+ * $Id$
+ *
  */
+
 require_once('runtime.php');
 
 if (isset($i_query)) {
@@ -19,7 +23,7 @@ $can = false;
 if ($_wac->can('Append') || $can = $_wac->can('Write'))
     $can = true;
 if (DEBUG) {
-    openlog('ldphp', LOG_PID | LOG_ODELAY,LOG_LOCAL4);
+    openlog('RWW.IO', LOG_PID | LOG_ODELAY,LOG_LOCAL4);
     foreach($_wac->getDebug() as $line)
         syslog(LOG_INFO, $line);
     syslog(LOG_INFO, 'Verdict: '.$can.' / '.$_wac->getReason());
@@ -34,7 +38,7 @@ if ($can == false)  {
 
 // intercept requests for WebID generator
 if (isset($_POST['SPKAC'])) {
-    require_once 'webidgen.php';
+    require_once '../inc/webidgen.php';
     // exit required so it can successfully send the certificate
     exit;
 }
@@ -43,7 +47,7 @@ if (isset($_POST['SPKAC'])) {
 if (check_quota($_root, $_SERVER["CONTENT_LENGTH"]) == false)
     httpStatusExit(507, 'Insufficient Storage');
 
-// action
+// create dir structure if it doesn't exist
 $d = dirname($_filename);
 if (!file_exists($d))
     mkdir($d, 0777, true);
@@ -82,12 +86,20 @@ if (isset($_FILES["image"])) {
     exit;
 }
 
+// check if we post using LDP (by posting to a dir)
+if (is_dir($_filename)) {  
+    include('ldp.php');
+} else {
+    $metafile = '';
+    $ldp_location = $_base;
+}
+
 $_data = file_get_contents('php://input');
 
 if ($_input == 'raw') {
     require_once('if-match.php');
     file_put_contents($_filename, $_data, FILE_APPEND | LOCK_EX);
-    exit;
+    httpStatusExit(201, 'Created');
 }
 
 $g = new Graph('', $_filename, '', $_base);
@@ -97,10 +109,18 @@ if ($_method == 'PATCH') {
     if ($_input == 'json' && ($g->patch_json($_data) || 1)) {
         librdf_php_last_log_level() && httpStatusExit(400, 'Bad Request', null, librdf_php_last_log_message());
         $g->save();
+        header('Triples: '.$g->size());
+        header("Link: <".dirname($_base).'/'.$metafile.">; rel=meta", false);
+        header('Location: '.$ldp_location);
+        httpStatusExit(201, 'Created');
     }
 } elseif (!empty($_input) && ($g->append($_input, $_data) || 1)) {
     librdf_php_last_log_level() && httpStatusExit(400, 'Bad Request', null, librdf_php_last_log_message());
     $g->save();
+    header("Triples: ".$g->size(), false);
+    header("Link: <".$_base.$metafile.">; rel=meta", false);
+    header('Location: '.$ldp_location);
+    httpStatusExit(201, 'Created');
 } elseif ($_content_type == 'application/sparql-update') {
     require_once('SPARQL.php');
 } else {
@@ -108,5 +128,3 @@ if ($_method == 'PATCH') {
     header('Accept-Post: '.implode(',', $_content_types));
     httpStatusExit(406, 'Content-Type ('.$_content_type.') Not Acceptable');
 }
-
-@header('Triples: '.$g->size());

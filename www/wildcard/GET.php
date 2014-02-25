@@ -1,12 +1,15 @@
 <?php
 /* GET.php
  * service HTTP GET/HEAD controller
+ *
+ * $Id$
+ *
  */
+
 require_once('runtime.php');
 
 // serve the favicon
 if (basename($_filename) == 'favicon.ico') {
-    //header('Location: http'.(isHTTPS()?'s':'').'://'.BASE_DOMAIN.$_options->base_url.'/favicon.ico');
     $length = filesize($_SERVER["DOCUMENT_ROOT"].'/favicon.ico');
     header('Accept-Ranges: bytes');
 	header('Content-Length: ' . $length);
@@ -71,7 +74,7 @@ if (empty($_user)) {
 $can = false;
 $can = $_wac->can('Read');
 if (DEBUG) {
-    openlog('ldphp', LOG_PID | LOG_ODELAY,LOG_LOCAL4);
+    openlog('RWW.IO', LOG_PID | LOG_ODELAY,LOG_LOCAL4);
     foreach($_wac->getDebug() as $line)
         syslog(LOG_INFO, $line);
     syslog(LOG_INFO, 'Verdict: '.$can.' / '.$_wac->getReason());
@@ -86,13 +89,14 @@ if ($can == false)  {
 
 // directory indexing
 if (is_dir($_filename) || substr($_filename,-1) == '/') {
+    // add meta relation
+    if ($_options->linkmeta)
+        header("Link: <".$_metabase.$_metaname.">; rel=meta", false);
+    
     if (substr($_filename, -1) != '/') {
         header("Location: $_base/");
         exit;
     } elseif (!isset($_output) || empty($_output) || $_output == 'html') {
-        if ($_options->linkmeta)
-            header('Link: <'.$_metabase.$_metaname.'>; rel=meta', false);
-
         include_once('index.html.php');
         exit;
     } else {
@@ -105,11 +109,10 @@ if (is_dir($_filename) || substr($_filename,-1) == '/') {
             }
         }
         if ($dirindex) {
-        	header('Link: <?p=1>; rel="first"', false);
             include_once('index.rdf.php');
   		}
     }
-}
+} 
 
 // set default output
 if (empty($_output)) {
@@ -123,14 +126,29 @@ if ($_output == 'raw') {
         header("Content-Type: $_output_type");
     if (!file_exists($_filename))
         httpStatusExit(404, 'Not Found', '403-404.php');
+    
+    // add meta relation
+    if ($_options->linkmeta)
+        header("Link: <".$_metabase.$_metaname.">; rel=meta", false);
+
+    // caching for files
+    $expires = 14*24*60*60; // 14 days
+    $last_modified = filemtime($_filename);
+    header("Pragma: public");
+    header("Cache-Control: maxage=".$expires, true);
+    header('Expires: '.gmdate('D, d M Y H:i:s', time()+$expires) . ' GMT');
+    header('Last-Modified: '.gmdate('D, d M Y H:i:s', $last_modified).' GMT', true, 200);
 
     $etag = `md5sum $_filename`;
     if (strlen($etag))
         $etag = trim(array_shift(explode(' ', $etag)));
     header('ETag: "'.$etag.'"');
 
-    if ($_options->linkmeta)
-        header('Link: <'.$_metabase.'/'.$_metaname.'>; rel=meta', false);
+    if (@strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE']) == $last_modified || 
+        trim($_SERVER['HTTP_IF_NONE_MATCH']) == $etag) { 
+        header("HTTP/1.1 304 Not Modified"); 
+        exit; 
+    }
 
     if ($_method == 'GET')
         readfile($_filename);
@@ -170,12 +188,16 @@ if (isset($i_wait)) {
     $g->reload();
 }
 
-librdf_php_last_log_level() && httpStatusExit(400, 'Bad Request', null, librdf_php_last_log_message());
-
 // ETag
 $etag = $g->etag();
 if ($etag)
     header('ETag: "'.$etag.'"');
+
+// LDP type
+if (is_dir($_filename))
+    header("Link: <http://www.w3.org/ns/ldp#Container>; rel=\"type\"", false);
+else
+    header("Link: <http://www.w3.org/ns/ldp#Resource>; rel=\"type\"", false);
 
 // offer WebSocket updates
 $updatesVia = isHTTPS() ? 'wss:' : 'ws:';
