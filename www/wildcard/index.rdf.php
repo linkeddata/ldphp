@@ -4,6 +4,24 @@
  *
  * $Id$
  *
+ *  Copyright (C) 2013 RWW.IO
+ *  
+ *  Permission is hereby granted, free of charge, to any person obtaining a copy
+ *  of this software and associated documentation files (the "Software"), to deal 
+ *  in the Software without restriction, including without limitation the rights 
+ *  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell 
+ *  copies of the Software, and to permit persons to whom the Software is furnished 
+ *  to do so, subject to the following conditions:
+
+ *  The above copyright notice and this permission notice shall be included in all 
+ *  copies or substantial portions of the Software.
+
+ *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, 
+ *  INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A 
+ *  PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT 
+ *  HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION 
+ *  OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
+ *  SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
 // Returns contents of a directory as RDF
@@ -61,6 +79,16 @@ if (isset($_GET['p'])) {
 	$p = (int) $_GET['p'];
 	$complement = '?p='. (string) $p;
 }
+
+// prepare list of LDPRs
+$ldprs = array();
+foreach ($contents as $item) {
+    if ($item['resource'] != './')
+        $ldprs[] = '<'.$item['resource'].'>';
+}
+// split members into pages
+$ldprs_chunks = array_chunk($ldprs, $pl);
+$ldprs_page = $ldprs_chunks[$p-1];
 
 // default -> show all
 $show_members = true;
@@ -150,6 +178,27 @@ if ($mg->size() > 0) {
 
 // list each member
 foreach($contents as $properties) {
+/*
+    // check ACL for each member resource
+    $meta_uri = $properties['uri'];
+    $meta_file = $_filename.basename($properties['resource']);
+
+    // WebACL
+    $wac = new WAC($_user, $meta_file, $meta_uri);
+    $can = false;
+    $can = $wac->can('Read');
+    if (DEBUG) {
+        openlog('RWW.IO', LOG_PID | LOG_ODELAY,LOG_LOCAL4);
+        foreach($wac->getDebug() as $line)
+            syslog(LOG_INFO, $line);
+        syslog(LOG_INFO, 'Verdict: '.$can.' / '.$wac->getReason());
+        closelog();
+    }
+    if (!$can) {    
+        //$g->append('turtle', '<'.$properties['resource'].'> <http://www.w3.org/ns/auth/acl#verdict> <http://www.w3.org/ns/auth/acl#denied>.');
+        continue;
+    }
+*/
     // LDPRs
     // add metadata info for each member
     if (!$show_empty) {
@@ -163,6 +212,7 @@ foreach($contents as $properties) {
     // add ldp:contains triple to the LDPC
     if ($show_containment) 
         $g->append('turtle', "<".$_base."> <http://www.w3.org/ns/ldp#contains> <".$properties['resource']."> . ");
+
 
     // add resource type from resources containing metadata
     if ($properties['type'] != 'p:File') {
@@ -183,12 +233,30 @@ foreach($contents as $properties) {
             // add the resource type
             if (isset($res) && count($res) > 0) {
                 foreach ($res as $t) {
-                    if ($t['p']['value'] == 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type') {
+                    if ($t['p']['value'] == 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type')
                         $g->append_objects($properties['uri'], $t['p']['value'], array($t['o']));
-                    }
                 }
             }
         }
     }
 }
+/*
+// TODO: add a list of resources with a given predicate (membership triples vs contained items)
+if ($show_members) {
+    foreach ($ldprs as $ldpr) {
+        $q = 'SELECT * WHERE { <'.$_base.'> <http://www.w3.org/ns/ldp#hasMemberRelation> ?r } ';
+        $s = $mg->SELECT($q);
+        $res = $s['results']['bindings'];
+
+        if (isset($res) && count($res) > 0) {
+            foreach ($res as $t) {
+                $nt = '<'.$_base.'> <'.$t['p']['value'].'> ';
+                $nt .= ($t['o']['type']=='uri')?'<'.$t['o']['value'].'> .':'"'.$t['o']['value'].'" .';
+                $g->append('turtle', $nt);
+            }
+        }
+
+    }
+}
+*/
 
