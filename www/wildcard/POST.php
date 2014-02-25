@@ -23,7 +23,7 @@ $can = false;
 if ($_wac->can('Append') || $can = $_wac->can('Write'))
     $can = true;
 if (DEBUG) {
-    openlog('RWW.IO', LOG_PID | LOG_ODELAY,LOG_LOCAL4);
+    openlog('ldphp', LOG_PID | LOG_ODELAY,LOG_LOCAL4);
     foreach($_wac->getDebug() as $line)
         syslog(LOG_INFO, $line);
     syslog(LOG_INFO, 'Verdict: '.$can.' / '.$_wac->getReason());
