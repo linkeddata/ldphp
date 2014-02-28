@@ -1,8 +1,79 @@
 <?php
 /* util.lib.php
  * PHP utilities
+ *
+ * $Id$
+ *
+ *  Copyright (C) 2013 RWW.IO
+ *  
+ *  Permission is hereby granted, free of charge, to any person obtaining a copy
+ *  of this software and associated documentation files (the "Software"), to deal 
+ *  in the Software without restriction, including without limitation the rights 
+ *  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell 
+ *  copies of the Software, and to permit persons to whom the Software is furnished 
+ *  to do so, subject to the following conditions:
+
+ *  The above copyright notice and this permission notice shall be included in all 
+ *  copies or substantial portions of the Software.
+
+ *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, 
+ *  INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A 
+ *  PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT 
+ *  HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION 
+ *  OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
+ *  SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+// check if the LDPC offers default prefixes
+function LDP_get_prefix($path, $uri, $type='http://ns.rww.io/ldpx#LDPRprefix') {
+    if ($path && $uri) {
+        $g = new Graph('', $path, '',$uri);
+        if ($g->size() > 0) {
+            // specific authorization
+            $q = 'SELECT ?s, ?prefix WHERE { ?s <'.$type.'> ?prefix }';
+            $s = $g->SELECT($q);
+            $res = $s['results']['bindings'];
+
+            if (isset($res) && count($res) > 0)
+                return $res[0]['prefix']['value'];
+        }
+    }
+    return null;
+}
+
+// calculate the md5 of a dir
+function md5_dir($dir) {
+    if (!is_dir($dir)) {
+        return false;
+    }
+    
+    $filemd5s = array();
+    $d = dir($dir);
+
+    while (false !== ($entry = $d->read())) {
+        if ($entry != '.' && $entry != '..') {
+             if (is_dir($dir.'/'.$entry))
+                 $filemd5s[] = md5_dir($dir.'/'.$entry);
+             else
+                 $filemd5s[] = md5_file($dir.'/'.$entry);
+         }
+    }
+    $d->close();
+    return md5(implode('', $filemd5s));
+}
+
+// parse a given http header
+function http_parse_link_header( $header ) {
+    $retVal = array();
+    $elems = explode(';', $header);
+    foreach ($elems as $v) {
+        $v = str_replace('<', '', $v);
+        $v = str_replace('>', '', $v);
+        array_push($retVal , trim($v));
+    }
+
+    return $retVal;
+}
 
 // check if a dir is empty
 function is_dir_empty($dir) {

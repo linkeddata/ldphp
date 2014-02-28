@@ -66,7 +66,7 @@ if (!file_exists($_filename) && in_array($_filename_ext, array('turtle','n3','js
 // permissions
 if (empty($_user)) {
     httpStatusExit(401, 'Unauthorized', '401.php');
-} 
+}
 
 // WebACL
 $can = false;
@@ -130,27 +130,55 @@ if ($_output == 'raw') {
         header("Link: <".$_metabase.$_metaname.">; rel=meta", false);
 
     // caching for files
-    $expires = 14*24*60*60; // 14 days
-    $last_modified = filemtime($_filename);
+    $expires = 14*24*60*60; // 14 days   
     header("Pragma: public");
     header("Cache-Control: maxage=".$expires, true);
     header('Expires: '.gmdate('D, d M Y H:i:s', time()+$expires) . ' GMT');
-    header('Last-Modified: '.gmdate('D, d M Y H:i:s', $last_modified).' GMT', true, 200);
 
-    $etag = `md5sum $_filename`;
-    if (strlen($etag))
-        $etag = trim(array_shift(explode(' ', $etag)));
-    header('ETag: "'.$etag.'"');
+    if ($_method == 'GET')
+        readfile($_filename);
+    exit;
+}
 
+// *: glob
+if ($_options->glob && (strpos($_filename, '*') !== false || strpos($_filename, '{') !== false)) {
+    $last_mtime = 0;
+    $glob_md5 = '';
+    foreach(glob($_filename, GLOB_BRACE|GLOB_NOSORT) as $item) {
+        if (!substr($item, 0, strlen($_filebase)) == $_filebase) continue;
+        $item_ext = strrchr($item, '.');
+        if ($item_ext == '.sqlite' || ($item_ext && in_array(substr($item_ext, 1), $_RAW_EXT))) continue;  
+
+        // get file mtime and md5 
+        $mtime = filemtime($item);
+        if ($mtime > $last_mtime)
+            $last_mtime = $mtime;
+        $glob_md5 .= md5_file($item);
+    }
+    $etag = md5($glob_md5);
+    $last_modified = $last_mtime;
+} else if (is_dir($_filename)) {
+    $_f = $_filename.'.';
+    $etag = md5_dir($_f);
+    $last_modified = filemtime($_f);
+} else {
+    $_f = $_filename;
+    $etag = md5_file($_f);
+    $last_modified = filemtime($_f);
+}
+
+// add ETag and Last-Modified headers
+if (strlen($etag))
+    $etag = trim(array_shift(explode(' ', $etag)));
+header('ETag: "'.$etag.'"');
+header('Last-Modified: '.gmdate('D, d M Y H:i:s', $last_modified).' GMT', true, 200);
+
+if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) || isset($_SERVER['HTTP_IF_NONE_MATCH'])) {
     if (@strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE']) == $last_modified || 
         trim($_SERVER['HTTP_IF_NONE_MATCH']) == $etag) { 
         header("HTTP/1.1 304 Not Modified"); 
         exit; 
     }
-
-    if ($_method == 'GET')
-        readfile($_filename);
-    exit;
 }
 
 // tabulator data skin
@@ -165,17 +193,26 @@ if (!isset($g))
 
 // *: glob
 if ($_options->glob && (strpos($_filename, '*') !== false || strpos($_filename, '{') !== false)) {
+    $last_mtime = 0;
+    $glob_md5 = '';
     foreach(glob($_filename, GLOB_BRACE|GLOB_NOSORT) as $item) {
         if (!substr($item, 0, strlen($_filebase)) == $_filebase) continue;
         $item_ext = strrchr($item, '.');
         if ($item_ext == '.sqlite' || ($item_ext && in_array(substr($item_ext, 1), $_RAW_EXT))) continue;
         $item_uri = REQUEST_BASE.substr($item, strlen($_filebase));
-        
+
+        // get file mtime and md5 
+        $mtime = filemtime($item);
+        if ($mtime > $last_mtime)
+            $last_mtime = $mtime;
+        $glob_md5 .= md5_file($item);
+
         // WebACL
         $wac = new WAC($_user, $item, $item_uri);
         if ($wac->can('Read'))
-            $g->append_file('turtle', "file://$item", $item_uri); 
+            $g->append_file('turtle', "file://$item", $item_uri);        
     }
+
 } elseif (!empty($_filename) && !$g->exists() && !$g->size())
     if (!$_options->wiki)
         header('HTTP/1.1 404 Not Found');
