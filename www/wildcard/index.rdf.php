@@ -2,26 +2,6 @@
 /* index.rdf.php
  * service RDF index page
  *
- * $Id$
- *
- *  Copyright (C) 2013 RWW.IO
- *  
- *  Permission is hereby granted, free of charge, to any person obtaining a copy
- *  of this software and associated documentation files (the "Software"), to deal 
- *  in the Software without restriction, including without limitation the rights 
- *  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell 
- *  copies of the Software, and to permit persons to whom the Software is furnished 
- *  to do so, subject to the following conditions:
-
- *  The above copyright notice and this permission notice shall be included in all 
- *  copies or substantial portions of the Software.
-
- *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, 
- *  INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A 
- *  PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT 
- *  HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION 
- *  OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
- *  SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
 // Returns contents of a directory as RDF
@@ -29,9 +9,6 @@
 require_once('runtime.php');
 
 $g = new Graph('memory', '', '', $_base);
-
-// page length (number of items on a page)
-$pl = 10;
 
 $listing = array();
 if (is_dir($_filename))
@@ -69,26 +46,6 @@ foreach($listing as $item) {
     					 'size' => $size);
     $contents[] = $properties;
 }
-
-// serve LDP by default and beging with the first page
-$p = 1;
-$complement = $_base.'?p=1';
-header("Link: <".$complement.">; rel='first'", false);
-
-if (isset($_GET['p'])) {
-	$p = (int) $_GET['p'];
-	$complement = '?p='. (string) $p;
-}
-
-// prepare list of LDPRs
-$ldprs = array();
-foreach ($contents as $item) {
-    if ($item['resource'] != './')
-        $ldprs[] = '<'.$item['resource'].'>';
-}
-// split members into pages
-$ldprs_chunks = array_chunk($ldprs, $pl);
-$ldprs_page = $ldprs_chunks[$p-1];
 
 // default -> show all
 $show_members = true;
@@ -135,22 +92,35 @@ if (isset($_SERVER['HTTP_PREFER'])) {
     header('Preference-Applied: return=representation', false);
 }
 
+// serve LDP by default and beging with the first page
+$p = 1;
+// page length (number of items on a page)
+$pl = 10;
+
+$complement = $_base.'?p=1';
+header("Link: <".$complement.">; rel='first'", false);
+
 // split members into pages
 $contents_chunks = array_chunk($contents, $pl);
-$contents = $contents_chunks[$p-1];
 $pages = count($contents_chunks);
-// add paging headers
-if (!$show_empty && $p > 0) {
-    // set last page
-    header("Link: <".$_base."?p=".(string)($pages).">; rel='last'", false);
 
-    if ($p > 1)
-        header("Link: <".$_base."?p=".(string)($p-1).">; rel='prev'", false);
-    if($p < $pages) {
-        header("Link: <".$_base."?p=".(string)($p+1).">; rel='next'", false);
-        header("HTTP/1.1 333 Returning Related", false, 333);
-    }
+if (isset($_GET['p'])) {
+    $p = (int) $_GET['p'];
+    $contents = $contents_chunks[$p-1];
+    $complement = '?p='. (string) $p;
 }
+
+// add paging headers
+// set last page
+header("Link: <".$_base."?p=".(string)($pages).">; rel='last'", false);
+
+if ($p > 1)
+    header("Link: <".$_base."?p=".(string)($p-1).">; rel='prev'", false);
+if($p < $pages) {
+    header("Link: <".$_base."?p=".(string)($p+1).">; rel='next'", false);
+    header("HTTP/1.1 333 Returning Related", false, 333);
+}
+
 
 // List LDPC info
 $ldpc = "@prefix ldp: <http://www.w3.org/ns/ldp#> . @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> . @prefix p: <http://www.w3.org/ns/posix/stat#> .".
@@ -213,20 +183,18 @@ foreach($contents as $properties) {
     if ($show_containment) 
         $g->append('turtle', "<".$_base."> <http://www.w3.org/ns/ldp#contains> <".$properties['resource']."> . ");
 
-
     // add resource type from resources containing metadata
     if ($properties['type'] != 'p:File') {
         if ($properties['type'] == 'p:Directory') {
             $meta_uri = dirname($properties['uri']).'/.meta.'.basename($properties['uri']);
-            $meta_file = $_filename.basename($properties['resource']);
+            $meta_file = $_filename.'.meta.'.basename($properties['resource']);
         } else {
             $meta_uri = $properties['uri'];
             $meta_file = $_filename.basename($properties['resource']);
         }
         $dg = new Graph('', $meta_file, '',$meta_uri);
         if ($dg->size() > 0) {
-            // specific authorization
-            $q = 'SELECT * WHERE { <'.$properties['uri'].'> ?p ?o }';
+            $q = 'SELECT * WHERE { <'.$properties['resource'].'> ?p ?o }';
             $s = $dg->SELECT($q);
             $res = $s['results']['bindings'];
 
@@ -240,23 +208,4 @@ foreach($contents as $properties) {
         }
     }
 }
-/*
-// TODO: add a list of resources with a given predicate (membership triples vs contained items)
-if ($show_members) {
-    foreach ($ldprs as $ldpr) {
-        $q = 'SELECT * WHERE { <'.$_base.'> <http://www.w3.org/ns/ldp#hasMemberRelation> ?r } ';
-        $s = $mg->SELECT($q);
-        $res = $s['results']['bindings'];
-
-        if (isset($res) && count($res) > 0) {
-            foreach ($res as $t) {
-                $nt = '<'.$_base.'> <'.$t['p']['value'].'> ';
-                $nt .= ($t['o']['type']=='uri')?'<'.$t['o']['value'].'> .':'"'.$t['o']['value'].'" .';
-                $g->append('turtle', $nt);
-            }
-        }
-
-    }
-}
-*/
 
