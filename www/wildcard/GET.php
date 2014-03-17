@@ -179,7 +179,7 @@ header('Last-Modified: '.gmdate('D, d M Y H:i:s', $last_modified).' GMT', true, 
 
 if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) || isset($_SERVER['HTTP_IF_NONE_MATCH'])) {
     if (@strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE']) == $last_modified || 
-        trim($_SERVER['HTTP_IF_NONE_MATCH']) == $etag) { 
+        str_replace('"', '', trim($_SERVER['HTTP_IF_NONE_MATCH'])) == $etag) {
         header("HTTP/1.1 304 Not Modified"); 
         exit; 
     }
