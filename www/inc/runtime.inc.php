@@ -1,6 +1,7 @@
 <?php
 /* runtime.inc.php
  * application main runtime
+ *
  */
 
 require_once('config.php');
@@ -74,9 +75,10 @@ foreach (array($_SERVER['REMOTE_USER'], sess('u:id')) as $_user) {
         break;
 }
 
-if (!strlen($_user) && isset($_SERVER['SSL_CLIENT_CERT'])) {
+if (isset($_SERVER['SSL_CLIENT_CERT'])) {
     require_once('webid.lib.php');
     $_user = webid_verify();
+    
     $_webid = webid_getinfo($_user);
     
     if (DEBUG) {
@@ -84,7 +86,7 @@ if (!strlen($_user) && isset($_SERVER['SSL_CLIENT_CERT'])) {
         syslog(LOG_INFO, 'Authenticated: '.$_user.' / '.$_webid['name']);
         closelog();
     }
-
+    // overwrite the name and pic
     sess('u:name', $_webid['name']);
     sess('u:pic', $_webid['pic']);
 
