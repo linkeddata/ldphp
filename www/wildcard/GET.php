@@ -17,25 +17,9 @@ if (basename($_filename) == 'favicon.ico') {
     exit;
 } 
 
+// logout
 if ((basename($_filename) == 'logout') || (isset($_GET['logout']))) {
-    foreach ($_SESSION as $k=>$v) {
-        sess($k, null);
-    }
-
-    if (isset($i_next)) {
-        sess('next', $i_next);
-    } elseif (isMethod('GET') && isset($_SERVER['HTTP_REFERER'])) {
-        sess('next', $_SERVER['HTTP_REFERER']);
-    }
-
-    if (isSess('next')) {
-        $next = sess('next', null);
-        $next = str_replace('https://', 'http://', $next);
-        header('Location: '.$next);
-    } else {
-        header('Location: /');
-    }
-    exit;
+    isset($i_next)?clearSession($i_next):clearSession();
 }
 
 if (!in_array($_method, array('GET', 'HEAD')) && !isset($i_query))
@@ -84,6 +68,9 @@ if ($can == false)  {
     else
         httpStatusExit(403, 'Forbidden');
 } 
+
+// add Vary header
+header("Vary: Accept, Origin, If-Modified-Since, If-None-Match");
 
 // directory indexing
 if (is_dir($_filename) || substr($_filename,-1) == '/') {
@@ -140,7 +127,6 @@ if ($_output == 'raw') {
     exit;
 } else {
     // always revalidate cache for RDF documents
-    header("Vary: Accept, Origin, If-Modified-Since, ETag");
     header("Cache-Control: max-age=0", true);
 }
 
@@ -172,16 +158,20 @@ if ($_options->glob && (strpos($_filename, '*') !== false || strpos($_filename, 
 }
 
 // add ETag and Last-Modified headers
-if (strlen($etag))
+if (strlen($etag)) {
     $etag = trim(array_shift(explode(' ', $etag)));
-header('ETag: "'.$etag.'"');
+    header('ETag: "'.$etag.'"');
+}
+
 header('Last-Modified: '.gmdate('D, d M Y H:i:s', $last_modified).' GMT', true, 200);
 
-if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) || isset($_SERVER['HTTP_IF_NONE_MATCH'])) {
-    if (@strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE']) == $last_modified || 
-        str_replace('"', '', trim($_SERVER['HTTP_IF_NONE_MATCH'])) == $etag) {
-        header("HTTP/1.1 304 Not Modified"); 
-        exit; 
+if (CACHING) {
+    if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) || isset($_SERVER['HTTP_IF_NONE_MATCH'])) {
+        if (@strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE']) == $last_modified || 
+            str_replace('"', '', trim($_SERVER['HTTP_IF_NONE_MATCH'])) == $etag) { 
+            header("HTTP/1.1 304 Not Modified"); 
+            exit; 
+        }
     }
 }
 
@@ -231,14 +221,9 @@ if (isset($i_wait)) {
     $g->reload();
 }
 
-// ETag
-$etag = $g->etag();
-if ($etag)
-    header('ETag: "'.$etag.'"');
-
 // LDP type
 if (is_dir($_filename))
-    header("Link: <http://www.w3.org/ns/ldp#Container>; rel=\"type\"", false);
+    header("Link: <http://www.w3.org/ns/ldp#BasicContainer>; rel=\"type\"", false);
 else
     header("Link: <http://www.w3.org/ns/ldp#Resource>; rel=\"type\"", false);
 
