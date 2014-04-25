@@ -1,7 +1,5 @@
 <?php
-/*
- * Linked Data Platform support
-*/
+
 $slug = (isset($_SERVER['HTTP_SLUG']))?trim($_SERVER['HTTP_SLUG']):'';
 $got_resource = true;
 
@@ -10,11 +8,15 @@ if (isset($_SERVER['HTTP_LINK'])) {
     $link_header = http_parse_link_header($_SERVER['HTTP_LINK']);
 
     // look for an ldp:Container in the Link header
-    if (in_array('http://www.w3.org/ns/ldp#Container', $link_header)) {
+    if in_array('http://www.w3.org/ns/ldp#BasicContainer', $link_header)) {
         if (strlen($slug) > 0) {
             $_dir = $slug;
         } else {
-            $p = LDP_get_prefix($_metafile, $_metabase.$_metaname, 'http://ns.rww.io/ldpx#LDPCprefix');
+            // try to find a dedicated LDPC prefix first
+            $p = LDP_get_prefix($_metafile, $_metabase.$_metaname, 'http://ns.rww.io/ldpx#ldpcPrefix');
+            // else, try to find a generic prefix
+            if (!$p)
+                $p = LDP_get_prefix($_metafile, $_metabase.$_metaname, 'http://ns.rww.io/ldpx#ldprPrefix');
             $prefix = ($p)?$p:LDPC_PREFIX;
             $c = count(glob($_filename.$prefix.'*'));
             $c++;
@@ -39,11 +41,17 @@ if ($got_resource) {
         $metafile = $slug;
     } else {
         // generate and autoincrement file ID
-        $p = LDP_get_prefix($_metafile, $_metabase.$_metaname, 'http://ns.rww.io/ldpx#LDPRprefix');
+        $p = LDP_get_prefix($_metafile, $_metabase.$_metaname, 'http://ns.rww.io/ldpx#ldprPrefix');
         $prefix = ($p)?$p:LDPR_PREFIX;
-        $c = count(glob($_filename.$prefix.'*'));
-        $c++;
-        $metafile = $prefix.$c;
+        $g = glob($_filename.$prefix.'*');
+        $id = 0;
+        foreach ($g as $f) {
+            $i = substr($f, strlen($_filename.$prefix), strlen($_filename.$f));
+            if ((int)$i > $id)
+                $id = (int)$i;
+        }
+        $id++;
+        $metafile = $prefix.$id;
     }
     $_filename = $_filename.$metafile;
     $ldp_location = $_base.$metafile;

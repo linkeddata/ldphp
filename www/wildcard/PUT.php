@@ -1,7 +1,9 @@
 <?php
 /* PUT.php
  * service HTTP PUT controller
+ *
  */
+
 require_once('runtime.php');
 
 // permissions
@@ -31,7 +33,7 @@ $_data = file_get_contents('php://input');
 if ($_input == 'raw') {
     require_once('if-match.php');
     file_put_contents($_filename, $_data);
-    exit;
+    httpStatusExit(201, 'Created');
 }
 
 $g = new Graph('', $_filename, '', $_base);
@@ -41,6 +43,7 @@ $g->truncate();
 if (!empty($_input) && $g->append($_input, $_data)) {
     librdf_php_last_log_level() && httpStatusExit(400, 'Bad Request', null, librdf_php_last_log_message());
     $g->save();
+    httpStatusExit(201, 'Created');
 } else {
     librdf_php_last_log_level() && httpStatusExit(400, 'Bad Request', null, librdf_php_last_log_message());
     header('Accept-Post: '.implode(',', $_content_types));

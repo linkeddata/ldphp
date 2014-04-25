@@ -28,9 +28,9 @@ $quota = display_quota($_root);
     </form>
 </table>
 
-<div id="editor" class="editor" style="display:none">
+<div id="editor" class="editor ui-widget-content" style="display:none">
     <input class="cleft left" style="margin: 0;" type="text" id="editorpath" placeholder="loading..." />
-    <select id="editorType" class="left" onchange="cloud.edit($F('editorpath'))">
+    <select id="editorType" class="left" style="margin: 0;" onchange="cloud.edit($F('editorpath'))">
         <option disabled="disabled"></option>
         <option>text/turtle</option>
         <option>text/rdf+xml</option>
@@ -44,11 +44,11 @@ $quota = display_quota($_root);
         <option>text/javascript</option>
     </select>
     <textarea class="editor-content clear left" id="editorarea" disabled="disabled"></textarea><br/>
-    <div class="right"><a href="#" class="button button-rounded button-flat-primary" onclick="cloud.save();"><i class="icon-save"></i> Save</a></div>
     <div class="right actions"><a href="#" class="button button-rounded button-flat-caution" onclick="$('editor').hide();"><i class="icon-remove"></i> Cancel</a></div>
+    <div class="right"><a href="#" class="button button-rounded button-flat-primary" onclick="cloud.save();"><i class="icon-save"></i> Save</a></div>
 </div>
 
-<div id="wac-editor" class="wac-editor" style="display: none;">
+<div id="wac-editor" class="wac-editor ui-widget-content" style="display: none;">
     <span id="wac-reqpath" name="wac-reqpath" style="display: none;"></span>
     <h3>Resource name: <b><span id="wac-path" name="wac-path"></span></b></h3>
     <input type="hidden" id="wac-exists" value="0" />
@@ -70,8 +70,8 @@ $quota = display_quota($_root);
     </div>
     <textarea id="wac-users" name="users" cols="5" rows="5"></textarea>
     <br/>
-    <div class="right"><a href="#" class="button button-rounded button-flat-primary" onclick="wac.save()"><i class="icon-save"></i> Save</a></div>
     <div class="right actions"><a href="#" class="button button-rounded button-flat-caution" onclick="wac.hide()"><i class="icon-remove"></i> Cancel</a></div>
+    <div class="right"><a href="#" class="button button-rounded button-flat-primary" onclick="wac.save()"><i class="icon-save"></i> Save</a></div>
 </div>
 <?php } ?>
 
@@ -115,7 +115,7 @@ $quota = display_quota($_root);
 <table id="index" class="files center box-shadow">
 <thead>
     <tr>
-        <th>Name</th>
+        <th> Name</th>
         <th>Size</th>
         <th>Type</th>
         <th>Last Modified</th>
@@ -139,7 +139,7 @@ foreach($listing as $item) {
     $len = strlen($item);
     if (!$len)
         continue;
-    if ($item == '.')
+    if (($_request_path != '/' && $item == '.'))
         continue;
     if (($_request_path == '/' && $item == '..'))
         continue;
@@ -197,8 +197,7 @@ foreach($listing as $item) {
     }
     echo '</td>';
     echo '<td class="options">';
-    if ($item != '..')
-        echo '<a href="#" onclick="wac.edit(\''.$_request_path.'\', \''.$item_elt.'\');"><img class="actions" src="/common/images/22/acl.png" title="Access Control" /></a> ';
+    echo '<a href="#" onclick="wac.edit(\''.$_request_path.'\', \''.$item_elt.'\');"><img class="actions" src="/common/images/22/acl.png" title="Access Control" /></a> ';
     echo '</td>';
     echo '<td class="options">';
     if ($_options->editui)
@@ -216,6 +215,9 @@ foreach($listing as $item) {
 </div>
 
 <script type="text/javascript">
+jQuery('#editor').draggable();
+jQuery('#wac-editor').draggable();
+
 function showWebID(e) {
     // get the mouse position
     var e = window.event || e;
