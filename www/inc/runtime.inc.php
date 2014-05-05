@@ -79,11 +79,8 @@ if (isset($_SERVER['SSL_CLIENT_CERT'])) {
     require_once('webid.lib.php');
     $q = webid_claim();
     if (isset($q['uri']) && $q['uri'] != $_user) {        
-        if (is_null($g))
-            $g = new Graph('uri', $uri, '', $uri);
-        
-        $_user = webid_verify($q, $g);
-        $_webid = webid_getinfo($_user, $g);
+        $_user = webid_verify($q);
+        $_webid = webid_getinfo($_user);
         
         if (DEBUG) {
             openlog('RWW.IO', LOG_PID | LOG_ODELAY,LOG_LOCAL4);
