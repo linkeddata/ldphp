@@ -173,7 +173,7 @@ class WAC {
             $this->_debug[] = "Current level: ".$r;
 
             $resource = $uri;
-            
+
             if ($r != $this->_root_path) {
                 $acl_file = (substr(basename($r), 0, 4) != '.acl')?'/.acl.'.basename($r):'/'.basename($r);
                 $acl_path = $parent_path.$acl_file;
@@ -210,7 +210,7 @@ class WAC {
                             "acl:mode acl:".$method." ; ". 
                             "acl:".$verb." <".$resource."> . ". 
                             "}";
-                            
+
                     $this->_debug[] = $q;
                     $res = $g->SELECT($q);
                     if (isset($res['results']['bindings']) && count($res['results']['bindings']) > 0) {
@@ -233,7 +233,7 @@ class WAC {
                     } 
                     
                     $this->_reason = 'No one is allowed ('.$verb.') '.$method.' for resource '.$this->_uri."\n";
-             
+
                     return false;
                 }
             }
