@@ -29,7 +29,15 @@ class WAC {
      * @return boolean (true)
      */
     function __construct($user, $path, $uri, $showlinkmeta=false) {
-        $this->_user = $user;
+        $delegator = $this->hasDelegator();
+        if (isset($delegator) && (strlen($delegator) > 0)) {
+            if ($this->verifyDelegator($delegator, $user)) {
+                $this->_debug[] = "Has delegator=".$delegator;
+                $this->_user = $delegator;
+            }
+        } else {
+            $this->_user = $user;
+        }
         $this->_path = $path;
         $this->_uri = $uri;
 
@@ -84,6 +92,32 @@ class WAC {
         return $this->_debug;
     }
 
+    function hasDelegator() {
+        if (isset($_SERVER['HTTP_ON_BEHALF_OF'])) {
+            return $_SERVER['HTTP_ON_BEHALF_OF'];
+        }
+        return false;
+    }
+
+    function verifyDelegator($delegator, $delegatee) {
+        $g = new Graph('uri', $delegator, '', $delegator);
+        $q = $g->SELECT(sprintf("PREFIX : <http://xmlns.com/foaf/0.1/>
+                        PREFIX acl: <http://www.w3.org/ns/auth/acl#>
+                        SELECT ?d FROM <%s> WHERE { 
+                            ?s a :Person .
+                            FILTER (?s = <%s>) .
+                            OPTIONAL { ?s acl:delegatee ?d ; FILTER (?d = <%s>) . } .
+                        }", $delegator, $delegator, $delegatee));
+
+        if (isset($q['results']) && isset($q['results']['bindings'])) {
+            $r = $q['results']['bindings'];
+       
+            if (isset($r) && is_array($r) && sizeof($r) > 0)
+                return true;
+        }
+        return false;
+    }
+
     /**
      * Check if the user has access to a specific URI
      * @param string $method Read/Write/Append/Control
@@ -93,7 +127,6 @@ class WAC {
      * @return boolean (true if user has access)
      */
     function can($method) {
-
         $this->_debug[] = "Method=".$method;
 
         // check if we are the domain owner
@@ -140,7 +173,7 @@ class WAC {
             $this->_debug[] = "Current level: ".$r;
 
             $resource = $uri;
-
+            
             if ($r != $this->_root_path) {
                 $acl_file = (substr(basename($r), 0, 4) != '.acl')?'/.acl.'.basename($r):'/'.basename($r);
                 $acl_path = $parent_path.$acl_file;
@@ -166,25 +199,25 @@ class WAC {
             }
 
             $this->_debug[] = "Verb=".$verb." | Resource=".$resource;
-
-            if (is_file($acl_path)) {
+            
+            if (is_file($acl_path)) { 
                 $g = new Graph('', $acl_path, '',$acl_uri);
                 if ($g->size() > 0) {
                     // specific authorization
                     $q = "PREFIX acl: <http://www.w3.org/ns/auth/acl#>".
                          "SELECT * WHERE { ".
                             "?z acl:agent <".$this->_user."> ; ".
-                            "acl:mode acl:".$method." ; ".
-                            "acl:".$verb." <".$resource."> . ".
+                            "acl:mode acl:".$method." ; ". 
+                            "acl:".$verb." <".$resource."> . ". 
                             "}";
-
+                            
                     $this->_debug[] = $q;
                     $res = $g->SELECT($q);
                     if (isset($res['results']['bindings']) && count($res['results']['bindings']) > 0) {
                         $this->_reason .= 'User '.$this->_user.' is allowed ('.$method.') access to '.$r."\n";
                         return true;
-                    }
-
+                    }                   
+                    
                     // public authorization
                     $q = "PREFIX acl: <http://www.w3.org/ns/auth/acl#>".
                          "SELECT * WHERE { ".
@@ -197,10 +230,10 @@ class WAC {
                     if (isset($res['results']['bindings']) && count($res['results']['bindings']) > 0) {
                         $this->_reason .= 'Everyone is allowed ('.$method.') '.$verb.' to '.$r."\n";
                         return true;
-                    }
-
+                    } 
+                    
                     $this->_reason = 'No one is allowed ('.$verb.') '.$method.' for resource '.$this->_uri."\n";
-
+             
                     return false;
                 }
             }
