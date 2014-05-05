@@ -82,8 +82,7 @@ if (isset($_SERVER['SSL_CLIENT_CERT'])) {
         if (is_null($g))
             $g = new Graph('uri', $uri, '', $uri);
         
-        $_user = webid_verify($g);
-        
+        $_user = webid_verify($q, $g);
         $_webid = webid_getinfo($_user, $g);
         
         if (DEBUG) {

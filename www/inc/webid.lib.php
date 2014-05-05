@@ -32,6 +32,8 @@ function webid_query($uri, $g=null) {
     $r = array();
     if (is_null($g))
         $g = new Graph('uri', $uri, '', $uri);
+    else
+        $g->load($uri);
 
     $q = $g->SELECT(sprintf("PREFIX : <http://www.w3.org/ns/auth/cert#> SELECT ?m ?e WHERE { <%s> :key [ :modulus ?m; :exponent ?e; ] . }", $uri));
     if (isset($q['results']) && isset($q['results']['bindings']))
@@ -40,8 +42,9 @@ function webid_query($uri, $g=null) {
     return $r;
 }
 
-function webid_verify($g=null) {
-    $q = webid_claim();
+function webid_verify($q=null, $g=null) {
+    if (is_null($q))
+        $q = webid_claim();
     if (isset($q['uri'])) {
         foreach ($q['uri'] as $uri) {
             foreach (webid_query($uri, $g) as $elt) {

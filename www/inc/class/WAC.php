@@ -29,14 +29,14 @@ class WAC {
      * @return boolean (true)
      */
     function __construct($user, $path, $uri, $showlinkmeta=false) {
+        $this->_user = $user;
+        // set user to delegator if we have one
         $delegator = $this->hasDelegator();
         if (isset($delegator) && (strlen($delegator) > 0)) {
             if ($this->verifyDelegator($delegator, $user)) {
                 $this->_debug[] = "Has delegator=".$delegator;
                 $this->_user = $delegator;
             }
-        } else {
-            $this->_user = $user;
         }
         $this->_path = $path;
         $this->_uri = $uri;
