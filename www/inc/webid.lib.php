@@ -4,21 +4,23 @@ function webid_claim() {
     $r = array('uri'=>array());
     if (isset($_SERVER['SSL_CLIENT_CERT'])) {
         $pem = $_SERVER['SSL_CLIENT_CERT'];
-        $x509 = openssl_x509_read($pem);
-        $pubKey = openssl_pkey_get_public($x509);
-        $keyData = openssl_pkey_get_details($pubKey);
-        if (isset($keyData['rsa'])) {
-            if (isset($keyData['rsa']['n']))
-                $r['m'] = strtolower(array_pop(unpack("H*", $keyData['rsa']['n'])));
-            if (isset($keyData['rsa']['e']))
-                $r['e'] = hexdec(array_shift(unpack("H*", $keyData['rsa']['e'])));
-        }
+        if ($pem) {
+            $x509 = openssl_x509_read($pem);
+            $pubKey = openssl_pkey_get_public($x509);
+            $keyData = openssl_pkey_get_details($pubKey);
+            if (isset($keyData['rsa'])) {
+                if (isset($keyData['rsa']['n']))
+                    $r['m'] = strtolower(array_pop(unpack("H*", $keyData['rsa']['n'])));
+                if (isset($keyData['rsa']['e']))
+                    $r['e'] = hexdec(array_shift(unpack("H*", $keyData['rsa']['e'])));
+            }
 
-        $d = openssl_x509_parse($x509);
-        if (isset($d['extensions']) && isset($d['extensions']['subjectAltName'])) {
-            foreach (explode(', ', $d['extensions']['subjectAltName']) as $elt) {
-                if (substr($elt, 0, 4) == 'URI:') {
-                    $r['uri'][] = substr($elt, 4);
+            $d = openssl_x509_parse($x509);
+            if (isset($d['extensions']) && isset($d['extensions']['subjectAltName'])) {
+                foreach (explode(', ', $d['extensions']['subjectAltName']) as $elt) {
+                    if (substr($elt, 0, 4) == 'URI:') {
+                        $r['uri'][] = substr($elt, 4);
+                    }
                 }
             }
         }
@@ -38,11 +40,11 @@ function webid_query($uri, $g=null) {
     return $r;
 }
 
-function webid_verify() {
+function webid_verify($g=null) {
     $q = webid_claim();
     if (isset($q['uri'])) {
         foreach ($q['uri'] as $uri) {
-            foreach (webid_query($uri) as $elt) {
+            foreach (webid_query($uri, $g) as $elt) {
                 if ($q['e'] == $elt['e']['value'] && $q['m'] == strtolower(preg_replace('/[^0-9a-fA-F]/', '', $elt['m']['value']))) {
                     return $uri;
                 }
@@ -52,8 +54,9 @@ function webid_verify() {
     return '';
 }
 
-function webid_getinfo($uri) {
-    $g = new Graph('uri', $uri, '', $uri);
+function webid_getinfo($uri, $g=null) {
+    if (is_null($g))
+        $g = new Graph('uri', $uri, '', $uri);
     $q = $g->SELECT(sprintf("PREFIX : <http://xmlns.com/foaf/0.1/>
                      SELECT ?name ?pic ?depic FROM <%s> WHERE { 
                         ?s a :Person .
@@ -66,13 +69,13 @@ function webid_getinfo($uri) {
     if (isset($q['results']) && isset($q['results']['bindings']))
         $r = $q['results']['bindings']; 
 
-    if (isset($r) && is_array($r)) {
+    if (isset($r) && is_array($r) && sizeof($r) > 0) {
         $name = $r[0]['name']['value'];
         $pic = $r[0]['pic']['value'];
         $depic = $r[0]['depic']['value'];
 
         if (strlen($name) == 0)
-            $name = basename($uri);
+            $name = 'No name';
         
         if (strlen($pic) == 0)
             $pic = (strlen($depic) > 0)?$depic:'/common/images/nouser.png';    
