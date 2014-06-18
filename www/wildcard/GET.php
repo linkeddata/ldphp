@@ -47,6 +47,16 @@ if (!file_exists($_filename) && in_array($_filename_ext, array('turtle','n3','js
     }
 }
 
+// add Vary header
+header("Vary: Accept, Origin, If-Modified-Since, If-None-Match");
+
+// LDP type
+if (is_dir($_filename))
+    header("Link: <http://www.w3.org/ns/ldp#BasicContainer>; rel=\"type\"", false);
+header("Link: <http://www.w3.org/ns/ldp#Resource>; rel=\"type\"", false);
+
+$_method_type = "read";
+
 // permissions
 if (empty($_user)) {
     httpStatusExit(401, 'Unauthorized', '401.php');
@@ -69,8 +79,11 @@ if ($can == false)  {
         httpStatusExit(403, 'Forbidden');
 } 
 
-// add Vary header
-header("Vary: Accept, Origin, If-Modified-Since, If-None-Match");
+// set default output
+if (empty($_output)) {
+    $_output = 'turtle';
+    $_output_type = 'text/turtle';
+}
 
 // directory indexing
 if (is_dir($_filename) || substr($_filename,-1) == '/') {
@@ -98,12 +111,6 @@ if (is_dir($_filename) || substr($_filename,-1) == '/') {
   		}
     }
 } 
-
-// set default output
-if (empty($_output)) {
-    $_output = 'turtle';
-    $_output_type = 'text/turtle';
-}
 
 // output raw
 if ($_output == 'raw') {
@@ -220,12 +227,6 @@ if (isset($i_wait)) {
     }
     $g->reload();
 }
-
-// LDP type
-if (is_dir($_filename))
-    header("Link: <http://www.w3.org/ns/ldp#BasicContainer>; rel=\"type\"", false);
-else
-    header("Link: <http://www.w3.org/ns/ldp#Resource>; rel=\"type\"", false);
 
 // offer WebSocket updates
 $updatesVia = isHTTPS() ? 'wss:' : 'ws:';

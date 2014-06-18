@@ -6,6 +6,8 @@
 
 require_once('runtime.php');
 
+$_method_type = "write";
+
 // permissions
 if (empty($_user))
     httpStatusExit(401, 'Unauthorized');
@@ -43,11 +45,10 @@ $g->truncate();
 if (!empty($_input) && $g->append($_input, $_data)) {
     librdf_php_last_log_level() && httpStatusExit(400, 'Bad Request', null, librdf_php_last_log_message());
     $g->save();
+    header('ETag: "'.md5_file($_filename).'"');
     httpStatusExit(201, 'Created');
 } else {
     librdf_php_last_log_level() && httpStatusExit(400, 'Bad Request', null, librdf_php_last_log_message());
     header('Accept-Post: '.implode(',', $_content_types));
     httpStatusExit(406, 'Content-Type ('.$_content_type.') Not Acceptable');
 }
-
-@header('Triples: '.$g->size());

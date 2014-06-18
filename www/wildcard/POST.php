@@ -3,8 +3,6 @@
  * service HTTP POST controller
  * (PATCH is a variant of POST)
  *
- * $Id$
- *
  */
 
 require_once('runtime.php');
@@ -13,6 +11,8 @@ if (isset($i_query)) {
     require_once('GET.php');
     //exit;
 }
+
+$_method_type = "write";
 
 // permissions
 if (empty($_user)) 
@@ -120,6 +120,7 @@ if ($_method == 'PATCH') {
     header("Triples: ".$g->size(), false);
     header("Link: <".$_base.$metafile.">; rel=meta", false);
     header('Location: '.$ldp_location);
+    header('ETag: "'.md5_file($_filename).'"');
     httpStatusExit(201, 'Created');
 } elseif ($_content_type == 'application/sparql-update') {
     require_once('SPARQL.php');

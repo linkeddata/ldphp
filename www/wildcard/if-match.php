@@ -1,23 +1,19 @@
 <?php
 /* if-match.php
- *
- * conditional requests via headers: If-Match, If-None-Match
  */
 
-$if_match = isset($_SERVER["HTTP_IF_MATCH"]) ? trim($_SERVER["HTTP_IF_MATCH"]) : '';
-$if_none_match = isset($_SERVER["HTTP_IF_NONE_MATCH"]) ? trim($_SERVER["HTTP_IF_NONE_MATCH"]) : '';
+$if_match = isset($_SERVER["HTTP_IF_MATCH"]) ? trim(str_replace("\"", "", $_SERVER["HTTP_IF_MATCH"])) : '';
+$if_none_match = isset($_SERVER["HTTP_IF_NONE_MATCH"]) ? trim(str_replace("\"", "", $_SERVER["HTTP_IF_NONE_MATCH"])) : '';
 
 if (strlen($if_match) || strlen($if_none_match)) {
     if (isset($g)) {
         $exists = $g->exists();
-        $etag = $g->etag();
-
+        $etag = md5_file($_filename);
     } else {
         $exists = file_exists($_filename);
-        $etag = $exists ? `md5sum $_filename` : '';
+        $etag = $exists ? md5_file($_filename) : '';
         if (strlen($etag))
             $etag = trim(array_shift(explode(' ', $etag)));
-
     }
 
     if (strlen($if_match)) {
