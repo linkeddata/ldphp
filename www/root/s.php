@@ -10,7 +10,7 @@ if (isset($i_reset)) {
 }
 if (!isset($i_debug)) {
     $r = isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '';
-    if (stristr($r, 'data.fm/')) {
+    if (stristr($r, 'ldphp.tk/')) {
         header('Location: '.$r);
     } else {
         header('Location: /');

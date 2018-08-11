@@ -7,7 +7,8 @@ extract($_GET, EXTR_PREFIX_ALL, 'i');
 extract($_POST, EXTR_PREFIX_ALL, 'i');
 
 $method = explode('?',basename(REQUEST_URL));
-$method = $method[0];
+$method = str_replace('.php', '', $method[0]);
+
 if (strlen($method) < 1 ) {
     $method = $i_method;
 }
@@ -20,15 +21,15 @@ $r = array();
 if ($method == 'storageStatus') {
     $r['storageName'] = $i_storageName;
     $dir = $_ENV['CLOUD_DATA'].'/'.$r['storageName'].'.'.ROOT_DOMAIN;
-    $files = scandir($dir);
-    $r['available'] = sizeof($files)<=1;
+    $files = is_dir($dir) ? scandir($dir) : array();
+    $r['available'] = sizeof($files)<=2;
 }
 
 if ($method == 'accountStatus') {
     $r['accountName'] = $i_accountName;
     $dir = $_ENV['CLOUD_DATA'].'/'.$r['accountName'].'.'.ROOT_DOMAIN;
-    $files = scandir($dir);
-    $r['available'] = sizeof($files)<=1;
+    $files = is_dir($dir) ? scandir($dir) : array();
+    $r['available'] = sizeof($files)<=2;
 }
 
 $w['status'] = 'success';

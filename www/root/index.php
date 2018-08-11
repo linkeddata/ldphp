@@ -15,7 +15,7 @@ defined('HEADER') || include_once('header.php');
 
 <script>
   f = document.createElement('iframe');
-  f.src = "//data.fm/server.html";
+  f.src = "//ldphp.tk/server.html";
   f.style.display = 'none';
   ngLD = angular.module('LD', ['ui','ui.filters']);
   function Example($scope, $timeout) {
@@ -41,7 +41,7 @@ defined('HEADER') || include_once('header.php');
   <div class="span-20 center">
     <div class="span-7">
       <h3>Create Account</h3>
-      <form method="POST" action="/api/spkac" target="spkac">
+      <form method="POST" action="/api/spkac.php" target="spkac">
         <keygen name="SPKAC" challenge="randomchars" keytype="rsa" style="display:none" />
           <input type="text" name="name" ng-model="name" placeholder="Your Name" class="clear" />
           <input type="email" name="email" ng-model="email" placeholder="you@somewhere.com" class="clear" />

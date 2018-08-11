@@ -3,13 +3,18 @@
   var rpc;
 
   rpc = function(method, ev) {
-    return $.ajax("api/" + method, {
+    return $.ajax("api/" + method + ".php", {
       contentType: "application/json",
       data: JSON.stringify(ev.data),
       type: "POST",
       dataType: "json",
       success: function(data, textStatus, xhr) {
+	console.log(data.response);
+	//data = JSON.parse(data);
         return ev.source.postMessage(data, ev.origin);
+      },
+      error: function(error) {
+        console.log(error);
       }
     });
   };
