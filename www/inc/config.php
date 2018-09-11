@@ -1,6 +1,6 @@
 <?php
 // default TLD name
-define('ROOT_DOMAIN', 'data.fm');
+define('ROOT_DOMAIN', 'ldphp.tk');
 
 // display debug info in syslog
 define('DEBUG', false);

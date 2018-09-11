@@ -36,7 +36,7 @@ if (substr($_user, 0, 4) == 'dns:') {
     <script>jQuery.noConflict();</script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.1.5/angular.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/angular-ui/0.4.0/angular-ui.min.js"></script>
-    <script src="//w3.scripts.mit.edu/rdflib.js/dist/rdflib.js" type="text/javascript"></script>
+    <script src="/dist/rdflib.min.js" type="text/javascript"></script>
     <script src="/common/js/prototype.js" type="text/javascript"></script>
     <script src="/common/js/common.js" type="text/javascript"></script>
     <script type="text/javascript">
@@ -81,7 +81,7 @@ if (substr($_user, 0, 4) == 'dns:') {
         <?php } else { ?> 
             <div class="login"> 
                 <span class="login-links"><a class="white" href="https://<?=BASE_DOMAIN?>">Login</a>
-                <?php if ($_SERVER['SERVER_NAME'] != ROOT_DOMAIN) { ?>
+		<?php if ($_SERVER['SERVER_NAME'] != ROOT_DOMAIN) { ?>
                 <br/><a class="white" href="//<?=ROOT_DOMAIN?>">Signup</a>
                 <?php } ?>
                 </span>

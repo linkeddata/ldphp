@@ -1,6 +1,17 @@
+#RewriteEngine On
+#RewriteCond %{REQUEST_FILENAME}.php -f
+#RewriteRule (.+) $1.php
+
 RewriteEngine On
-RewriteCond %{REQUEST_FILENAME}.php -f
-RewriteRule (.+) $1.php
+
+# Some hosts may require you to use the `RewriteBase` directive.
+# If you need to use the `RewriteBase` directive, it should be the
+# absolute physical path to the directory that contains this htaccess file.
+#
+RewriteBase /
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^ index.php [QSA,L]
 
 <IfModule mod_fcgid.c>
     AddHandler fcgid-script .php

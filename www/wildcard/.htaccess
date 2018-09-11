@@ -1,19 +1,28 @@
-# $Id$
+#RewriteEngine On
+#RewriteCond %{REQUEST_FILENAME}.php -f
+#RewriteRule (.+) $1.php
 
+DirectoryIndex index.php
 RewriteEngine On
 
-RewriteCond %{REQUEST_METHOD} =GET [OR]
-RewriteCond %{REQUEST_METHOD} =HEAD [OR]
-RewriteCond %{REQUEST_METHOD} =OPTIONS
-RewriteCond %{REQUEST_URI} !/common/
-RewriteRule ^(.*)$ GET.php [L]
+# Some hosts may require you to use the `RewriteBase` directive.
+# If you need to use the `RewriteBase` directive, it should be the
+# absolute physical path to the directory that contains this htaccess file.
+#
+# RewriteBase /
 
-RewriteCond %{REQUEST_METHOD} =MKCOL [OR]
-RewriteCond %{REQUEST_METHOD} =PATCH [OR]
-RewriteCond %{REQUEST_METHOD} =POST [OR]
-RewriteCond %{REQUEST_METHOD} =PUT [OR]
-RewriteCond %{REQUEST_METHOD} =DELETE
-RewriteRule ^(.*)$ %{REQUEST_METHOD}.php [L]
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^ index.php [QSA,L]
 
-# drop all other Apache responses
-#RewriteRule .* - [L,R=501]
+<IfModule mod_fcgid.c>
+    AddHandler fcgid-script .php
+    AddHandler fcgid-script .py
+    DirectoryIndex index.php
+    <Files *.php>
+        Options +ExecCGI
+    </Files>
+    <Files *.py>
+        Options +ExecCGI
+    </Files>
+</IfModule>

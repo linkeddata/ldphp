@@ -13,7 +13,7 @@ if (isset($_POST['SPKAC']) && isset($_POST['username'])) {
     }
     // Exit if we don't have a #
     if (strpos($path, '#') === false) // missing # 
-        die("You must at least provide a # fragment. For example: #me or #public.");
+        echo "You must at least provide a # fragment. For example: #me or #public.";
 
     // remove the # fragment so we get the profile document path
     $path_frag = explode('#', $path);
@@ -26,11 +26,11 @@ if (isset($_POST['SPKAC']) && isset($_POST['username'])) {
 
     // create but do not overwrite existing profile document
     if (file_exists($webid_file) === true) {
-        die('Error: <strong>'. $path.'</strong> already exists!');
+        echo 'Error: <strong>'. $path.'</strong> already exists!';
     } else {           
         // check if the root dir exists and create it (recursively) if it doesn't
         if (!mkdir(dirname($webid_file), 0755, true))
-            die('Cannot create directory at '.dirname($webid_file).', please check permissions.');
+            echo 'Cannot create directory at '.dirname($webid_file).', please check permissions.';
     }
 
     $BASE = 'https://'.$_POST['username'].'.'.$_SERVER['SERVER_NAME']; // force https
@@ -62,7 +62,7 @@ if (isset($_POST['SPKAC']) && isset($_POST['username'])) {
     $storage_uri = $BASE.'/storage/';
     $storage_file = $_root.'/storage/';
     if (!mkdir($storage_file, 0755, true))
-        die('Cannot create storage space "'.$storage_file.'", please check permissions');   
+        echo 'Cannot create storage space "'.$storage_file.'", please check permissions';  
     // end workspaces
 
     // --- Profile --- 
@@ -129,4 +129,3 @@ if (isset($_POST['SPKAC']) && isset($_POST['username'])) {
     
     // ------ DONE WITH PROFILE -------
 }
-
